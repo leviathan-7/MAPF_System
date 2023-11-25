@@ -16,10 +16,11 @@ namespace MAPF_System
         private bool wasvisited;
         private int idVisit;
 
-        public Cell(bool isBlock, bool wasvisited = false)
+        public Cell(bool isBlock, bool wasvisited = false, int idVisit = -1)
         {
             this.isBlock = isBlock;
             this.wasvisited = wasvisited;
+            this.idVisit = idVisit;
         }
         public Cell(string str)
         {
@@ -27,17 +28,18 @@ namespace MAPF_System
             // Задание параметров клетки на основе строки из файла
             isBlock = arr[0] == "True";
             wasvisited = arr[1] == "True";
+            idVisit = int.Parse(arr[2]);
         }
         public bool IsBlock() { return isBlock; }
         public void MakeBlock() { isBlock = true; }
-        public Cell CopyWithoutBlock() { return new Cell(false, wasvisited); }
+        public Cell CopyWithoutBlock() { return new Cell(false, wasvisited, idVisit); }
         public void MakeVisit(int n) { 
             wasvisited = true;
             idVisit = n;
         }
         public bool WasVisit() { return wasvisited; }
         public int IdVisit() { return idVisit; }
-        public string ToStr() { return isBlock + " " + " " + wasvisited; }
+        public string ToStr() { return isBlock + " " + wasvisited + " " + idVisit; }
 
     }
 }

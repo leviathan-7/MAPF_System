@@ -37,6 +37,7 @@ namespace MAPF_System
         }
         public Board()
         {
+            // Открытие файла в формате board
             OpenFileDialog openFileDialog1 = new OpenFileDialog(){ Filter = "(*.board)|*.board", };
             openFileDialog1.ShowDialog();
             string[] readText = File.ReadAllLines(openFileDialog1.FileName);
@@ -195,7 +196,6 @@ namespace MAPF_System
                         }
                     foreach (var item in Units)
                     {
-                        //MessageBox.Show("" + item.X() + " " + item.Y());
                         // Отрисовка юнитов
                         Rectangle rect = new Rectangle(new Point(8 + height * item.X(), YY + 8 + height * item.Y()), new Size(height - 6, height - 6));
                         g.FillRectangle(System.Drawing.Brushes.Red, rect);
@@ -241,11 +241,8 @@ namespace MAPF_System
             GetNewBlocks(Board);
             // Сделать шаг теми юнитами, которые еще не достигли своей цели
             foreach (var Unit in Units)
-            {
-                //MessageBox.Show("xx=" + Unit.X() + " yy=" + Unit.Y());
                 if (!Unit.IsEnd())
                     Unit.MakeStep(this, from u in Units where u != Unit select u);
-            }
                 
         }
         private void GetNewBlocks(Board Board)

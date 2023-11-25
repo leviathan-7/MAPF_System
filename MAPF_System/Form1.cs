@@ -12,22 +12,16 @@ namespace MAPF_System
 {
     public partial class Form1 : Form
     {
-        public Form1()
-        {
-            InitializeComponent();
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-
+        public Form1() { InitializeComponent(); }
+        private void Form1_Load(object sender, EventArgs e) { }
         private void button_Generation_Click(object sender, EventArgs e)
         {
+            // Считывание введенных данных
             int X = 0, Y = 0, Blocks = 0, Units = 0;
             bool isNumeric = int.TryParse(textBox_X.Text, out X) && int.TryParse(textBox_Y.Text, out Y)
                 && int.TryParse(textBox_Blocks.Text, out Blocks) && int.TryParse(textBox_Units.Text, out Units);
 
+            // Проверка введенных данных на правильность
             if(TestEnteredData(X, Y, Blocks, Units, isNumeric))
             {
                 label_Error.Text = "ok!";
@@ -39,6 +33,7 @@ namespace MAPF_System
 
         private void button_Load_Click(object sender, EventArgs e)
         {
+            // Board() без параметров вызывет открытие окна для выбора board файла
             Form2 F = new Form2(new Board());
             F.Show();
         }

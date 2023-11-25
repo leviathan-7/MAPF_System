@@ -50,6 +50,21 @@ namespace MAPF_System
             label_Error.Text = "Сохранено!";
         }
 
-
+        private void button_step_Click(object sender, EventArgs e)
+        {
+            Board TimeBoard = Board.CopyWithoutBlocks();
+            int i = 0;
+            while (!TimeBoard.IsEnd()) 
+            {
+                TimeBoard.MakeStep(Board);
+                i++;
+                Form2 F = new Form2(TimeBoard, i);
+                F.Show();
+                MessageBox.Show("Далее?");
+                if(!TimeBoard.IsEnd())
+                    F.Close();
+            }
+            
+        }
     }
 }

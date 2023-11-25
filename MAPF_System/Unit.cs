@@ -78,7 +78,6 @@ namespace MAPF_System
                 }
             // Помечаем старую клетку как посещенную
             Board.MakeVisit(x, y, id);
-            //MessageBox.Show("last__x=" + last__x + " last__y=" + last__y);
             last__x = x;
             last__y = y;
             // Перемещаем юнит в клетку с минимальным значением эвристической функции
@@ -91,7 +90,6 @@ namespace MAPF_System
             if (min_i == 3)
                 x = x1;
             // Помечаем новую клетку как посещенную
-            //MessageBox.Show("x= " + x + " y= " + y + "id= "+id);
             Board.MakeVisit(x, y, id);
         }
         private bool IsEmpthy(Board Board, IEnumerable<Unit> AnotherUnits, int x, int y)
@@ -139,7 +137,7 @@ namespace MAPF_System
         }
         private float h(int x, int y)
         {
-            // Оценка, основанная на расстоянии
+            // Оценка, основанная на манхэттенском расстоянии
             return Math.Abs(x_Purpose - x) + Math.Abs(y_Purpose - y);
         }
         
