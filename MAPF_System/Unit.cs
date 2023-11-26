@@ -91,7 +91,7 @@ namespace MAPF_System
             float min = ff[4];
             int min_i = 4;
             for (int i = 0; i < 4; i++)
-                if ((min >= ff[i]) && (ff[i] != -1))
+                if (((min > ff[i])||((min == ff[i]) &&(StatUnits[i] is null))) && (ff[i] != -1))
                 {
                     min = ff[i];
                     min_i = i;
