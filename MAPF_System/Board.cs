@@ -176,7 +176,7 @@ namespace MAPF_System
                             g.DrawRectangle(pen, rect);
                             // Отрисовка блоков
                             if (Arr[i, j].IsBlock())
-                                g.FillRectangle(System.Drawing.Brushes.Black, rect);
+                                g.FillRectangle(Brushes.Black, rect);
                             // Отрисовка пройденного пути
                             if (Arr[i, j].WasVisit())
                             {
@@ -187,11 +187,11 @@ namespace MAPF_System
                     foreach (var Unit in Units)
                     {
                         // Отрисовка юнитов
-                        Rectangle rect = new Rectangle(new Point(8 + height * Unit.X(), YY + 8 + height * Unit.Y()), new Size(height - 6, height - 6));
-                        g.FillRectangle(System.Drawing.Brushes.Red, rect);
+                        var Font = new Font("Arial", 9, FontStyle.Bold);
+                        g.FillRectangle(Brushes.Red, new Rectangle(new Point(8 + height * Unit.X(), YY + 8 + height * Unit.Y()), new Size(height - 5, height - 5)));
+                        g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(8 + height * Unit.X(), YY + 8 + height * Unit.Y()));
                         // Отрисовка цели
-                        rect = new Rectangle(new Point(10 + height * Unit.X_Purpose(), YY + 10 + height * Unit.Y_Purpose()), new Size(height - 10, height - 10));
-                        g.FillRectangle(System.Drawing.Brushes.Green, rect);
+                        g.DrawString("" + Unit.Id(), Font, Brushes.Green, new Point(8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()));
                     }
                 }
             }
@@ -226,13 +226,15 @@ namespace MAPF_System
         }
         public void MakeStep(Board Board)
         {
+            // Обнуление значений was_step
+            foreach (var Unit in Units)
+                Unit.NotWasStep();
             // Добавить блоки в пределах видимости юнитов
             GetNewBlocks(Board);
             // Сделать шаг теми юнитами, которые еще не достигли своей цели
             foreach (var Unit in Units)
                 if (!Unit.IsEnd())
                     Unit.MakeStep(this, from u in Units where u != Unit select u);
-                
         }
         private void GetNewBlocks(Board Board)
         {

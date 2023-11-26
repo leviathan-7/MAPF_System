@@ -16,9 +16,10 @@ namespace MAPF_System
         private int last__y;
         private int x_Purpose;
         private int y_Purpose;
-
+        private bool was_step;
         public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y) {
             this.id = id;
+            was_step = false;
             // Задание местоположения юнита
             this.x = x;
             this.y = y;
@@ -30,6 +31,7 @@ namespace MAPF_System
         }
         public Unit(string str, int i)
         {
+            was_step = false;
             string[] arr = str.Split(' ');
             // Задание параметров юнита на основе строки из файла
             x = int.Parse(arr[0]);
@@ -40,8 +42,10 @@ namespace MAPF_System
             last__x = -1;
             last__y = -1;
         }
+        public void NotWasStep() { was_step = false; }
         public int X() { return x; }
         public int Y() { return y; }
+        public int Id() { return id; }
         public int X_Purpose() { return x_Purpose; }
         public int Y_Purpose() { return y_Purpose; }
         public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y); }
@@ -49,6 +53,9 @@ namespace MAPF_System
         public bool IsEnd(){ return (x == x_Purpose) && (y == y_Purpose); }
         public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits)
         {
+            // Проверяем, что юнит еще не работал на данной итерации
+            if (was_step)
+                return;
             int x0 = x - 1;
             int x1 = x + 1;
             int y0 = y - 1;
@@ -89,35 +96,45 @@ namespace MAPF_System
                     min = ff[i];
                     min_i = i;
                 }
-            // Сдвигаем статический юнит, если надо
-            if (!(StatUnits[min_i] is null))
-                StatUnits[min_i].StatMakeStep(Board, from u in Board.Units where u != StatUnits[min_i] select u);
             // Помечаем старую клетку как посещенную
             Board.MakeVisit(x, y, id);
             // Сохраняем прошлое местоположение юнита 
             last__x = x;
             last__y = y;
-            // Перемещаем юнит в клетку с минимальным значением эвристической функции
-            if (min_i == 0)
-                y = y0;
-            if (min_i == 1)
-                y = y1;
-            if (min_i == 2)
-                x = x0;
-            if (min_i == 3)
-                x = x1;
-            // Помечаем новую клетку как посещенную
-            Board.MakeVisit(x, y, id);
+            if (min_i == 4)
+                return;
+            // Сдвигаем статический юнит, если надо
+            bool b = true;
+            if (!(StatUnits[min_i] is null))
+                b = StatUnits[min_i].StatMakeStep(Board, from u in Board.Units where u != StatUnits[min_i] select u);
+            if (b)
+            {
+                // Перемещаем юнит в клетку с минимальным значением эвристической функции
+                if (min_i == 0)
+                    y = y0;
+                if (min_i == 1)
+                    y = y1;
+                if (min_i == 2)
+                    x = x0;
+                if (min_i == 3)
+                    x = x1;
+                // Помечаем новую клетку как посещенную
+                Board.MakeVisit(x, y, id);
+                // Помечаем, что юнит отработал на данной итерации
+                was_step = true;
+            }
         }
-        public void StatMakeStep(Board Board, IEnumerable<Unit> AnotherUnits)
+        private bool StatMakeStep(Board Board, IEnumerable<Unit> AnotherUnits)
         {
+            // Проверяем, что юнит еще не работал на данной итерации
+            if (was_step)
+                return false;
             int x0 = x - 1;
             int x1 = x + 1;
             int y0 = y - 1;
             int y1 = y + 1;
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
-            List<Unit> StatUnits = new List<Unit> { null, null, null, null, null };
             if (IsEmpthy(Board, AnotherUnits, x, y0))
                 ff[0] = 1;
             if (IsEmpthy(Board, AnotherUnits, x, y1))
@@ -137,6 +154,8 @@ namespace MAPF_System
                     min_i = i;
                 }
             // Перемещаем юнит в клетку с минимальным значением эвристической функции
+            if (min_i == 4)
+                return false;
             if (min_i == 0)
                 y = y0;
             if (min_i == 1)
@@ -147,6 +166,9 @@ namespace MAPF_System
                 x = x1;
             // Помечаем новую клетку как посещенную
             Board.MakeVisit(x, y, id);
+            // Помечаем, что юнит отработал на данной итерации
+            was_step = true;
+            return true;
         }
         private bool IsEmpthy(Board Board, IEnumerable<Unit> AnotherUnits, int x, int y)
         {
