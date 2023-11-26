@@ -10,10 +10,9 @@ using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public partial class Form1 : Form
+    public partial class FormGenerateOrOpen : Form
     {
-        public Form1() { InitializeComponent(); }
-        private void Form1_Load(object sender, EventArgs e) { }
+        public FormGenerateOrOpen() { InitializeComponent(); }
         private void button_Generation_Click(object sender, EventArgs e)
         {
             // Считывание введенных данных
@@ -24,19 +23,11 @@ namespace MAPF_System
             // Проверка введенных данных на правильность
             if(TestEnteredData(X, Y, Blocks, Units, isNumeric))
             {
-                label_Error.Text = "ok!";
-                Board RealBoard = new Board(X, Y, Blocks, Units);
-                Form2 F = new Form2(RealBoard);
-                F.Show();
+                label_Error.Text = "Ok!";
+                (new FormAlgorithm(new Board(X, Y, Blocks, Units))).Show();
             }
         }
-
-        private void button_Load_Click(object sender, EventArgs e)
-        {
-            // Board() без параметров вызывет открытие окна для выбора board файла
-            Form2 F = new Form2(new Board());
-            F.Show();
-        }
+        private void button_Load_Click(object sender, EventArgs e) { (new FormAlgorithm(new Board())).Show(); }
         private bool TestEnteredData(int X, int Y, int Blocks, int Units,bool isNumeric)
         {
             label_Error.Text = "";

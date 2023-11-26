@@ -10,33 +10,29 @@ using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public partial class Form2 : Form
+    public partial class FormAlgorithm : Form
     {
         private Board Board;
-        public Form2(Board Board,int kol_iterat = 0)
+        public FormAlgorithm(Board Board,int kol_iterat = 0)
         {
             this.Board = Board;
             InitializeComponent();
-            pictureBox1.Paint += Draw2DArray;
+            // Отрисовка поля
+            pictureBox1.Paint += delegate { Board.Draw(this.CreateGraphics()); };
             if(kol_iterat != 0)
                 label_kol_iterat.Text = "Количество шагов = " + kol_iterat;
         }
-
-        private void Form2_Load(object sender, EventArgs e) { }
-
-        private void Draw2DArray(object sender, PaintEventArgs e){ Board.Draw(this.CreateGraphics()); }
 
         private void button_Start_Click(object sender, EventArgs e)
         {
             Board TimeBoard = Board.CopyWithoutBlocks();
             int i = 0;
-            while (!TimeBoard.IsEnd() ) //&& (i<1))
+            while (!TimeBoard.IsEnd())
             {
                 TimeBoard.MakeStep(Board);
                 i++;
             }
-            Form2 F = new Form2(TimeBoard, i);
-            F.Show();
+            (new FormAlgorithm(TimeBoard, i)).Show();
         }
 
         private void button_Save_Click(object sender, EventArgs e)
@@ -58,7 +54,7 @@ namespace MAPF_System
             {
                 TimeBoard.MakeStep(Board);
                 i++;
-                Form2 F = new Form2(TimeBoard, i);
+                FormAlgorithm F = new FormAlgorithm(TimeBoard, i);
                 F.Show();
                 MessageBox.Show("Далее?");
                 if(!TimeBoard.IsEnd())

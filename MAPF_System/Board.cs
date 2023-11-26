@@ -12,9 +12,8 @@ namespace MAPF_System
 {
     public class Board
     {
-        public List<Unit> Units;
-        public Cell[,] Arr;
-
+        private Cell[,] Arr;
+        private List<Unit> Units;
         private int X;
         private int Y;
         private Random rnd;
@@ -69,8 +68,8 @@ namespace MAPF_System
             Cell[,] CopyArr = new Cell[X, Y];
             List<Unit> CopyUnits = new List<Unit>();
             // Скопировать юнитов
-            foreach (var item in Units)
-                CopyUnits.Add(item.Copy());
+            foreach (var Unit in Units)
+                CopyUnits.Add(Unit.Copy());
             // Скопировать доску без блоков
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y; j++)
@@ -107,12 +106,10 @@ namespace MAPF_System
                 else
                     y = y2;
 
-
                 if (Math.Abs(x - x_sum / kol) < Math.Abs(x3 - x_sum / kol))
                     x = x3;
                 if (Math.Abs(y1 - y_sum / kol) < Math.Abs(y3 - y_sum / kol))
                     y = y3;
-
 
                 x_sum += x;
                 y_sum += y;
@@ -143,17 +140,13 @@ namespace MAPF_System
 
                 bool b = (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
 
-                foreach (var item in Units)
-                {
-                    b = b && !((item.X() == x) && (item.Y() == y)) && !((item.X_Purpose() == x_Purpose) && (item.Y_Purpose() == y_Purpose))
-                        && !((item.X() == x_Purpose) && (item.Y() == y_Purpose)) && !((item.X_Purpose() == x) && (item.Y_Purpose() == y));
-                }
+                foreach (var Unit in Units)
+                    b = b && !((Unit.X() == x) && (Unit.Y() == y)) && !((Unit.X_Purpose() == x_Purpose) && (Unit.Y_Purpose() == y_Purpose))
+                        && !((Unit.X() == x_Purpose) && (Unit.Y() == y_Purpose)) && !((Unit.X_Purpose() == x) && (Unit.Y_Purpose() == y));
 
                 if (b)
                 {
-                    //Arr[x, y].MakeVisit(id);
-                    Unit U = new Unit(x, y, x_Purpose, y_Purpose, id, -1, -1);
-                    Units.Add(U);
+                    Units.Add(new Unit(x, y, x_Purpose, y_Purpose, id, -1, -1));
                     N_Units--;
                     id++;
                 }
@@ -166,8 +159,6 @@ namespace MAPF_System
                     if (Arr[i, j] is null)
                         Arr[i, j] = new Cell(true);
         }
-        public int Get_X() { return X; }
-        public int Get_Y() { return Y; }
         public void Draw(Graphics t)
         {
             int height = 17;
@@ -189,18 +180,16 @@ namespace MAPF_System
                             if (Arr[i, j].WasVisit())
                             {
                                 int W = 100 + 100 * (Arr[i, j].IdVisit()+1) / Units.Count;
-                                Color C = Color.FromArgb(W, W, 255);
-                                SolidBrush Brush = new SolidBrush(C);
-                                g.FillRectangle(Brush, rect);
+                                g.FillRectangle(new SolidBrush(Color.FromArgb(W, W, 255)), rect);
                             }
                         }
-                    foreach (var item in Units)
+                    foreach (var Unit in Units)
                     {
                         // Отрисовка юнитов
-                        Rectangle rect = new Rectangle(new Point(8 + height * item.X(), YY + 8 + height * item.Y()), new Size(height - 6, height - 6));
+                        Rectangle rect = new Rectangle(new Point(8 + height * Unit.X(), YY + 8 + height * Unit.Y()), new Size(height - 6, height - 6));
                         g.FillRectangle(System.Drawing.Brushes.Red, rect);
                         // Отрисовка цели
-                        rect = new Rectangle(new Point(10 + height * item.X_Purpose(), YY + 10 + height * item.Y_Purpose()), new Size(height - 10, height - 10));
+                        rect = new Rectangle(new Point(10 + height * Unit.X_Purpose(), YY + 10 + height * Unit.Y_Purpose()), new Size(height - 10, height - 10));
                         g.FillRectangle(System.Drawing.Brushes.Green, rect);
                     }
                 }
@@ -210,8 +199,7 @@ namespace MAPF_System
         {
             try
             {
-                FileInfo fileInfo = new FileInfo(name + ".board");
-                StreamWriter sw = fileInfo.CreateText();
+                StreamWriter sw = (new FileInfo(name + ".board")).CreateText();
                 sw.WriteLine(X + " " + Y + " " + Units.Count);
                 // Записать в файл доску с блоками и пройденным путем
                 for (int i = 0; i < X; i++)
@@ -249,20 +237,18 @@ namespace MAPF_System
         {
             foreach (var Unit in Units)
             {
-                int x = Unit.X();
-                int y = Unit.Y();
                 int x0 = Unit.X() - 1;
                 int x1 = Unit.X() + 1;
                 int y0 = Unit.Y() - 1;
                 int y1 = Unit.Y() + 1;
-                if (Board.IsBlock(x, y0))
-                    Arr[x, y0].MakeBlock();
-                if (Board.IsBlock(x, y1))
-                    Arr[x, y1].MakeBlock();
-                if (Board.IsBlock(x0, y))
-                    Arr[x0, y].MakeBlock();
-                if (Board.IsBlock(x1, y))
-                    Arr[x1, y].MakeBlock();
+                if (Board.IsBlock(Unit.X(), y0))
+                    Arr[Unit.X(), y0].MakeBlock();
+                if (Board.IsBlock(Unit.X(), y1))
+                    Arr[Unit.X(), y1].MakeBlock();
+                if (Board.IsBlock(x0, Unit.Y()))
+                    Arr[x0, Unit.Y()].MakeBlock();
+                if (Board.IsBlock(x1, Unit.Y()))
+                    Arr[x1, Unit.Y()].MakeBlock();
             }
         }
         private bool IsBlock(int x, int y)

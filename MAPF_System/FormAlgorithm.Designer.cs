@@ -1,7 +1,7 @@
 ﻿
 namespace MAPF_System
 {
-    partial class Form2
+    partial class FormAlgorithm
     {
         /// <summary>
         /// Required designer variable.
@@ -133,8 +133,7 @@ namespace MAPF_System
             this.Controls.Add(this.button_Save);
             this.Controls.Add(this.button_Start);
             this.Name = "Form2";
-            this.Text = "Form2";
-            this.Load += new System.EventHandler(this.Form2_Load);
+            this.Text = "Запуск MAPF";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

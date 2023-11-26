@@ -1,7 +1,7 @@
 ﻿
 namespace MAPF_System
 {
-    partial class Form1
+    partial class FormGenerateOrOpen
     {
         /// <summary>
         /// Обязательная переменная конструктора.
@@ -163,8 +163,7 @@ namespace MAPF_System
             this.Controls.Add(this.textBox_X);
             this.Controls.Add(this.button_Generation);
             this.Name = "Form1";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Text = "Создание или загрузка поля";
             this.ResumeLayout(false);
             this.PerformLayout();
 
