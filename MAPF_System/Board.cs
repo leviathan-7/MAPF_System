@@ -12,8 +12,9 @@ namespace MAPF_System
 {
     public class Board
     {
+        public List<Unit> Units;
+
         private Cell[,] Arr;
-        private List<Unit> Units;
         private int X;
         private int Y;
         private Random rnd;
