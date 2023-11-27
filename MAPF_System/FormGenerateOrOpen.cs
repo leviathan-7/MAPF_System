@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -34,31 +35,37 @@ namespace MAPF_System
 
             if (!isNumeric)
             {
+                SystemSounds.Beep.Play();
                 label_Error.Text = "Вы ввели не число!";
                 return false;
             }
             if ((X > 50) || (Y > 50))
             {
+                SystemSounds.Beep.Play();
                 label_Error.Text = "Размер поля превышает пределы!";
                 return false;
             }
             if ((X < 2) || (Y < 2))
             {
+                SystemSounds.Beep.Play();
                 label_Error.Text = "Поле слишком маленькое!";
                 return false;
             }
             if (Blocks < 0)
             {
+                SystemSounds.Beep.Play();
                 label_Error.Text = "Не должно быть отрицательных чисел!";
                 return false;
             }
             if (Units < 1)
             {
+                SystemSounds.Beep.Play();
                 label_Error.Text = "Должен быть хоть один юнит!";
                 return false;
             }
             if ((Blocks + 2 * Units) >= (X * Y))
             {
+                SystemSounds.Beep.Play();
                 label_Error.Text = "Количество препятствий и юнитов слишком большое!";
                 return false;
             }
