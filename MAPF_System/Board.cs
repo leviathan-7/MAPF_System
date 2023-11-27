@@ -184,14 +184,19 @@ namespace MAPF_System
                                 g.FillRectangle(new SolidBrush(Color.FromArgb(W, W, 255)), rect);
                             }
                         }
+
+                    var Font = new Font("Arial", 9, FontStyle.Bold);
+                    foreach (var Unit in Units)
+                    {
+                        // Отрисовка цели
+                        g.FillRectangle(Brushes.LawnGreen, new Rectangle(new Point(8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()), new Size(height - 5, height - 5)));
+                        g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()));
+                    }
                     foreach (var Unit in Units)
                     {
                         // Отрисовка юнитов
-                        var Font = new Font("Arial", 9, FontStyle.Bold);
                         g.FillRectangle(Brushes.Red, new Rectangle(new Point(8 + height * Unit.X(), YY + 8 + height * Unit.Y()), new Size(height - 5, height - 5)));
                         g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(8 + height * Unit.X(), YY + 8 + height * Unit.Y()));
-                        // Отрисовка цели
-                        g.DrawString("" + Unit.Id(), Font, Brushes.Green, new Point(8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()));
                     }
                 }
             }
