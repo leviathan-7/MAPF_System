@@ -17,9 +17,9 @@ namespace MAPF_System
         private int x_Purpose;
         private int y_Purpose;
         private bool was_step;
-        public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y) {
+        public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, bool was_step = false) {
             this.id = id;
-            was_step = false;
+            this.was_step = was_step;
             // Задание местоположения юнита
             this.x = x;
             this.y = y;
@@ -48,7 +48,7 @@ namespace MAPF_System
         public int Id() { return id; }
         public int X_Purpose() { return x_Purpose; }
         public int Y_Purpose() { return y_Purpose; }
-        public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y); }
+        public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y, was_step); }
         public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
         public bool IsEnd(){ return (x == x_Purpose) && (y == y_Purpose); }
         public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits)
@@ -135,13 +135,13 @@ namespace MAPF_System
             int y1 = y + 1;
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
-            if (IsEmpthy(Board, AnotherUnits, x, y0))
+            if (IsEmpthy(Board, AnotherUnits, x, y0, false))
                 ff[0] = 1;
-            if (IsEmpthy(Board, AnotherUnits, x, y1))
+            if (IsEmpthy(Board, AnotherUnits, x, y1, false))
                 ff[1] = 1;
-            if (IsEmpthy(Board, AnotherUnits, x0, y))
+            if (IsEmpthy(Board, AnotherUnits, x0, y, false))
                 ff[2] = 1;
-            if (IsEmpthy(Board, AnotherUnits, x1, y))
+            if (IsEmpthy(Board, AnotherUnits, x1, y, false))
                 ff[3] = 1;
             ff[4] = int.MaxValue;
             // Находим клетку с минимальным значением эвристической функции
@@ -170,12 +170,16 @@ namespace MAPF_System
             was_step = true;
             return true;
         }
-        private bool IsEmpthy(Board Board, IEnumerable<Unit> AnotherUnits, int x, int y)
+        private bool IsEmpthy(Board Board, IEnumerable<Unit> AnotherUnits, int x, int y, bool ignor = true)
         {
             bool b = true;
             // Проверка, что юнит не врежется в другой юнит
-            foreach (var au in AnotherUnits)
-                b = b && (!((au.x == x) && (au.y == y)) || ((au.x == au.x_Purpose) && (au.y == au.y_Purpose)));
+            if (ignor)
+                foreach (var au in AnotherUnits)
+                    b = b && (!((au.x == x) && (au.y == y)) || ((au.x == au.x_Purpose) && (au.y == au.y_Purpose)));
+            else
+                foreach (var au in AnotherUnits)
+                    b = b && !((au.x == x) && (au.y == y));
             // Проверка, что юнит не врежется в блоки
             return b && Board.IsEmpthy(x, y);
         }
