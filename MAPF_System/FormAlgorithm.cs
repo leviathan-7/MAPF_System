@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -39,6 +40,7 @@ namespace MAPF_System
         {
             if(textBox_Name.Text.Length == 0)
             {
+                SystemSounds.Beep.Play();
                 label_Error.Text = "Вы не ввели имя файла!";
                 return;
             }
