@@ -66,50 +66,60 @@ namespace MAPF_System
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
             // Список статических юнитов, которые придется двигать
             List<Unit> StatUnits = new List<Unit> { null, null, null, null, null };
-            if (IsEmpthy(Board, AnotherUnits, x, y0) && !((last__x == x) && (last__y == y0)))
+
+            List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
+
+            if (Board.IsEmpthy(x,y0) && !((last__x == x) && (last__y == y0)))
             {
                 ff[0] = f(x, y0, Board, kol_iter_a_star, x, y);
                 StatUnits[0] = GetStatUnit(x, y0, AnotherUnits);
+                UsUnits[0] = GetUnit(x, y0, AnotherUnits);
             }
-            if (IsEmpthy(Board, AnotherUnits, x, y1) && !((last__x == x) && (last__y == y1)))
+            if (Board.IsEmpthy(x, y1) && !((last__x == x) && (last__y == y1)))
             {
                 ff[1] = f(x, y1, Board, kol_iter_a_star, x, y);
                 StatUnits[1] = GetStatUnit(x, y1, AnotherUnits);
+                UsUnits[1] = GetUnit(x, y1, AnotherUnits);
             }
-            if (IsEmpthy(Board, AnotherUnits, x0, y) && !((last__x == x0) && (last__y == y)))
+            if (Board.IsEmpthy(x0, y) && !((last__x == x0) && (last__y == y)))
             {
                 ff[2] = f(x0, y, Board, kol_iter_a_star, x, y);
                 StatUnits[2] = GetStatUnit(x0, y, AnotherUnits);
+                UsUnits[2] = GetUnit(x0, y, AnotherUnits);
             }
-            if (IsEmpthy(Board, AnotherUnits, x1, y) && !((last__x == x1) && (last__y == y)))
+            if (Board.IsEmpthy(x1, y) && !((last__x == x1) && (last__y == y)))
             {
                 ff[3] = f(x1, y, Board, kol_iter_a_star, x, y);
                 StatUnits[3] = GetStatUnit(x1, y, AnotherUnits);
+                UsUnits[3] = GetUnit(x1, y, AnotherUnits);
             }
             ff[4] = int.MaxValue;
             // Находим клетку с минимальным значением эвристической функции
             float min = ff[4];
             int min_i = 4;
             for (int i = 0; i < 4; i++)
-                if (((min > ff[i])||((min == ff[i]) &&(StatUnits[i] is null))) && (ff[i] != -1))
+                if (((min > ff[i])||((min == ff[i]) && (StatUnits[i] is null))) && (ff[i] != -1) && (UsUnits[i] is null))
                 {
-                    min = ff[i];
-                    min_i = i;
+                    if ((StatUnits[i] is null) || (!(StatUnits[i] is null) && !StatUnits[i].was_step))
+                    {
+                        min = ff[i];
+                        min_i = i;
+                    }
                 }
             // Помечаем старую клетку как посещенную
             Board.MakeVisit(x, y, id);
             // Сохраняем прошлое местоположение юнита 
             last__x = x;
             last__y = y;
-            if (min_i == 4)
-                return;
             // Сдвигаем статический юнит, если надо
-            bool b = true;
+            bool bb = min_i != 4;
+            // Помечаем, что юнит отработал на данной итерации
+            was_step = true;
             if (!(StatUnits[min_i] is null))
-                b = StatUnits[min_i].StatMakeStep(Board, from u in Board.Units where u != StatUnits[min_i] select u);
-            if (b)
+                bb = StatUnits[min_i].MakeStep(Board, from u in Board.Units where u != StatUnits[min_i] select u,-1,-1);
+            was_step = bb;
+            if (bb)
             {
-                // Перемещаем юнит в клетку с минимальным значением эвристической функции
                 if (min_i == 0)
                     y = y0;
                 if (min_i == 1)
@@ -118,13 +128,38 @@ namespace MAPF_System
                     x = x0;
                 if (min_i == 3)
                     x = x1;
-                // Помечаем новую клетку как посещенную
-                Board.MakeVisit(x, y, id);
-                // Помечаем, что юнит отработал на данной итерации
+                if (min_i != 4)
+                {
+                    // Помечаем новую клетку как посещенную
+                    Board.MakeVisit(x, y, id);
+                    return;
+                }
+            }
+            else
+            {
+                min_i = 4;
+                for (int i = 0; i < 4; i++)
+                    if (!(UsUnits[i] is null) && !UsUnits[i].was_step)
+                        min_i = i;
+                if (min_i == 4)
+                    return;
                 was_step = true;
+                bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y);
+            }
+            was_step = bb;
+            if (bb)
+            {
+                if (min_i == 0)
+                    y = y0;
+                if (min_i == 1)
+                    y = y1;
+                if (min_i == 2)
+                    x = x0;
+                if (min_i == 3)
+                    x = x1;
             }
         }
-        private bool StatMakeStep(Board Board, IEnumerable<Unit> AnotherUnits)
+        private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy)
         {
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
@@ -135,60 +170,108 @@ namespace MAPF_System
             int y1 = y + 1;
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
-            if (IsEmpthy(Board, AnotherUnits, x, y0, false))
+            // Список статических юнитов, которые придется двигать
+            List<Unit> StatUnits = new List<Unit> { null, null, null, null, null };
+
+            List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
+            List<int> a = new List<int> { x, x, x0, x1 };
+            List<int> b = new List<int> { y0, y1, y, y };
+            if (Board.IsEmpthy(x, y0))
+            {
                 ff[0] = 1;
-            if (IsEmpthy(Board, AnotherUnits, x, y1, false))
+                StatUnits[0] = GetStatUnit(x, y0, AnotherUnits);
+                UsUnits[0] = GetUnit(x, y0, AnotherUnits);
+            }
+            if (Board.IsEmpthy(x, y1))
+            {
                 ff[1] = 1;
-            if (IsEmpthy(Board, AnotherUnits, x0, y, false))
+                StatUnits[1] = GetStatUnit(x, y1, AnotherUnits);
+                UsUnits[1] = GetUnit(x, y1, AnotherUnits);
+            }
+            if (Board.IsEmpthy(x0, y))
+            {
                 ff[2] = 1;
-            if (IsEmpthy(Board, AnotherUnits, x1, y, false))
+                StatUnits[2] = GetStatUnit(x0, y, AnotherUnits);
+                UsUnits[2] = GetUnit(x0, y, AnotherUnits);
+            }
+            if (Board.IsEmpthy(x1, y))
+            {
                 ff[3] = 1;
+                StatUnits[3] = GetStatUnit(x1, y, AnotherUnits);
+                UsUnits[3] = GetUnit(x1, y, AnotherUnits);
+            }
             ff[4] = int.MaxValue;
             // Находим клетку с минимальным значением эвристической функции
             float min = ff[4];
             int min_i = 4;
             for (int i = 0; i < 4; i++)
-                if ((min >= ff[i]) && (ff[i] != -1))
+                if (((min > ff[i]) || (StatUnits[i] is null)) && (ff[i] != -1) && !((xx == a[i]) && (yy == b[i])) && (UsUnits[i] is null))
                 {
-                    min = ff[i];
-                    min_i = i;
+                    if ((StatUnits[i] is null) || (!(StatUnits[i] is null) && !StatUnits[i].was_step))
+                    {
+                        min = ff[i];
+                        min_i = i;
+                    }
                 }
-            // Перемещаем юнит в клетку с минимальным значением эвристической функции
-            if (min_i == 4)
-                return false;
-            if (min_i == 0)
-                y = y0;
-            if (min_i == 1)
-                y = y1;
-            if (min_i == 2)
-                x = x0;
-            if (min_i == 3)
-                x = x1;
-            // Помечаем новую клетку как посещенную
-            Board.MakeVisit(x, y, id);
-            // Помечаем, что юнит отработал на данной итерации
             was_step = true;
-            return true;
-        }
-        private bool IsEmpthy(Board Board, IEnumerable<Unit> AnotherUnits, int x, int y, bool ignor = true)
-        {
-            bool b = true;
-            // Проверка, что юнит не врежется в другой юнит
-            if (ignor)
-                foreach (var au in AnotherUnits)
-                    b = b && (!((au.x == x) && (au.y == y)) || ((au.x == au.x_Purpose) && (au.y == au.y_Purpose)));
+            bool bb = min_i != 4;
+            if (!(StatUnits[min_i] is null))
+                bb = StatUnits[min_i].MakeStep(Board, from u in Board.Units where u != StatUnits[min_i] select u, x, y);
+            was_step = bb;
+            if (bb)
+            {
+                if (min_i == 0)
+                    y = y0;
+                if (min_i == 1)
+                    y = y1;
+                if (min_i == 2)
+                    x = x0;
+                if (min_i == 3)
+                    x = x1;
+                if (min_i != 4)
+                {
+                    // Помечаем новую клетку как посещенную
+                    Board.MakeVisit(x, y, id);
+                    return true;
+                }
+            }
             else
-                foreach (var au in AnotherUnits)
-                    b = b && !((au.x == x) && (au.y == y));
-            // Проверка, что юнит не врежется в блоки
-            return b && Board.IsEmpthy(x, y);
+            {
+                min_i = 4;
+                for (int i = 0; i < 4; i++)
+                    if (!(UsUnits[i] is null) && !UsUnits[i].was_step)
+                        min_i = i;
+                if (min_i == 4)
+                    return false;
+                was_step = true;
+                bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y);
+            }
+            was_step = bb;
+            if (bb)
+            {
+                if (min_i == 0)
+                    y = y0;
+                if (min_i == 1)
+                    y = y1;
+                if (min_i == 2)
+                    x = x0;
+                if (min_i == 3)
+                    x = x1;
+            }
+            return bb;
         }
         private Unit GetStatUnit(int x, int y, IEnumerable<Unit> AnotherUnits)
         {
             foreach (var au in AnotherUnits)
                 if ((au.x == x) && (au.y == y) && (au.x == au.x_Purpose) && (au.y == au.y_Purpose))
                     return au;
-            // Если статического юнита нет в клетке x, y, то возвращаем null
+            return null;
+        }
+        private Unit GetUnit(int x, int y, IEnumerable<Unit> AnotherUnits)
+        {
+            foreach (var au in AnotherUnits)
+                if ((au.x == x) && (au.y == y) && !((au.x == au.x_Purpose) && (au.y == au.y_Purpose)))
+                    return au;
             return null;
         }
         private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y)
