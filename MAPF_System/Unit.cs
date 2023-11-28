@@ -155,53 +155,6 @@ namespace MAPF_System
             
             return was_step;
         }
-        private Unit GetUnit(int x, int y, IEnumerable<Unit> AnotherUnits)
-        {
-            foreach (var au in AnotherUnits)
-                if ((au.x == x) && (au.y == y) )
-                    return au;
-            // Если юнита нет в точке x, y, тогда возвращается null
-            return null;
-        }
-        private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y)
-        {
-            // Стоимость нулевая, если юнит достиг цели
-            if ((x == x_Purpose) && (y == y_Purpose))
-                return 0;
-            // Если глубина не достигнута, тогда рассматриваем клетки, в которвые можем попасть
-            if (kol_iter_a_star != 0)
-            {
-                kol_iter_a_star--;
-                int x0 = x - 1;
-                int x1 = x + 1;
-                int y0 = y - 1;
-                int y1 = y + 1;
-                // Список значений эвристической функции для каждой клетки
-                List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
-                if (Board.IsEmpthy(x, y0) && !((last_x == x) &&(last_y == y0)))
-                    ff[0] = f(x, y0, Board, kol_iter_a_star, x, y);
-                if (Board.IsEmpthy(x, y1) && !((last_x == x) && (last_y == y1)))
-                    ff[1] = f(x, y1, Board, kol_iter_a_star, x, y);
-                if (Board.IsEmpthy(x0, y) && !((last_x == x0) && (last_y == y)))
-                    ff[2] = f(x0, y, Board, kol_iter_a_star, x, y);
-                if (Board.IsEmpthy(x1, y) && !((last_x == x1) && (last_y == y)))
-                    ff[3] = f(x1, y, Board, kol_iter_a_star, x, y);
-                ff[4] = int.MaxValue;
-                // Находим клетку с минимальным значением эвристической функции
-                float min = ff[4];
-                for (int i = 0; i < 4; i++)
-                    if ((min >= ff[i]) && (ff[i] != -1))
-                        min = ff[i];
-                return 1 + min;
-            }
-            // Считаем эвристическую оценку, если максимальная глубина достигнута
-            return h(x, y);
-        }
-        private float h(int x, int y)
-        {
-            // Оценка, основанная на манхэттенском расстоянии
-            return Math.Abs(x_Purpose - x) + Math.Abs(y_Purpose - y);
-        }
         private int MIN_I(List<float> ff, Board Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
         {
             ff[4] = int.MaxValue;
@@ -282,31 +235,59 @@ namespace MAPF_System
         }
         private void IfBoardIsEmpthy(List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool b = false)
         {
-            int x0 = x - 1;
-            int x1 = x + 1;
-            int y0 = y - 1;
-            int y1 = y + 1;
-            // Заполняем значения ff и UsUnits
-            if (Board.IsEmpthy(x, y0) && (!((last__x == x) && (last__y == y0)) || b))
+            if (Board.IsEmpthy(x, y - 1) && (!((last__x == x) && (last__y == y - 1)) || b))
+                GetUnitAndF(0, ff, UsUnits, x, y - 1, x, y, Board, kol_iter_a_star, AnotherUnits);
+            if (Board.IsEmpthy(x, y + 1) && (!((last__x == x) && (last__y == y + 1)) || b))
+                GetUnitAndF(1, ff, UsUnits, x, y + 1, x, y, Board, kol_iter_a_star, AnotherUnits);
+            if (Board.IsEmpthy(x - 1, y) && (!((last__x == x - 1) && (last__y == y)) || b))
+                GetUnitAndF(2, ff, UsUnits, x - 1, y, x, y, Board, kol_iter_a_star, AnotherUnits);
+            if (Board.IsEmpthy(x + 1, y) && (!((last__x == x + 1) && (last__y == y)) || b))
+                GetUnitAndF(3, ff, UsUnits, x + 1, y, x, y, Board, kol_iter_a_star, AnotherUnits);
+        }
+        private void GetUnitAndF(int i, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits)
+        {
+            ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y);
+            foreach (var au in AnotherUnits)
+                if ((au.x == x0) && (au.y == y0))
+                {
+                    UsUnits[i] = au;
+                    return;
+                }
+        }
+        private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y)
+        {
+            // Стоимость нулевая, если юнит достиг цели
+            if ((x == x_Purpose) && (y == y_Purpose))
+                return 0;
+            // Если глубина не достигнута, тогда рассматриваем клетки, в которвые можем попасть
+            if (kol_iter_a_star != 0)
             {
-                ff[0] = f(x, y0, Board, kol_iter_a_star, x, y);
-                UsUnits[0] = GetUnit(x, y0, AnotherUnits);
+                kol_iter_a_star--;
+                // Список значений эвристической функции для каждой клетки
+                List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
+                if (Board.IsEmpthy(x, y - 1) && !((last_x == x) && (last_y == y - 1)))
+                    ff[0] = f(x, y - 1, Board, kol_iter_a_star, x, y);
+                if (Board.IsEmpthy(x, y + 1) && !((last_x == x) && (last_y == y + 1)))
+                    ff[1] = f(x, y + 1, Board, kol_iter_a_star, x, y);
+                if (Board.IsEmpthy(x - 1, y) && !((last_x == x - 1) && (last_y == y)))
+                    ff[2] = f(x - 1, y, Board, kol_iter_a_star, x, y);
+                if (Board.IsEmpthy(x + 1, y) && !((last_x == x + 1) && (last_y == y)))
+                    ff[3] = f(x + 1, y, Board, kol_iter_a_star, x, y);
+                ff[4] = int.MaxValue;
+                // Находим клетку с минимальным значением эвристической функции
+                float min = ff[4];
+                for (int i = 0; i < 4; i++)
+                    if ((min >= ff[i]) && (ff[i] != -1))
+                        min = ff[i];
+                return 1 + min;
             }
-            if (Board.IsEmpthy(x, y1) && (!((last__x == x) && (last__y == y1)) || b))
-            {
-                ff[1] = f(x, y1, Board, kol_iter_a_star, x, y);
-                UsUnits[1] = GetUnit(x, y1, AnotherUnits);
-            }
-            if (Board.IsEmpthy(x0, y) && (!((last__x == x0) && (last__y == y)) || b))
-            {
-                ff[2] = f(x0, y, Board, kol_iter_a_star, x, y);
-                UsUnits[2] = GetUnit(x0, y, AnotherUnits);
-            }
-            if (Board.IsEmpthy(x1, y) && (!((last__x == x1) && (last__y == y)) || b))
-            {
-                ff[3] = f(x1, y, Board, kol_iter_a_star, x, y);
-                UsUnits[3] = GetUnit(x1, y, AnotherUnits);
-            }
+            // Считаем эвристическую оценку, если максимальная глубина достигнута
+            return h(x, y);
+        }
+        private float h(int x, int y)
+        {
+            // Оценка, основанная на манхэттенском расстоянии
+            return Math.Abs(x_Purpose - x) + Math.Abs(y_Purpose - y);
         }
     }
 }
