@@ -40,6 +40,9 @@ namespace MAPF_System
             // Открытие файла в формате board
             OpenFileDialog openFileDialog1 = new OpenFileDialog(){ Filter = "(*.board)|*.board", };
             openFileDialog1.ShowDialog();
+            // Проверка на то, что board файл был выбран
+            if (openFileDialog1.FileName == "")
+                return;
             string[] readText = File.ReadAllLines(openFileDialog1.FileName);
             string[] arr = readText[0].Split(' ');
             // Размеры поля

@@ -14,8 +14,12 @@ namespace MAPF_System
     public partial class FormAlgorithm : Form
     {
         private Board Board;
-        public FormAlgorithm(Board Board,int kol_iterat = 0)
+        public FormAlgorithm(Board Board, out bool b, int kol_iterat = 0)
         {
+            b = false;
+            if (Board.Units is null)
+                return;
+            b = true;
             this.Board = Board;
             InitializeComponent();
             // Отрисовка поля
@@ -33,7 +37,7 @@ namespace MAPF_System
                 TimeBoard.MakeStep(Board);
                 i++;
             }
-            (new FormAlgorithm(TimeBoard, i)).Show();
+            (new FormAlgorithm(TimeBoard, out bool b, i)).Show();
         }
 
         private void button_Save_Click(object sender, EventArgs e)
@@ -56,7 +60,7 @@ namespace MAPF_System
             {
                 TimeBoard.MakeStep(Board);
                 i++;
-                FormAlgorithm F = new FormAlgorithm(TimeBoard, i);
+                FormAlgorithm F = new FormAlgorithm(TimeBoard, out bool b, i);
                 F.Show();
                 MessageBox.Show("Далее?");
                 if(!TimeBoard.IsEnd())

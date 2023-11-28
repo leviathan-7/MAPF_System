@@ -25,10 +25,15 @@ namespace MAPF_System
             if(TestEnteredData(X, Y, Blocks, Units, isNumeric))
             {
                 label_Error.Text = "Ok!";
-                (new FormAlgorithm(new Board(X, Y, Blocks, Units))).Show();
+                (new FormAlgorithm(new Board(X, Y, Blocks, Units), out bool b)).Show();
             }
         }
-        private void button_Load_Click(object sender, EventArgs e) { (new FormAlgorithm(new Board())).Show(); }
+        private void button_Load_Click(object sender, EventArgs e) 
+        {
+            FormAlgorithm F = new FormAlgorithm(new Board(), out bool b);
+            if (b)
+                F.Show();
+        }
         private bool TestEnteredData(int X, int Y, int Blocks, int Units,bool isNumeric)
         {
             label_Error.Text = "";
