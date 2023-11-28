@@ -14,7 +14,7 @@ namespace MAPF_System
     public partial class FormAlgorithm : Form
     {
         private Board Board;
-        public FormAlgorithm(Board Board, out bool b, int kol_iterat = 0)
+        public FormAlgorithm(Board Board, out bool b, int kol_iterat = 0, bool error = false)
         {
             b = false;
             if (Board.Units is null)
@@ -24,20 +24,24 @@ namespace MAPF_System
             InitializeComponent();
             // Отрисовка поля
             pictureBox1.Paint += delegate { Board.Draw(this.CreateGraphics()); };
-            if(kol_iterat != 0)
+            if (kol_iterat != 0)
                 label_kol_iterat.Text = "Количество шагов = " + kol_iterat;
+            if (error)
+                label_Error.Text = "Ошибка! Алгоритм зациклен";
         }
 
         private void button_Start_Click(object sender, EventArgs e)
         {
+            // Максимальное колличество итераций
+            int N = 5000;
             Board TimeBoard = Board.CopyWithoutBlocks();
             int i = 0;
-            while (!TimeBoard.IsEnd())
+            while (!TimeBoard.IsEnd() && i < N)
             {
                 TimeBoard.MakeStep(Board);
                 i++;
             }
-            (new FormAlgorithm(TimeBoard, out bool b, i)).Show();
+            (new FormAlgorithm(TimeBoard, out bool b, i, (i == N))).Show();
         }
 
         private void button_Save_Click(object sender, EventArgs e)

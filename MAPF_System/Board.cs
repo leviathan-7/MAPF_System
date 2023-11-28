@@ -219,10 +219,7 @@ namespace MAPF_System
                     sw.WriteLine(item.ToStr());
                 sw.Close();
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            catch (Exception e) { }
         }
         public bool IsEnd()
         {
@@ -238,29 +235,21 @@ namespace MAPF_System
             foreach (var Unit in Units)
                 Unit.NotWasStep();
             // Добавить блоки в пределах видимости юнитов
-            GetNewBlocks(Board);
+            foreach (var Unit in Units)
+            {
+                if (Board.IsBlock(Unit.X(), Unit.Y() - 1))
+                    Arr[Unit.X(), Unit.Y() - 1].MakeBlock();
+                if (Board.IsBlock(Unit.X(), Unit.Y() + 1))
+                    Arr[Unit.X(), Unit.Y() + 1].MakeBlock();
+                if (Board.IsBlock(Unit.X() - 1, Unit.Y()))
+                    Arr[Unit.X() - 1, Unit.Y()].MakeBlock();
+                if (Board.IsBlock(Unit.X() + 1, Unit.Y()))
+                    Arr[Unit.X() + 1, Unit.Y()].MakeBlock();
+            }
             // Сделать шаг теми юнитами, которые еще не достигли своей цели
             foreach (var Unit in Units)
                 if (!Unit.IsEnd())
                     Unit.MakeStep(this, from u in Units where u != Unit select u);
-        }
-        private void GetNewBlocks(Board Board)
-        {
-            foreach (var Unit in Units)
-            {
-                int x0 = Unit.X() - 1;
-                int x1 = Unit.X() + 1;
-                int y0 = Unit.Y() - 1;
-                int y1 = Unit.Y() + 1;
-                if (Board.IsBlock(Unit.X(), y0))
-                    Arr[Unit.X(), y0].MakeBlock();
-                if (Board.IsBlock(Unit.X(), y1))
-                    Arr[Unit.X(), y1].MakeBlock();
-                if (Board.IsBlock(x0, Unit.Y()))
-                    Arr[x0, Unit.Y()].MakeBlock();
-                if (Board.IsBlock(x1, Unit.Y()))
-                    Arr[x1, Unit.Y()].MakeBlock();
-            }
         }
         private bool IsBlock(int x, int y)
         {
