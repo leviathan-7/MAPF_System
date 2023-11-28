@@ -17,9 +17,11 @@ namespace MAPF_System
         private int x_Purpose;
         private int y_Purpose;
         private bool was_step;
-        public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, bool was_step = false) {
+        private bool flag;
+        public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, bool was_step = false, bool flag = false) {
             this.id = id;
             this.was_step = was_step;
+            this.flag = flag;
             // Задание местоположения юнита
             this.x = x;
             this.y = y;
@@ -31,6 +33,7 @@ namespace MAPF_System
         }
         public Unit(string str, int i)
         {
+            flag = false;
             was_step = false;
             string[] arr = str.Split(' ');
             // Задание параметров юнита на основе строки из файла
@@ -48,11 +51,14 @@ namespace MAPF_System
         public int Id() { return id; }
         public int X_Purpose() { return x_Purpose; }
         public int Y_Purpose() { return y_Purpose; }
-        public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y, was_step); }
+        public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y, was_step, flag); }
         public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
-        public bool IsEnd(){ return (x == x_Purpose) && (y == y_Purpose); }
+        public bool IsEnd(){ return (x == x_Purpose) && (y == y_Purpose) && !flag; }
         public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits)
         {
+            // Обнуление флага, когда юнит прошел через свою цель
+            if (flag && (x == x_Purpose) && (y == y_Purpose))
+                flag = false;
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
                 return;
@@ -95,11 +101,23 @@ namespace MAPF_System
                 last__y = -1;
             }
         }
-        private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star)
+        private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal)
         {
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
                 return false;
+            // Проверяем, надо ли ставить флаг того, что 2 юнита оказались в тупике и им надо на места друг-друга
+            int t = 0;
+            if (!Board.IsEmpthy(x, y - 1))
+                t++;
+            if (!Board.IsEmpthy(x, y + 1))
+                t++;
+            if (!Board.IsEmpthy(x - 1, y))
+                t++;
+            if (!Board.IsEmpthy(x + 1, y))
+                t++;
+            if ((h(x, y) == 1) && (t == 3))
+                flag = signal;
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
             // Список юнитов для каждой клетки
@@ -201,7 +219,7 @@ namespace MAPF_System
             bool bb = min_i != 4;
             was_step = true;
             if (!(UsUnits[min_i] is null))
-                bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star);
+                bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0);
             int min_i_1 = min_i;
             if (!bb)
             {
@@ -218,7 +236,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0);
             }
             int min_i_2 = min_i;
             if (!bb)
@@ -236,7 +254,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0);
             }
             int min_i_3 = min_i;
             if (!bb)
@@ -254,7 +272,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0);
             }
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет
             if (!bb)
