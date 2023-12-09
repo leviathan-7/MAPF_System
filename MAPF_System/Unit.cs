@@ -53,7 +53,8 @@ namespace MAPF_System
         public int Y_Purpose() { return y_Purpose; }
         public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y, was_step, flag); }
         public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
-        public bool IsEnd(){ return (x == x_Purpose) && (y == y_Purpose) && !flag; }
+        public bool IsEnd(){ return IsRealEnd() && !flag; }
+        public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
         public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits)
         {
             // Обнуление флага, когда юнит прошел через свою цель
@@ -66,14 +67,16 @@ namespace MAPF_System
             int kol_iter_a_star = 7;
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
+            // Список значений расстояний для каждой клетки
+            List<float> hh = new List<float> { -1, -1, -1, -1, -1 };
             // Список юнитов для каждой клетки
             List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
             // Заполняем значения ff и UsUnits
-            IfBoardIsEmpthy(ff, Board, UsUnits, AnotherUnits, kol_iter_a_star);
+            IfBoardIsEmpthy(hh, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star);
             // Помечаем старую клетку как посещенную
             Board.MakeVisit(x, y, id);
             // Находим подходящую нам клетку
-            int min_i = MIN_I(ff, Board, UsUnits, new List<int> { 0,0,0,0}, new List<int> { 0, 0, 0, 0 }, -1, -1, kol_iter_a_star);
+            int min_i = MIN_I(hh, ff, Board, UsUnits, new List<int> { 0,0,0,0}, new List<int> { 0, 0, 0, 0 }, -1, -1, kol_iter_a_star);
             was_step = (min_i != -10);
             if (was_step)
             {
@@ -101,7 +104,7 @@ namespace MAPF_System
                 last__y = -1;
             }
         }
-        private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal)
+        private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, Unit AU = null)
         {
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
@@ -116,16 +119,20 @@ namespace MAPF_System
                 t++;
             if (!Board.IsEmpthy(x + 1, y))
                 t++;
-            if ((h(x, y) == 1) && (t == 3))
+            if ((h(x, y) == 1) && (t == 3 || t == 2))
                 flag = signal;
+            if (flag)
+                AU.flag = true;
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
+            // Список значений расстояний для каждой клетки
+            List<float> hh = new List<float> { -1, -1, -1, -1, -1 };
             // Список юнитов для каждой клетки
             List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
             // Заполняем значения ff и UsUnits
-            IfBoardIsEmpthy(ff, Board, UsUnits, AnotherUnits, kol_iter_a_star, true);
+            IfBoardIsEmpthy(hh, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star, true);
             // Находим подходящую нам клетку
-            int min_i = MIN_I(ff, Board, UsUnits, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, kol_iter_a_star);
+            int min_i = MIN_I(hh, ff, Board, UsUnits, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, kol_iter_a_star);
             was_step = (min_i != -10);
             if (was_step)
             {
@@ -152,80 +159,88 @@ namespace MAPF_System
                 last__x = -1;
                 last__y = -1;
             }
-            
+
             return was_step;
         }
-        private int MIN_I(List<float> ff, Board Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
+        private int MIN_I(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
         {
             ff[4] = int.MaxValue;
             float min = ff[4];
+            float minh = ff[4];
             int min_i = 4;
             for (int i = 0; i < 4; i++)
-                if (((min > ff[i]) || ((min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && !((xx == a[i]) && (yy == b[i])))
+                if (((min > ff[i]) || ((min == ff[i]) && (minh > hh[i])) || ((minh == hh[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && !((xx == a[i]) && (yy == b[i])))
                 {
                     if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
                     {
                         min = ff[i];
+                        minh = hh[i];
                         min_i = i;
                     }
                 }
             bool bb = min_i != 4;
             was_step = true;
             if (!(UsUnits[min_i] is null))
-                bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0);
+                bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             int min_i_1 = min_i;
             if (!bb)
             {
                 min = ff[4];
+                minh = ff[4];
                 min_i = 4;
                 for (int i = 0; i < 4; i++)
-                    if (((min > ff[i]) || ((min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && !((xx == a[i]) && (yy == b[i])))
+                    if (((min > ff[i]) || ((min == ff[i]) && (minh > hh[i])) || ((minh == hh[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && !((xx == a[i]) && (yy == b[i])))
                     {
                         if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
                         {
                             min = ff[i];
+                            minh = hh[i];
                             min_i = i;
                         }
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_2 = min_i;
             if (!bb)
             {
                 min = ff[4];
+                minh = ff[4];
                 min_i = 4;
                 for (int i = 0; i < 4; i++)
-                    if (((min > ff[i]) || ((min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && !((xx == a[i]) && (yy == b[i])))
+                    if (((min > ff[i]) || ((min == ff[i]) && (minh > hh[i])) || ((minh == hh[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && !((xx == a[i]) && (yy == b[i])))
                     {
                         if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
                         {
                             min = ff[i];
+                            minh = hh[i];
                             min_i = i;
                         }
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_3 = min_i;
             if (!bb)
             {
                 min = ff[4];
+                minh = ff[4];
                 min_i = 4;
                 for (int i = 0; i < 4; i++)
-                    if (((min > ff[i]) || ((min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && (min_i_3 != i) && !((xx == a[i]) && (yy == b[i])))
+                    if (((min > ff[i]) || ((min == ff[i]) && (minh > hh[i])) || ((minh == hh[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && (min_i_3 != i) && !((xx == a[i]) && (yy == b[i])))
                     {
                         if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
                         {
                             min = ff[i];
+                            minh = hh[i];
                             min_i = i;
                         }
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет
             if (!bb)
@@ -233,20 +248,21 @@ namespace MAPF_System
             // Возвращаем подходящую нам клетку
             return min_i;
         }
-        private void IfBoardIsEmpthy(List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool b = false)
+        private void IfBoardIsEmpthy(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool b = false)
         {
             if (Board.IsEmpthy(x, y - 1) && (!((last__x == x) && (last__y == y - 1)) || b))
-                GetUnitAndF(0, ff, UsUnits, x, y - 1, x, y, Board, kol_iter_a_star, AnotherUnits);
+                GetUnitAndF(0, hh, ff, UsUnits, x, y - 1, x, y, Board, kol_iter_a_star, AnotherUnits);
             if (Board.IsEmpthy(x, y + 1) && (!((last__x == x) && (last__y == y + 1)) || b))
-                GetUnitAndF(1, ff, UsUnits, x, y + 1, x, y, Board, kol_iter_a_star, AnotherUnits);
+                GetUnitAndF(1, hh, ff, UsUnits, x, y + 1, x, y, Board, kol_iter_a_star, AnotherUnits);
             if (Board.IsEmpthy(x - 1, y) && (!((last__x == x - 1) && (last__y == y)) || b))
-                GetUnitAndF(2, ff, UsUnits, x - 1, y, x, y, Board, kol_iter_a_star, AnotherUnits);
+                GetUnitAndF(2, hh, ff, UsUnits, x - 1, y, x, y, Board, kol_iter_a_star, AnotherUnits);
             if (Board.IsEmpthy(x + 1, y) && (!((last__x == x + 1) && (last__y == y)) || b))
-                GetUnitAndF(3, ff, UsUnits, x + 1, y, x, y, Board, kol_iter_a_star, AnotherUnits);
+                GetUnitAndF(3, hh, ff, UsUnits, x + 1, y, x, y, Board, kol_iter_a_star, AnotherUnits);
         }
-        private void GetUnitAndF(int i, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits)
+        private void GetUnitAndF(int i, List<float> hh, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits)
         {
             ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y);
+            hh[i] = h(x0, y0);
             foreach (var au in AnotherUnits)
                 if ((au.x == x0) && (au.y == y0))
                 {
@@ -284,10 +300,6 @@ namespace MAPF_System
             // Считаем эвристическую оценку, если максимальная глубина достигнута
             return h(x, y);
         }
-        private float h(int x, int y)
-        {
-            // Оценка, основанная на манхэттенском расстоянии
-            return Math.Abs(x_Purpose - x) + Math.Abs(y_Purpose - y);
-        }
+        private float h(int x, int y){ return (float)Math.Sqrt( Math.Pow(x_Purpose - x, 2) + Math.Pow(y_Purpose - y, 2)); }
     }
 }

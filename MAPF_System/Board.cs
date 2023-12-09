@@ -101,18 +101,18 @@ namespace MAPF_System
                 int y2 = rnd.Next(Y);
                 int x3 = rnd.Next(X);
                 int y3 = rnd.Next(Y);
-                if (Math.Abs(x1 - x_sum / kol) < Math.Abs(x2 - x_sum / kol))
+                if (Math.Abs(x1 - x_sum / kol) > Math.Abs(x2 - x_sum / kol))
                     x = x1;
                 else
                     x = x2;
-                if (Math.Abs(y1 - y_sum / kol) < Math.Abs(y2 - y_sum / kol))
+                if (Math.Abs(y1 - y_sum / kol) > Math.Abs(y2 - y_sum / kol))
                     y = y1;
                 else
                     y = y2;
 
                 if (Math.Abs(x - x_sum / kol) < Math.Abs(x3 - x_sum / kol))
                     x = x3;
-                if (Math.Abs(y1 - y_sum / kol) < Math.Abs(y3 - y_sum / kol))
+                if (Math.Abs(y - y_sum / kol) < Math.Abs(y3 - y_sum / kol))
                     y = y3;
 
                 x_sum += x;
@@ -226,7 +226,7 @@ namespace MAPF_System
             bool b = true;
             // Проверяем, что все юниты дошли до своих целей
             foreach (var Unit in Units)
-                b = b && Unit.IsEnd();
+                b = b && Unit.IsRealEnd();
             return b;
         }
         public void MakeStep(Board Board)
