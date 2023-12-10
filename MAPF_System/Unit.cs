@@ -55,7 +55,7 @@ namespace MAPF_System
         public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
         public bool IsEnd(){ return IsRealEnd() && !flag; }
         public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
-        public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits)
+        public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star)
         {
             // Обнуление флага, когда юнит прошел через свою цель
             if (flag && (x == x_Purpose) && (y == y_Purpose))
@@ -63,8 +63,6 @@ namespace MAPF_System
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
                 return;
-            // Глубина, на которую юнит просматривает свои ходы
-            int kol_iter_a_star = 7;
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
             // Список значений расстояний для каждой клетки

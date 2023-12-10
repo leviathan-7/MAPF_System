@@ -229,7 +229,7 @@ namespace MAPF_System
                 b = b && Unit.IsRealEnd();
             return b;
         }
-        public void MakeStep(Board Board)
+        public void MakeStep(Board Board, int kol_iter_a_star)
         {
             // Обнуление значений was_step
             foreach (var Unit in Units)
@@ -249,7 +249,7 @@ namespace MAPF_System
             // Сделать шаг теми юнитами, которые еще не достигли своей цели
             foreach (var Unit in Units)
                 if (!Unit.IsEnd())
-                    Unit.MakeStep(this, from u in Units where u != Unit select u);
+                    Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
         }
         private bool IsBlock(int x, int y)
         {

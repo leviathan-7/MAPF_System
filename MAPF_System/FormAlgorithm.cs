@@ -32,16 +32,24 @@ namespace MAPF_System
 
         private void button_Start_Click(object sender, EventArgs e)
         {
+            int kol_iter_a_star;
+            bool b = int.TryParse(textBox_kol_iter_a_star.Text, out kol_iter_a_star);
+            if (!b || (kol_iter_a_star < 7) || (kol_iter_a_star > 15))
+            {
+                SystemSounds.Beep.Play();
+                label_Error.Text = "Глубина не верна!";
+                return;
+            }
             // Максимальное колличество итераций
             int N = 5000;
             Board TimeBoard = Board.CopyWithoutBlocks();
             int i = 0;
             while (!TimeBoard.IsEnd() && i < N)
             {
-                TimeBoard.MakeStep(Board);
+                TimeBoard.MakeStep(Board, kol_iter_a_star);
                 i++;
             }
-            (new FormAlgorithm(TimeBoard, out bool b, i, (i == N))).Show();
+            (new FormAlgorithm(TimeBoard, out bool bbbb, i, (i == N))).Show();
         }
 
         private void button_Save_Click(object sender, EventArgs e)
@@ -58,13 +66,21 @@ namespace MAPF_System
 
         private void button_step_Click(object sender, EventArgs e)
         {
+            int kol_iter_a_star;
+            bool b = int.TryParse(textBox_kol_iter_a_star.Text, out kol_iter_a_star);
+            if (!b || (kol_iter_a_star < 7) || (kol_iter_a_star > 15))
+            {
+                SystemSounds.Beep.Play();
+                label_Error.Text = "Глубина не верна!";
+                return;
+            }
             Board TimeBoard = Board.CopyWithoutBlocks();
             int i = 0;
             while (!TimeBoard.IsEnd()) 
             {
-                TimeBoard.MakeStep(Board);
+                TimeBoard.MakeStep(Board, kol_iter_a_star);
                 i++;
-                FormAlgorithm F = new FormAlgorithm(TimeBoard, out bool b, i);
+                FormAlgorithm F = new FormAlgorithm(TimeBoard, out bool bbbb, i);
                 F.Show();
                 MessageBox.Show("Далее?");
                 if(!TimeBoard.IsEnd())
@@ -72,5 +88,6 @@ namespace MAPF_System
             }
             
         }
+
     }
 }
