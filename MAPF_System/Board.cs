@@ -18,22 +18,25 @@ namespace MAPF_System
         private int X;
         private int Y;
         private Random rnd;
+        private int KolBad;
         public Board(int X, int Y, int Blocks, int N_Units)
         {
             this.X = X;
             this.Y = Y;
             Arr = new Cell[X, Y];
             this.rnd = new Random();
+            KolBad = 0;
             GenerationDefaults(Blocks);
             GenerationUnits(N_Units);
             GenerationBlocks();
         }
-        public Board(int X, int Y, Cell[,] Arr, List<Unit> Units)
+        public Board(int X, int Y, Cell[,] Arr, List<Unit> Units, int KolBad)
         {
             this.X = X;
             this.Y = Y;
             this.Arr = Arr;
             this.Units = Units;
+            this.KolBad = KolBad;
         }
         public Board()
         {
@@ -50,6 +53,8 @@ namespace MAPF_System
             Y = int.Parse(arr[1]);
             // Количество юнитов
             int N_Units = int.Parse(arr[2]);
+            // Количество плохих узлов
+            KolBad = int.Parse(arr[3]);
             // Создать доску по данным файла
             Arr = new Cell[X, Y];
             int t = 1;
@@ -79,7 +84,7 @@ namespace MAPF_System
                 for (int j = 0; j < Y; j++)
                     CopyArr[i, j] = Arr[i, j].CopyWithoutBlock();
 
-            return new Board(X, Y, CopyArr,CopyUnits);
+            return new Board(X, Y, CopyArr,CopyUnits, KolBad);
         }
         private void GenerationDefaults(int Blocks)
         {
@@ -186,6 +191,9 @@ namespace MAPF_System
                                 int W = 100 + 100 * (Arr[i, j].IdVisit()+1) / Units.Count;
                                 g.FillRectangle(new SolidBrush(Color.FromArgb(W, W, 255)), rect);
                             }
+                            // Отрисовка плохих узлов
+                            if (Arr[i, j].IsBad())
+                                g.DrawString("X", new Font("Arial", 7, FontStyle.Bold), Brushes.Red, new Point(9 + height * i, YY + 9 + height * j));
                         }
 
                     var Font = new Font("Arial", 9, FontStyle.Bold);
@@ -209,7 +217,7 @@ namespace MAPF_System
             try
             {
                 StreamWriter sw = (new FileInfo(name + ".board")).CreateText();
-                sw.WriteLine(X + " " + Y + " " + Units.Count);
+                sw.WriteLine(X + " " + Y + " " + Units.Count + " " + KolBad);
                 // Записать в файл доску с блоками и пройденным путем
                 for (int i = 0; i < X; i++)
                     for (int j = 0; j < Y; j++)
@@ -246,6 +254,43 @@ namespace MAPF_System
                 if (Board.IsBlock(Unit.X() + 1, Unit.Y()))
                     Arr[Unit.X() + 1, Unit.Y()].MakeBlock();
             }
+            // Добавить плохие узлы
+            while (true)
+            {
+                int k = 0;
+                for (int i = 0; i < X; i++)
+                    for (int j = 0; j < Y; j++)
+                    {
+                        if (!(IsBad(i, j) || Arr[i, j].IsBlock()))
+                        {
+                            // Проверка на отсутсвие целей
+                            bool b = true;
+                            foreach (var Unit in Units)
+                                b = b && !((Unit.X_Purpose() == i) && (Unit.Y_Purpose() == j)) && !((Unit.X() == i) && (Unit.Y() == j));
+                            if (b)
+                            {
+                                int kk = 0;
+                                if (!IsEmpthy(i - 1, j) || IsBad(i - 1, j))
+                                    kk++;
+                                if (!IsEmpthy(i + 1, j) || IsBad(i + 1, j))
+                                    kk++;
+                                if (!IsEmpthy(i, j - 1) || IsBad(i, j - 1))
+                                    kk++;
+                                if (!IsEmpthy(i, j + 1) || IsBad(i, j + 1))
+                                    kk++;
+                                if (kk == 3)
+                                {
+                                    Arr[i, j].MakeBad();
+                                    k++;
+                                }
+                            }
+                        }
+                    }
+                        
+                if (k == 0)
+                    break;
+                KolBad += k;
+            }
             // Сделать шаг теми юнитами, которые еще не достигли своей цели
             foreach (var Unit in Units)
                 if (!Unit.IsEnd())
@@ -265,7 +310,14 @@ namespace MAPF_System
                 return false;
             return !Arr[x, y].IsBlock();
         }
+        private bool IsBad(int x, int y)
+        {
+            // Проверка на выход за пределы поля
+            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
+                return false;
+            return Arr[x, y].IsBad();
+        }
         public void MakeVisit(int x, int y, int id) { Arr[x, y].MakeVisit(id); }
+        public bool IsBadCell(int x, int y) { return Arr[x, y].IsBad(); }
     }
-
 }

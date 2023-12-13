@@ -162,7 +162,7 @@ namespace MAPF_System
         }
         private int MIN_I(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
         {
-            ff[4] = int.MaxValue;
+            ff[4] = int.MaxValue - 100;
             float min = ff[4];
             float minh = ff[4];
             int min_i = 4;
@@ -273,6 +273,9 @@ namespace MAPF_System
             // Стоимость нулевая, если юнит достиг цели
             if ((x == x_Purpose) && (y == y_Purpose))
                 return 0;
+            // Случай, когда узел плохой
+            if (Board.IsBadCell(x, y))
+                return int.MaxValue - 100;
             // Если глубина не достигнута, тогда рассматриваем клетки, в которвые можем попасть
             if (kol_iter_a_star != 0)
             {
@@ -287,7 +290,7 @@ namespace MAPF_System
                     ff[2] = f(x - 1, y, Board, kol_iter_a_star, x, y);
                 if (Board.IsEmpthy(x + 1, y) && !((last_x == x + 1) && (last_y == y)))
                     ff[3] = f(x + 1, y, Board, kol_iter_a_star, x, y);
-                ff[4] = int.MaxValue;
+                ff[4] = int.MaxValue - 100;
                 // Находим клетку с минимальным значением эвристической функции
                 float min = ff[4];
                 for (int i = 0; i < 4; i++)
