@@ -9,6 +9,8 @@ namespace MAPF_System
 {
     public class Unit
     {
+        private int X_Board;
+        private int Y_Board;
         private int id;
         private int x;
         private int y;
@@ -18,10 +20,13 @@ namespace MAPF_System
         private int y_Purpose;
         private bool was_step;
         private bool flag;
-        public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, bool was_step = false, bool flag = false) {
+        private int[,] Arr; 
+        public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) {
             this.id = id;
             this.was_step = was_step;
             this.flag = flag;
+            this.X_Board = X;
+            this.Y_Board = Y;
             // Задание местоположения юнита
             this.x = x;
             this.y = y;
@@ -30,12 +35,16 @@ namespace MAPF_System
             this.y_Purpose = y_Purpose;
             this.last__x = last__x;
             this.last__y = last__y;
+            // Массив с количеством посещений узлов
+            Arr = new int[X, Y];
         }
-        public Unit(string str, int i)
+        public Unit(string str, int i, int X, int Y)
         {
             flag = false;
             was_step = false;
             string[] arr = str.Split(' ');
+            this.X_Board = X;
+            this.Y_Board = Y;
             // Задание параметров юнита на основе строки из файла
             x = int.Parse(arr[0]);
             y = int.Parse(arr[1]);
@@ -44,6 +53,8 @@ namespace MAPF_System
             id = i;
             last__x = -1;
             last__y = -1;
+            // Массив с количеством посещений узлов
+            Arr = new int[X, Y];
         }
         public void NotWasStep() { was_step = false; }
         public int X() { return x; }
@@ -51,7 +62,7 @@ namespace MAPF_System
         public int Id() { return id; }
         public int X_Purpose() { return x_Purpose; }
         public int Y_Purpose() { return y_Purpose; }
-        public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y, was_step, flag); }
+        public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y, X_Board, Y_Board, was_step, flag); }
         public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
         public bool IsEnd(){ return IsRealEnd() && !flag; }
         public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
@@ -93,6 +104,7 @@ namespace MAPF_System
                 {
                     // Помечаем клетку как посещенную
                     Board.MakeVisit(x, y, id);
+                    Arr[x, y]++;
                     return;
                 }
             }
@@ -149,6 +161,7 @@ namespace MAPF_System
                 {
                     // Помечаем клетку как посещенную
                     Board.MakeVisit(x, y, id);
+                    Arr[x, y]++;
                     return true;
                 }
             }
@@ -260,6 +273,9 @@ namespace MAPF_System
         private void GetUnitAndF(int i, List<float> hh, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits)
         {
             ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y);
+            // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
+            if (ff[i] != 0)
+                ff[i] += Arr[x0, y0];
             hh[i] = h(x0, y0);
             foreach (var au in AnotherUnits)
                 if ((au.x == x0) && (au.y == y0))

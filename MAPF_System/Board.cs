@@ -68,7 +68,7 @@ namespace MAPF_System
             Units = new List<Unit>();
             for (int i = 0; i < N_Units; i++)
             {
-                Units.Add(new Unit(readText[t],i));
+                Units.Add(new Unit(readText[t],i,X,Y));
                 t++;
             }
         }
@@ -155,7 +155,7 @@ namespace MAPF_System
 
                 if (b)
                 {
-                    Units.Add(new Unit(x, y, x_Purpose, y_Purpose, id, -1, -1));
+                    Units.Add(new Unit(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
                     N_Units--;
                     id++;
                 }
