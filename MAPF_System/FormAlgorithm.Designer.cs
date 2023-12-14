@@ -29,6 +29,7 @@ namespace MAPF_System
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAlgorithm));
             this.button_Start = new System.Windows.Forms.Button();
             this.button_Save = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -154,6 +155,7 @@ namespace MAPF_System
             this.Controls.Add(this.textBox_Name);
             this.Controls.Add(this.button_Save);
             this.Controls.Add(this.button_Start);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormAlgorithm";
             this.Text = "Запуск MAPF";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
