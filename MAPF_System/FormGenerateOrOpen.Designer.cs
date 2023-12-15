@@ -45,12 +45,13 @@ namespace MAPF_System
             // 
             // button_Generation
             // 
+            this.button_Generation.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button_Generation.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.button_Generation.Location = new System.Drawing.Point(271, 42);
             this.button_Generation.Name = "button_Generation";
             this.button_Generation.Size = new System.Drawing.Size(158, 63);
             this.button_Generation.TabIndex = 0;
-            this.button_Generation.Text = "сгенерировать поле с юнитами";
+            this.button_Generation.Text = "Сгенерировать поле с юнитами";
             this.button_Generation.UseVisualStyleBackColor = true;
             this.button_Generation.Click += new System.EventHandler(this.button_Generation_Click);
             // 
@@ -138,12 +139,13 @@ namespace MAPF_System
             // 
             // button_Load
             // 
+            this.button_Load.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button_Load.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.button_Load.Location = new System.Drawing.Point(271, 154);
             this.button_Load.Name = "button_Load";
             this.button_Load.Size = new System.Drawing.Size(158, 63);
             this.button_Load.TabIndex = 12;
-            this.button_Load.Text = "загрузить поле";
+            this.button_Load.Text = "Загрузить поле";
             this.button_Load.UseVisualStyleBackColor = true;
             this.button_Load.Click += new System.EventHandler(this.button_Load_Click);
             // 

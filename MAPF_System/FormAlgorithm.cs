@@ -14,7 +14,7 @@ namespace MAPF_System
     public partial class FormAlgorithm : Form
     {
         private Board Board;
-        public FormAlgorithm(Board Board, out bool b, int kol_iterat = 0, bool error = false)
+        public FormAlgorithm(Board Board, out bool b, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "")
         {
             b = false;
             if (Board.Units is null)
@@ -22,6 +22,10 @@ namespace MAPF_System
             b = true;
             this.Board = Board;
             InitializeComponent();
+            this.textBox_kol_iter_a_star.Text = str_kol_iter_a_star;
+            // Позиция данной формы
+            this.StartPosition = FormStartPosition.Manual;
+            this.Location = new Point(100, 100);
             // Отрисовка поля
             pictureBox1.Paint += delegate { Board.Draw(this.CreateGraphics()); };
             if (kol_iterat != 0)
@@ -82,8 +86,12 @@ namespace MAPF_System
                 i++;
                 FormAlgorithm F = new FormAlgorithm(TimeBoard, out bool bbbb, i);
                 F.Show();
-                MessageBox.Show("Далее?");
-                if(!TimeBoard.IsEnd())
+                if(MessageBox.Show("Далее?", "", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+                {
+                    F.Close();
+                    return;
+                }
+                if (!TimeBoard.IsEnd())
                     F.Close();
             }
             

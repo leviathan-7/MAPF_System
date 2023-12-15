@@ -60,11 +60,11 @@ namespace MAPF_System
             }
             // Если все данные введены правильно
             label_Error.Text = "Ok!";
-            (new FormAlgorithm(new Board(X, Y, Blocks, Units), out bool b)).Show();
+            (new FormAlgorithm(new Board(X, Y, Blocks, Units), out bool b, 0, false, "7")).Show();
         }
         private void button_Load_Click(object sender, EventArgs e) 
         {
-            FormAlgorithm F = new FormAlgorithm(new Board(), out bool b);
+            FormAlgorithm F = new FormAlgorithm(new Board(), out bool b, 0, false, "7");
             if (b)
                 F.Show();
         }
