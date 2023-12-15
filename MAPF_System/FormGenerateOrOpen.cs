@@ -68,5 +68,10 @@ namespace MAPF_System
             if (b)
                 F.Show();
         }
+        private void FormGenerateOrOpen_HelpButtonClicked(object sender, CancelEventArgs e)
+        {
+            MessageBox.Show("Программа для генерации полей для MAPF и алгоритм решения данной задачи.", "О программе.");
+            e.Cancel = true;
+        }
     }
 }

@@ -165,9 +165,13 @@ namespace MAPF_System
             this.Controls.Add(this.textBox_Y);
             this.Controls.Add(this.textBox_X);
             this.Controls.Add(this.button_Generation);
+            this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "FormGenerateOrOpen";
             this.Text = "Создание или загрузка поля";
+            this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.FormGenerateOrOpen_HelpButtonClicked);
             this.ResumeLayout(false);
             this.PerformLayout();
 
