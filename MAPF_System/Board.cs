@@ -171,7 +171,8 @@ namespace MAPF_System
         public void Draw(Graphics t)
         {
             int height = 17;
-            int YY = 55;
+            int YY = 110;
+            int XX = 10;
             using (Graphics g = t)
             {
                 g.Clear(SystemColors.Control); // Clear the draw area
@@ -180,7 +181,7 @@ namespace MAPF_System
                     for (int i = 0; i < X; i++)
                         for (int j = 0; j < Y; j++)
                         {
-                            Rectangle rect = new Rectangle(new Point(5 + height * i, YY + 5 + height * j), new Size(height, height));
+                            Rectangle rect = new Rectangle(new Point(XX + 5 + height * i, YY + 5 + height * j), new Size(height, height));
                             g.DrawRectangle(pen, rect);
                             // Отрисовка блоков
                             if (Arr[i, j].IsBlock())
@@ -193,21 +194,21 @@ namespace MAPF_System
                             }
                             // Отрисовка плохих узлов
                             if (Arr[i, j].IsBad())
-                                g.DrawString("X", new Font("Arial", 7, FontStyle.Bold), Brushes.Red, new Point(9 + height * i, YY + 9 + height * j));
+                                g.DrawString("X", new Font("Arial", 7, FontStyle.Bold), Brushes.Red, new Point(XX + 9 + height * i, YY + 9 + height * j));
                         }
 
                     var Font = new Font("Arial", 9, FontStyle.Bold);
                     foreach (var Unit in Units)
                     {
                         // Отрисовка цели
-                        g.FillRectangle(Brushes.LawnGreen, new Rectangle(new Point(8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()), new Size(height - 5, height - 5)));
-                        g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()));
+                        g.FillRectangle(Brushes.LawnGreen, new Rectangle(new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()), new Size(height - 5, height - 5)));
+                        g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()));
                     }
                     foreach (var Unit in Units)
                     {
                         // Отрисовка юнитов
-                        g.FillRectangle(Brushes.Red, new Rectangle(new Point(8 + height * Unit.X(), YY + 8 + height * Unit.Y()), new Size(height - 5, height - 5)));
-                        g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(8 + height * Unit.X(), YY + 8 + height * Unit.Y()));
+                        g.FillRectangle(Brushes.Red, new Rectangle(new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()), new Size(height - 5, height - 5)));
+                        g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()));
                     }
                 }
             }
