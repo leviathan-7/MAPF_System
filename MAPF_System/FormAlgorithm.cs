@@ -97,5 +97,12 @@ namespace MAPF_System
             
         }
 
+        private void FormAlgorithm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Close();
+            if (e.Control && e.KeyCode == Keys.S)
+                button_Save_Click(sender, null);
+        }
     }
 }

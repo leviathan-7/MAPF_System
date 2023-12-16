@@ -19,6 +19,7 @@ namespace MAPF_System
         private int x_Purpose;
         private int y_Purpose;
         private bool was_step;
+        private bool was_near_end;
         private bool flag;
         private int[,] Arr; 
         public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) {
@@ -102,10 +103,11 @@ namespace MAPF_System
                     x = x + 1;
                 if (min_i != 4)
                 {
+                    if (IsRealEnd())
+                        was_near_end = true;
                     // Помечаем клетку как посещенную
                     Board.MakeVisit(x, y, id);
-                    if(!flag)
-                        Arr[x, y]+=4;
+                    Arr[x, y]+=4;
                     return;
                 }
             }
@@ -133,7 +135,10 @@ namespace MAPF_System
             if ((h(x, y) == 1) && (t == 3 || t == 2))
                 flag = signal;
             if (flag)
+            {
                 AU.flag = true;
+                was_near_end = true;
+            }
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
             // Список значений расстояний для каждой клетки
@@ -162,8 +167,7 @@ namespace MAPF_System
                 {
                     // Помечаем клетку как посещенную
                     Board.MakeVisit(x, y, id);
-                    if (!flag)
-                        Arr[x, y] += 4;
+                    Arr[x, y] += 4;
                     return true;
                 }
             }
@@ -276,7 +280,7 @@ namespace MAPF_System
         {
             ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y);
             // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
-            if (ff[i] != 0)
+            if (!was_near_end && (ff[i] != 0))
                 ff[i] += Arr[x0, y0];
             hh[i] = h(x0, y0);
             foreach (var au in AnotherUnits)

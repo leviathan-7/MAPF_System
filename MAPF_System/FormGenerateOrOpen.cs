@@ -71,7 +71,13 @@ namespace MAPF_System
         private void FormGenerateOrOpen_HelpButtonClicked(object sender, CancelEventArgs e)
         {
             MessageBox.Show("Программа для генерации полей для MAPF и алгоритм решения данной задачи.", "О программе.",MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-            e.Cancel = true;
+            if(!(e is null))
+                e.Cancel = true;
+        }
+        private void FormGenerateOrOpen_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F1)
+                FormGenerateOrOpen_HelpButtonClicked(sender, null);
         }
     }
 }

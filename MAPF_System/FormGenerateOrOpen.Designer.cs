@@ -41,6 +41,7 @@ namespace MAPF_System
             this.textBox_Units = new System.Windows.Forms.TextBox();
             this.label_Error = new System.Windows.Forms.Label();
             this.button_Load = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.SuspendLayout();
             // 
             // button_Generation
@@ -149,11 +150,21 @@ namespace MAPF_System
             this.button_Load.UseVisualStyleBackColor = true;
             this.button_Load.Click += new System.EventHandler(this.button_Load_Click);
             // 
+            // groupBox1
+            // 
+            this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(236)))), ((int)(((byte)(236)))));
+            this.groupBox1.Location = new System.Drawing.Point(-19, -11);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(1099, 14);
+            this.groupBox1.TabIndex = 13;
+            this.groupBox1.TabStop = false;
+            // 
             // FormGenerateOrOpen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(672, 477);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button_Load);
             this.Controls.Add(this.label_Error);
             this.Controls.Add(this.label4);
@@ -167,11 +178,13 @@ namespace MAPF_System
             this.Controls.Add(this.button_Generation);
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormGenerateOrOpen";
             this.Text = "Создание или загрузка поля";
             this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.FormGenerateOrOpen_HelpButtonClicked);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormGenerateOrOpen_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -190,6 +203,7 @@ namespace MAPF_System
         private System.Windows.Forms.TextBox textBox_Units;
         private System.Windows.Forms.Label label_Error;
         private System.Windows.Forms.Button button_Load;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
 

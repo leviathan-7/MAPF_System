@@ -41,6 +41,7 @@ namespace MAPF_System
             this.label2 = new System.Windows.Forms.Label();
             this.textBox_kol_iter_a_star = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -92,7 +93,7 @@ namespace MAPF_System
             this.label_Error.AutoSize = true;
             this.label_Error.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.label_Error.ForeColor = System.Drawing.Color.Red;
-            this.label_Error.Location = new System.Drawing.Point(979, 58);
+            this.label_Error.Location = new System.Drawing.Point(974, 60);
             this.label_Error.Name = "label_Error";
             this.label_Error.Size = new System.Drawing.Size(0, 18);
             this.label_Error.TabIndex = 12;
@@ -109,7 +110,7 @@ namespace MAPF_System
             // 
             this.label_kol_iterat.AutoSize = true;
             this.label_kol_iterat.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label_kol_iterat.Location = new System.Drawing.Point(979, 34);
+            this.label_kol_iterat.Location = new System.Drawing.Point(974, 36);
             this.label_kol_iterat.Name = "label_kol_iterat";
             this.label_kol_iterat.Size = new System.Drawing.Size(12, 18);
             this.label_kol_iterat.TabIndex = 14;
@@ -148,6 +149,7 @@ namespace MAPF_System
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(236)))), ((int)(((byte)(236)))));
+            this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.button_step);
             this.groupBox1.Controls.Add(this.pictureBox1);
             this.groupBox1.Controls.Add(this.label2);
@@ -164,6 +166,17 @@ namespace MAPF_System
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.label3.Location = new System.Drawing.Point(1112, 7);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(145, 18);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Esc - Закрыть окно";
+            // 
             // FormAlgorithm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -171,8 +184,10 @@ namespace MAPF_System
             this.ClientSize = new System.Drawing.Size(1261, 954);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.Name = "FormAlgorithm";
             this.Text = "Запуск MAPF";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormAlgorithm_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -193,5 +208,6 @@ namespace MAPF_System
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox_kol_iter_a_star;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label3;
     }
 }
