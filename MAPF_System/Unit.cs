@@ -104,7 +104,8 @@ namespace MAPF_System
                 {
                     // Помечаем клетку как посещенную
                     Board.MakeVisit(x, y, id);
-                    Arr[x, y]++;
+                    if(!flag)
+                        Arr[x, y]+=4;
                     return;
                 }
             }
@@ -161,7 +162,8 @@ namespace MAPF_System
                 {
                     // Помечаем клетку как посещенную
                     Board.MakeVisit(x, y, id);
-                    Arr[x, y]++;
+                    if (!flag)
+                        Arr[x, y] += 4;
                     return true;
                 }
             }
