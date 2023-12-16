@@ -171,11 +171,11 @@ namespace MAPF_System
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.label3.Location = new System.Drawing.Point(1112, 7);
+            this.label3.Location = new System.Drawing.Point(843, 7);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(145, 18);
+            this.label3.Size = new System.Drawing.Size(414, 18);
             this.label3.TabIndex = 19;
-            this.label3.Text = "Esc - Закрыть окно";
+            this.label3.Text = "F5 - Запуск; F10 - Пошаговый запуск; Esc - Закрыть окно;";
             // 
             // FormAlgorithm
             // 

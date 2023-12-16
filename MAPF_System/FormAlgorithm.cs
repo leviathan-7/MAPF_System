@@ -103,6 +103,10 @@ namespace MAPF_System
                 Close();
             if (e.Control && e.KeyCode == Keys.S)
                 button_Save_Click(sender, null);
+            if (e.KeyCode == Keys.F5)
+                button_Start_Click(sender, null);
+            if (e.KeyCode == Keys.F10)
+                button_step_Click(sender, null);
         }
     }
 }
