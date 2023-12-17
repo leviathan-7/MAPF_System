@@ -296,7 +296,13 @@ namespace MAPF_System
             if(was_near_end)
                 foreach (var au in AnotherUnits)
                     if ((au.x_Purpose == x0) && (au.y_Purpose == y0))
-                        ff[i]++;
+                    {
+                        ff[i]+=0.5f;
+                        if (!au.IsEnd())
+                        {
+                            ff[i] += 0.5f;
+                        }
+                    }
 
             foreach (var au in AnotherUnits)
                 if ((au.x == x0) && (au.y == y0))
