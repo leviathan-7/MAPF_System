@@ -176,6 +176,7 @@ namespace MAPF_System
             this.Controls.Add(this.textBox_Y);
             this.Controls.Add(this.textBox_X);
             this.Controls.Add(this.button_Generation);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;

@@ -41,8 +41,8 @@ namespace MAPF_System
             this.label2 = new System.Windows.Forms.Label();
             this.textBox_kol_iter_a_star = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -164,20 +164,9 @@ namespace MAPF_System
             this.groupBox1.Controls.Add(this.label_Error);
             this.groupBox1.Location = new System.Drawing.Point(-4, -5);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1619, 106);
+            this.groupBox1.Size = new System.Drawing.Size(1995, 106);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.label3.Location = new System.Drawing.Point(975, 7);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(294, 18);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "Cntrl+S - Сохранить; Esc - Закрыть окно;";
             // 
             // label4
             // 
@@ -189,6 +178,17 @@ namespace MAPF_System
             this.label4.Size = new System.Drawing.Size(269, 18);
             this.label4.TabIndex = 20;
             this.label4.Text = "F5 - Запуск; F10 - Пошаговый запуск;";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.label3.Location = new System.Drawing.Point(975, 7);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(294, 18);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Cntrl+S - Сохранить; Esc - Закрыть окно;";
             // 
             // FormAlgorithm
             // 
