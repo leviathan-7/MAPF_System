@@ -14,7 +14,8 @@ namespace MAPF_System
     public partial class FormAlgorithm : Form
     {
         private Board Board;
-        public FormAlgorithm(Board Board, out bool b, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "")
+        private bool was_game;
+        public FormAlgorithm(Board Board, out bool b, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false)
         {
             b = false;
             if (Board.Units is null)
@@ -32,6 +33,15 @@ namespace MAPF_System
                 label_kol_iterat.Text = "Количество шагов = " + kol_iterat;
             if (error)
                 label_Error.Text = "Ошибка! Алгоритм зациклен";
+            if (block_elem)
+            {
+                button_Start.Dispose();
+                Controls.Remove(button_Start);
+                button_step.Dispose();
+                Controls.Remove(button_step);
+                was_game = true;
+                label4.Text = "";
+            }
         }
 
         private void button_Start_Click(object sender, EventArgs e)
@@ -53,7 +63,7 @@ namespace MAPF_System
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
                 i++;
             }
-            (new FormAlgorithm(TimeBoard, out bool bbbb, i, (i == N))).Show();
+            (new FormAlgorithm(TimeBoard, out bool bbbb, i, i == N, "" + kol_iter_a_star, true)).Show();
         }
 
         private void button_Save_Click(object sender, EventArgs e)
@@ -68,7 +78,7 @@ namespace MAPF_System
             label_Error.Text = "Сохранено!";
         }
 
-        private void button_step_Click(object sender, EventArgs e)
+        private void button_Step_Click(object sender, EventArgs e)
         {
             int kol_iter_a_star;
             bool b = int.TryParse(textBox_kol_iter_a_star.Text, out kol_iter_a_star);
@@ -84,7 +94,7 @@ namespace MAPF_System
             {
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
                 i++;
-                FormAlgorithm F = new FormAlgorithm(TimeBoard, out bool bbbb, i);
+                FormAlgorithm F = new FormAlgorithm(TimeBoard, out bool bbbb, i, false, "" + kol_iter_a_star, true);
                 F.Show();
                 if(MessageBox.Show("Далее?", "", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
                 {
@@ -103,10 +113,10 @@ namespace MAPF_System
                 Close();
             if (e.Control && e.KeyCode == Keys.S)
                 button_Save_Click(sender, null);
-            if (e.KeyCode == Keys.F5)
+            if (!was_game && e.KeyCode == Keys.F5)
                 button_Start_Click(sender, null);
-            if (e.KeyCode == Keys.F10)
-                button_step_Click(sender, null);
+            if (!was_game && e.KeyCode == Keys.F10)
+                button_Step_Click(sender, null);
         }
     }
 }

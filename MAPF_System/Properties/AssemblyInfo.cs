@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанных со сборкой.
 [assembly: AssemblyTitle("MAPF_System")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Программа для генерации полей для MAPF и алгоритм решения данной задачи.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("MAPF_System")]
