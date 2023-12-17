@@ -21,7 +21,8 @@ namespace MAPF_System
         private bool was_step;
         private bool was_near_end;
         private bool flag;
-        private int[,] Arr; 
+        private int[,] Arr;
+        private Unit last_AU;
         public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) {
             this.id = id;
             this.was_step = was_step;
@@ -165,11 +166,19 @@ namespace MAPF_System
                     x = x + 1;
                 if (min_i != 4)
                 {
+                    // Алгоритм для решения проблемы перпендикулярного хождения юнитов
+                    if (!(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
+                    {
+                        last__x = -1;
+                        last__y = -1;
+                    }
+                    last_AU = AU;
                     // Помечаем клетку как посещенную
                     Board.MakeVisit(x, y, id);
                     Arr[x, y] += 4;
                     return true;
                 }
+                
             }
             else
             {
@@ -283,6 +292,12 @@ namespace MAPF_System
             if (!was_near_end && (ff[i] != 0))
                 ff[i] += Arr[x0, y0];
             hh[i] = h(x0, y0);
+            // Алгоритм для решения проблемы параллельного хождения
+            if(was_near_end)
+                foreach (var au in AnotherUnits)
+                    if ((au.x_Purpose == x0) && (au.y_Purpose == y0))
+                        ff[i]++;
+
             foreach (var au in AnotherUnits)
                 if ((au.x == x0) && (au.y == y0))
                 {
