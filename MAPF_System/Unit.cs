@@ -104,6 +104,13 @@ namespace MAPF_System
                     x = x + 1;
                 if (min_i != 4)
                 {
+                    // Алгоритм для решения проблемы перпендикулярного хождения юнитов
+                    if (!(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
+                    {
+                        last__x = -1;
+                        last__y = -1;
+                        last_AU = null;
+                    }
                     if (IsRealEnd())
                         was_near_end = true;
                     // Помечаем клетку как посещенную
@@ -167,12 +174,14 @@ namespace MAPF_System
                 if (min_i != 4)
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
+                    var q = AU;
                     if (!(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
                     {
                         last__x = -1;
                         last__y = -1;
+                        q = null;
                     }
-                    last_AU = AU;
+                    last_AU = q;
                     // Помечаем клетку как посещенную
                     Board.MakeVisit(x, y, id);
                     Arr[x, y] += 4;
@@ -299,9 +308,7 @@ namespace MAPF_System
                     {
                         ff[i]+=0.5f;
                         if (!au.IsEnd())
-                        {
                             ff[i] += 0.5f;
-                        }
                     }
 
             foreach (var au in AnotherUnits)
