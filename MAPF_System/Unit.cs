@@ -62,6 +62,7 @@ namespace MAPF_System
         public int X() { return x; }
         public int Y() { return y; }
         public int Id() { return id; }
+        public bool Was_near_end() { return was_near_end; }
         public int X_Purpose() { return x_Purpose; }
         public int Y_Purpose() { return y_Purpose; }
         public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y, X_Board, Y_Board, was_step, flag); }

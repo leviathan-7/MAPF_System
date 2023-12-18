@@ -293,9 +293,20 @@ namespace MAPF_System
                 KolBad += k;
             }
             // Сделать шаг теми юнитами, которые еще не достигли своей цели
+            List<Unit> Was_near_end_units = new List<Unit>();
+            List<Unit> NOT_Was_near_end_units = new List<Unit>();
             foreach (var Unit in Units)
+                if (!Unit.Was_near_end())
+                    NOT_Was_near_end_units.Add(Unit);
+                    else
+                Was_near_end_units.Add(Unit);
+            foreach (var Unit in NOT_Was_near_end_units)
                 if (!Unit.IsEnd())
                     Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
+            foreach (var Unit in Was_near_end_units)
+                if (!Unit.IsEnd())
+                    Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
+
         }
         private bool IsBlock(int x, int y)
         {
