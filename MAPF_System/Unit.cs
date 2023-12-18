@@ -23,6 +23,9 @@ namespace MAPF_System
         private bool flag;
         private int[,] Arr;
         private Unit last_AU;
+
+        public float F;
+
         public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) {
             this.id = id;
             this.was_step = was_step;
@@ -88,7 +91,9 @@ namespace MAPF_System
             // Помечаем старую клетку как посещенную
             Board.MakeVisit(x, y, id);
             // Находим подходящую нам клетку
-            int min_i = MIN_I(hh, ff, Board, UsUnits, new List<int> { 0,0,0,0}, new List<int> { 0, 0, 0, 0 }, -1, -1, kol_iter_a_star);
+            var T = MIN_I(hh, ff, Board, UsUnits, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 }, -1, -1, kol_iter_a_star);
+            int min_i = T.Item1;
+            F = T.Item2;
             was_step = (min_i != -10);
             if (was_step)
             {
@@ -157,7 +162,9 @@ namespace MAPF_System
             // Заполняем значения ff и UsUnits
             IfBoardIsEmpthy(hh, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star, true);
             // Находим подходящую нам клетку
-            int min_i = MIN_I(hh, ff, Board, UsUnits, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, kol_iter_a_star);
+            var T = MIN_I(hh, ff, Board, UsUnits, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, kol_iter_a_star);
+            int min_i = T.Item1;
+            F = T.Item2;
             was_step = (min_i != -10);
             if (was_step)
             {
@@ -198,7 +205,7 @@ namespace MAPF_System
 
             return was_step;
         }
-        private int MIN_I(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
+        private Tuple<int, float> MIN_I(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
         {
             ff[4] = int.MaxValue - 100;
             float min = ff[4];
@@ -280,9 +287,10 @@ namespace MAPF_System
             }
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет
             if (!bb)
-                return -10;
+                return new Tuple<int, float>(-10, F); //-10;
             // Возвращаем подходящую нам клетку
-            return min_i;
+            return new Tuple<int, float>(min_i, min);
+            //return min_i;
         }
         private void IfBoardIsEmpthy(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool b = false)
         {
