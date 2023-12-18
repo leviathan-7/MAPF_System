@@ -52,7 +52,7 @@ namespace MAPF_System
             this.button_Generation.Name = "button_Generation";
             this.button_Generation.Size = new System.Drawing.Size(158, 63);
             this.button_Generation.TabIndex = 0;
-            this.button_Generation.Text = "Сгенерировать поле с юнитами";
+            this.button_Generation.Text = "⚙️ Сгенерировать поле с юнитами";
             this.button_Generation.UseVisualStyleBackColor = true;
             this.button_Generation.Click += new System.EventHandler(this.button_Generation_Click);
             // 
@@ -146,7 +146,7 @@ namespace MAPF_System
             this.button_Load.Name = "button_Load";
             this.button_Load.Size = new System.Drawing.Size(158, 63);
             this.button_Load.TabIndex = 12;
-            this.button_Load.Text = "Загрузить поле";
+            this.button_Load.Text = "🕹️ Загрузить поле";
             this.button_Load.UseVisualStyleBackColor = true;
             this.button_Load.Click += new System.EventHandler(this.button_Load_Click);
             // 

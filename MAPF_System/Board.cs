@@ -19,19 +19,23 @@ namespace MAPF_System
         private int Y;
         private Random rnd;
         private int KolBad;
+        private string name;
+
         public Board(int X, int Y, int Blocks, int N_Units)
         {
+            name = "";
             this.X = X;
             this.Y = Y;
             Arr = new Cell[X, Y];
-            this.rnd = new Random();
+            rnd = new Random();
             KolBad = 0;
             GenerationDefaults(Blocks);
             GenerationUnits(N_Units);
             GenerationBlocks();
         }
-        public Board(int X, int Y, Cell[,] Arr, List<Unit> Units, int KolBad)
+        public Board(int X, int Y, Cell[,] Arr, List<Unit> Units, int KolBad, string name)
         {
+            this.name = name;
             this.X = X;
             this.Y = Y;
             this.Arr = Arr;
@@ -46,6 +50,7 @@ namespace MAPF_System
             // Проверка на то, что board файл был выбран
             if (openFileDialog1.FileName == "")
                 return;
+            name = openFileDialog1.FileName.Split('\\').Last();
             string[] readText = File.ReadAllLines(openFileDialog1.FileName);
             string[] arr = readText[0].Split(' ');
             // Размеры поля
@@ -84,7 +89,7 @@ namespace MAPF_System
                 for (int j = 0; j < Y; j++)
                     CopyArr[i, j] = Arr[i, j].CopyWithoutBlock();
 
-            return new Board(X, Y, CopyArr,CopyUnits, KolBad);
+            return new Board(X, Y, CopyArr,CopyUnits, KolBad, name);
         }
         private void GenerationDefaults(int Blocks)
         {
@@ -213,11 +218,11 @@ namespace MAPF_System
                 }
             }
         }
-        public void Save(string name)
+        public string Save(string name_)
         {
             try
             {
-                StreamWriter sw = (new FileInfo(name + ".board")).CreateText();
+                StreamWriter sw = (new FileInfo(name_ + ".board")).CreateText();
                 sw.WriteLine(X + " " + Y + " " + Units.Count + " " + KolBad);
                 // Записать в файл доску с блоками и пройденным путем
                 for (int i = 0; i < X; i++)
@@ -227,8 +232,10 @@ namespace MAPF_System
                 foreach (var item in Units)
                     sw.WriteLine(item.ToStr());
                 sw.Close();
+                name = name_ + ".board";
             }
             catch (Exception e) { }
+            return name;
         }
         public bool IsEnd()
         {
@@ -296,21 +303,17 @@ namespace MAPF_System
             List<Unit> Was_near_end_units = new List<Unit>();
             List<Unit> NOT_Was_near_end_units = new List<Unit>();
             foreach (var Unit in Units)
-                if (!Unit.Was_near_end())
-                    NOT_Was_near_end_units.Add(Unit);
-                else
+                if (Unit.Was_near_end())
                     Was_near_end_units.Add(Unit);
+                else
+                    NOT_Was_near_end_units.Add(Unit);
 
-            Was_near_end_units = Was_near_end_units.OrderBy(u => - u.F).ToList();
-            NOT_Was_near_end_units = NOT_Was_near_end_units.OrderBy(u => - u.F).ToList();
-
-            foreach (var Unit in NOT_Was_near_end_units)
+            foreach (var Unit in NOT_Was_near_end_units.OrderBy(u => -u.F()))
                 if (!Unit.IsEnd())
                     Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
-            foreach (var Unit in Was_near_end_units)
+            foreach (var Unit in Was_near_end_units.OrderBy(u => -u.F()))
                 if (!Unit.IsEnd())
                     Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
-
         }
         private bool IsBlock(int x, int y)
         {
@@ -335,5 +338,6 @@ namespace MAPF_System
         }
         public void MakeVisit(int x, int y, int id) { Arr[x, y].MakeVisit(id); }
         public bool IsBadCell(int x, int y) { return Arr[x, y].IsBad(); }
+        public string Name() { return name; }
     }
 }

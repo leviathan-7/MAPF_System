@@ -23,8 +23,7 @@ namespace MAPF_System
         private bool flag;
         private int[,] Arr;
         private Unit last_AU;
-
-        public float F;
+        private float F_;
 
         public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) {
             this.id = id;
@@ -65,6 +64,7 @@ namespace MAPF_System
         public int X() { return x; }
         public int Y() { return y; }
         public int Id() { return id; }
+        public float F() { return F_; }
         public bool Was_near_end() { return was_near_end; }
         public int X_Purpose() { return x_Purpose; }
         public int Y_Purpose() { return y_Purpose; }
@@ -92,23 +92,22 @@ namespace MAPF_System
             Board.MakeVisit(x, y, id);
             // Находим подходящую нам клетку
             var T = MIN_I(hh, ff, Board, UsUnits, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 }, -1, -1, kol_iter_a_star);
-            int min_i = T.Item1;
-            F = T.Item2;
-            was_step = (min_i != -10);
+            F_ = T.Item2;
+            was_step = (T.Item1 != -10);
             if (was_step)
             {
                 // Сохраняем прошлое местоположение юнита 
                 last__x = x;
                 last__y = y;
-                if (min_i == 0)
+                if (T.Item1 == 0)
                     y = y - 1;
-                if (min_i == 1)
+                if (T.Item1 == 1)
                     y = y + 1;
-                if (min_i == 2)
+                if (T.Item1 == 2)
                     x = x - 1;
-                if (min_i == 3)
+                if (T.Item1 == 3)
                     x = x + 1;
-                if (min_i != 4)
+                if (T.Item1 != 4)
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
                     if (!(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
@@ -163,23 +162,22 @@ namespace MAPF_System
             IfBoardIsEmpthy(hh, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star, true);
             // Находим подходящую нам клетку
             var T = MIN_I(hh, ff, Board, UsUnits, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, kol_iter_a_star);
-            int min_i = T.Item1;
-            F = T.Item2;
-            was_step = (min_i != -10);
+            F_ = T.Item2;
+            was_step = (T.Item1 != -10);
             if (was_step)
             {
                 // Сохраняем прошлое местоположение юнита 
                 last__x = x;
                 last__y = y;
-                if (min_i == 0)
+                if (T.Item1 == 0)
                     y = y - 1;
-                if (min_i == 1)
+                if (T.Item1 == 1)
                     y = y + 1;
-                if (min_i == 2)
+                if (T.Item1 == 2)
                     x = x - 1;
-                if (min_i == 3)
+                if (T.Item1 == 3)
                     x = x + 1;
-                if (min_i != 4)
+                if (T.Item1 != 4)
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
                     var q = AU;
@@ -287,7 +285,7 @@ namespace MAPF_System
             }
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет
             if (!bb)
-                return new Tuple<int, float>(-10, F); //-10;
+                return new Tuple<int, float>(-10, F_); //-10;
             // Возвращаем подходящую нам клетку
             return new Tuple<int, float>(min_i, min);
             //return min_i;

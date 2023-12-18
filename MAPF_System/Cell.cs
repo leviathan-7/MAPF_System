@@ -16,6 +16,7 @@ namespace MAPF_System
         private bool wasvisited;
         private int idVisit;
         private bool isBad;
+
         public Cell(bool isBlock, bool wasvisited = false, int idVisit = -1, bool isBad = false)
         {
             this.isBlock = isBlock;

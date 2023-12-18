@@ -15,6 +15,7 @@ namespace MAPF_System
     {
         private Board Board;
         private bool was_game;
+
         public FormAlgorithm(Board Board, out bool b, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false)
         {
             b = false;
@@ -23,12 +24,13 @@ namespace MAPF_System
             b = true;
             this.Board = Board;
             InitializeComponent();
-            this.textBox_kol_iter_a_star.Text = str_kol_iter_a_star;
+            textBox_kol_iter_a_star.Text = str_kol_iter_a_star;
+            label5.Text = Board.Name();
             // Позиция данной формы
-            this.StartPosition = FormStartPosition.Manual;
-            this.Location = new Point(100, 100);
+            StartPosition = FormStartPosition.Manual;
+            Location = new Point(100, 100);
             // Отрисовка поля
-            pictureBox1.Paint += delegate { Board.Draw(this.CreateGraphics()); };
+            pictureBox1.Paint += delegate { Board.Draw(CreateGraphics()); };
             if (kol_iterat != 0)
                 label_kol_iterat.Text = "Количество шагов = " + kol_iterat;
             if (error)
@@ -74,7 +76,7 @@ namespace MAPF_System
                 label_Error.Text = "Вы не ввели имя файла!";
                 return;
             }
-            Board.Save(textBox_Name.Text);
+            label5.Text = Board.Save(textBox_Name.Text);
             label_Error.Text = "Сохранено!";
         }
 
