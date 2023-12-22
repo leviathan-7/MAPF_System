@@ -13,7 +13,17 @@ namespace MAPF_System
 {
     public partial class FormGenerateOrOpen : Form
     {
-        public FormGenerateOrOpen() { InitializeComponent(); }
+        public FormGenerateOrOpen(string[] args) 
+        { 
+            InitializeComponent();
+            if (args.Length != 0)
+            {
+                FormAlgorithm F = new FormAlgorithm(new Board(args[0]), out bool b, 0, false, "7");
+                if (b)
+                    F.ShowDialog();
+            }
+
+        }
         private void button_Generation_Click(object sender, EventArgs e)
         {
             // Считывание введенных данных

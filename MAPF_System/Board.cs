@@ -50,8 +50,12 @@ namespace MAPF_System
             // Проверка на то, что board файл был выбран
             if (openFileDialog1.FileName == "")
                 return;
-            name = openFileDialog1.FileName.Split('\\').Last();
-            string[] readText = File.ReadAllLines(openFileDialog1.FileName);
+            Constructor(openFileDialog1.FileName);
+        }
+        public Board(string path){ Constructor(path); }
+        private void Constructor(string path)
+        {
+            string[] readText = File.ReadAllLines(path);
             string[] arr = readText[0].Split(' ');
             // Размеры поля
             X = int.Parse(arr[0]);
@@ -73,7 +77,7 @@ namespace MAPF_System
             Units = new List<Unit>();
             for (int i = 0; i < N_Units; i++)
             {
-                Units.Add(new Unit(readText[t],i,X,Y));
+                Units.Add(new Unit(readText[t], i, X, Y));
                 t++;
             }
         }
