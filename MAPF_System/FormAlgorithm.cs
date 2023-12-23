@@ -120,5 +120,6 @@ namespace MAPF_System
             if (!was_game && e.KeyCode == Keys.F10)
                 button_Step_Click(sender, null);
         }
+    
     }
 }

@@ -24,6 +24,7 @@ namespace MAPF_System
             }
 
         }
+        
         private void button_Generation_Click(object sender, EventArgs e)
         {
             // Считывание введенных данных
@@ -69,25 +70,28 @@ namespace MAPF_System
                 return;
             }
             // Если все данные введены правильно
-            label_Error.Text = "Ok!";
             (new FormAlgorithm(new Board(X, Y, Blocks, Units), out bool b, 0, false, "7")).Show();
         }
+        
         private void button_Load_Click(object sender, EventArgs e) 
         {
             FormAlgorithm F = new FormAlgorithm(new Board(), out bool b, 0, false, "7");
             if (b)
                 F.Show();
         }
+        
         private void FormGenerateOrOpen_HelpButtonClicked(object sender, CancelEventArgs e)
         {
             MessageBox.Show("Программа для генерации полей для MAPF и алгоритм решения данной задачи.", "О программе.",MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
             if(!(e is null))
                 e.Cancel = true;
         }
+        
         private void FormGenerateOrOpen_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F1)
                 FormGenerateOrOpen_HelpButtonClicked(sender, null);
         }
+    
     }
 }

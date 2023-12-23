@@ -60,15 +60,15 @@ namespace MAPF_System
             // Массив с количеством посещений узлов
             Arr = new int[X, Y];
         }
+        public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y, X_Board, Y_Board, was_step, flag); }
         public void NotWasStep() { was_step = false; }
         public int X() { return x; }
         public int Y() { return y; }
+        public int X_Purpose() { return x_Purpose; }
+        public int Y_Purpose() { return y_Purpose; }
         public int Id() { return id; }
         public float F() { return F_; }
         public bool Was_near_end() { return was_near_end; }
-        public int X_Purpose() { return x_Purpose; }
-        public int Y_Purpose() { return y_Purpose; }
-        public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y, X_Board, Y_Board, was_step, flag); }
         public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
         public bool IsEnd(){ return IsRealEnd() && !flag; }
         public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
@@ -130,6 +130,7 @@ namespace MAPF_System
                 last__y = -1;
             }
         }
+        
         private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, Unit AU = null)
         {
             // Проверяем, что юнит еще не работал на данной итерации
@@ -359,5 +360,6 @@ namespace MAPF_System
             return h(x, y);
         }
         private float h(int x, int y){ return (float)Math.Sqrt( Math.Pow(x_Purpose - x, 2) + Math.Pow(y_Purpose - y, 2)); }
+    
     }
 }

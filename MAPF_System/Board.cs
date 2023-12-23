@@ -53,34 +53,6 @@ namespace MAPF_System
             Constructor(openFileDialog1.FileName);
         }
         public Board(string path){ Constructor(path); }
-        private void Constructor(string path)
-        {
-            string[] readText = File.ReadAllLines(path);
-            string[] arr = readText[0].Split(' ');
-            // Размеры поля
-            X = int.Parse(arr[0]);
-            Y = int.Parse(arr[1]);
-            // Количество юнитов
-            int N_Units = int.Parse(arr[2]);
-            // Количество плохих узлов
-            KolBad = int.Parse(arr[3]);
-            // Создать доску по данным файла
-            Arr = new Cell[X, Y];
-            int t = 1;
-            for (int i = 0; i < X; i++)
-                for (int j = 0; j < Y; j++)
-                {
-                    Arr[i, j] = new Cell(readText[t]);
-                    t++;
-                }
-            // Создать юнитов по данным файла
-            Units = new List<Unit>();
-            for (int i = 0; i < N_Units; i++)
-            {
-                Units.Add(new Unit(readText[t], i, X, Y));
-                t++;
-            }
-        }
         public Board CopyWithoutBlocks()
         {
             Cell[,] CopyArr = new Cell[X, Y];
@@ -93,7 +65,196 @@ namespace MAPF_System
                 for (int j = 0; j < Y; j++)
                     CopyArr[i, j] = Arr[i, j].CopyWithoutBlock();
 
-            return new Board(X, Y, CopyArr,CopyUnits, KolBad, name);
+            return new Board(X, Y, CopyArr, CopyUnits, KolBad, name);
+        }
+        public void Draw(Graphics t)
+        {
+            int height = 17;
+            int YY = 110;
+            int XX = 10;
+            using (Graphics g = t)
+            {
+                g.Clear(SystemColors.Control); // Clear the draw area
+                using (Pen pen = new Pen(Color.Blue, 1))
+                {
+                    for (int i = 0; i < X; i++)
+                        for (int j = 0; j < Y; j++)
+                        {
+                            Rectangle rect = new Rectangle(new Point(XX + 5 + height * i, YY + 5 + height * j), new Size(height, height));
+                            g.DrawRectangle(pen, rect);
+                            // Отрисовка блоков
+                            if (Arr[i, j].IsBlock())
+                                g.FillRectangle(Brushes.Black, rect);
+                            // Отрисовка пройденного пути
+                            if (Arr[i, j].WasVisit())
+                            {
+                                int W = 100 + 100 * (Arr[i, j].IdVisit() + 1) / Units.Count;
+                                g.FillRectangle(new SolidBrush(Color.FromArgb(W, W, 255)), rect);
+                            }
+                            // Отрисовка плохих узлов
+                            if (Arr[i, j].IsBad())
+                                g.DrawString("X", new Font("Arial", 7, FontStyle.Bold), Brushes.Red, new Point(XX + 9 + height * i, YY + 9 + height * j));
+                        }
+
+                    var Font = new Font("Arial", 9, FontStyle.Bold);
+                    foreach (var Unit in Units)
+                    {
+                        // Отрисовка цели
+                        g.FillRectangle(Brushes.LawnGreen, new Rectangle(new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()), new Size(height - 5, height - 5)));
+                        g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()));
+                    }
+                    foreach (var Unit in Units)
+                    {
+                        // Отрисовка юнитов
+                        g.FillRectangle(Brushes.Red, new Rectangle(new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()), new Size(height - 5, height - 5)));
+                        g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()));
+                    }
+                }
+            }
+        }
+        public string Save(string name_)
+        {
+            try
+            {
+                StreamWriter sw = (new FileInfo(name_ + ".board")).CreateText();
+                sw.WriteLine(X + " " + Y + " " + Units.Count + " " + KolBad);
+                // Записать в файл доску с блоками и пройденным путем
+                for (int i = 0; i < X; i++)
+                    for (int j = 0; j < Y; j++)
+                        sw.WriteLine(Arr[i, j].ToStr());
+                // Записать в файл юнитов
+                foreach (var item in Units)
+                    sw.WriteLine(item.ToStr());
+                sw.Close();
+                name = name_ + ".board";
+            }
+            catch (Exception e) { }
+            return name;
+        }
+        public void MakeStep(Board Board, int kol_iter_a_star)
+        {
+            // Обнуление значений was_step
+            foreach (var Unit in Units)
+                Unit.NotWasStep();
+            // Добавить блоки в пределах видимости юнитов
+            foreach (var Unit in Units)
+            {
+                if (Board.IsBlock(Unit.X(), Unit.Y() - 1))
+                    Arr[Unit.X(), Unit.Y() - 1].MakeBlock();
+                if (Board.IsBlock(Unit.X(), Unit.Y() + 1))
+                    Arr[Unit.X(), Unit.Y() + 1].MakeBlock();
+                if (Board.IsBlock(Unit.X() - 1, Unit.Y()))
+                    Arr[Unit.X() - 1, Unit.Y()].MakeBlock();
+                if (Board.IsBlock(Unit.X() + 1, Unit.Y()))
+                    Arr[Unit.X() + 1, Unit.Y()].MakeBlock();
+            }
+            // Добавить плохие узлы
+            while (true)
+            {
+                int k = 0;
+                for (int i = 0; i < X; i++)
+                    for (int j = 0; j < Y; j++)
+                    {
+                        if (!(IsBad(i, j) || Arr[i, j].IsBlock()))
+                        {
+                            // Проверка на отсутсвие целей
+                            bool b = true;
+                            foreach (var Unit in Units)
+                                b = b && !((Unit.X_Purpose() == i) && (Unit.Y_Purpose() == j)) && !((Unit.X() == i) && (Unit.Y() == j));
+                            if (b)
+                            {
+                                int kk = 0;
+                                if (!IsEmpthy(i - 1, j) || IsBad(i - 1, j))
+                                    kk++;
+                                if (!IsEmpthy(i + 1, j) || IsBad(i + 1, j))
+                                    kk++;
+                                if (!IsEmpthy(i, j - 1) || IsBad(i, j - 1))
+                                    kk++;
+                                if (!IsEmpthy(i, j + 1) || IsBad(i, j + 1))
+                                    kk++;
+                                if (kk == 3)
+                                {
+                                    Arr[i, j].MakeBad();
+                                    k++;
+                                }
+                            }
+                        }
+                    }
+
+                if (k == 0)
+                    break;
+                KolBad += k;
+            }
+            // Сделать шаг теми юнитами, которые еще не достигли своей цели, при этом давая приоритет тем юнитам, которые дальше от цели
+            List<Unit> Was_near_end_units = new List<Unit>();
+            List<Unit> NOT_Was_near_end_units = new List<Unit>();
+            foreach (var Unit in Units)
+                if (Unit.Was_near_end())
+                    Was_near_end_units.Add(Unit);
+                else
+                    NOT_Was_near_end_units.Add(Unit);
+
+            foreach (var Unit in NOT_Was_near_end_units.OrderBy(u => -u.F()))
+                if (!Unit.IsEnd())
+                    Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
+            foreach (var Unit in Was_near_end_units.OrderBy(u => -u.F()))
+                if (!Unit.IsEnd())
+                    Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
+        }
+        public bool IsEnd()
+        {
+            bool b = true;
+            // Проверяем, что все юниты дошли до своих целей
+            foreach (var Unit in Units)
+                b = b && Unit.IsRealEnd();
+            return b;
+        }
+        public bool IsEmpthy(int x, int y)
+        {
+            // Проверка на выход за пределы поля
+            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
+                return false;
+            return !Arr[x, y].IsBlock();
+        }
+        public bool IsBadCell(int x, int y) { return Arr[x, y].IsBad(); }
+        public void MakeVisit(int x, int y, int id) { Arr[x, y].MakeVisit(id); }
+        public string Name() { return name; }
+        
+        private void Constructor(string path)
+        {
+            try
+            {
+                name = path.Split('\\').Last();
+                string[] readText = File.ReadAllLines(path);
+                string[] arr = readText[0].Split(' ');
+                // Размеры поля
+                X = int.Parse(arr[0]);
+                Y = int.Parse(arr[1]);
+                // Количество юнитов
+                int N_Units = int.Parse(arr[2]);
+                // Количество плохих узлов
+                KolBad = int.Parse(arr[3]);
+                // Создать доску по данным файла
+                Arr = new Cell[X, Y];
+                int t = 1;
+                for (int i = 0; i < X; i++)
+                    for (int j = 0; j < Y; j++)
+                    {
+                        Arr[i, j] = new Cell(readText[t]);
+                        t++;
+                    }
+                // Создать юнитов по данным файла
+                Units = new List<Unit>();
+                for (int i = 0; i < N_Units; i++)
+                {
+                    Units.Add(new Unit(readText[t], i, X, Y));
+                    t++;
+                }
+            }
+            catch (Exception e) 
+            {
+                MessageBox.Show("Файл повреждён.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void GenerationDefaults(int Blocks)
         {
@@ -177,147 +338,12 @@ namespace MAPF_System
                     if (Arr[i, j] is null)
                         Arr[i, j] = new Cell(true);
         }
-        public void Draw(Graphics t)
+        private bool IsBad(int x, int y)
         {
-            int height = 17;
-            int YY = 110;
-            int XX = 10;
-            using (Graphics g = t)
-            {
-                g.Clear(SystemColors.Control); // Clear the draw area
-                using (Pen pen = new Pen(Color.Blue, 1))
-                {
-                    for (int i = 0; i < X; i++)
-                        for (int j = 0; j < Y; j++)
-                        {
-                            Rectangle rect = new Rectangle(new Point(XX + 5 + height * i, YY + 5 + height * j), new Size(height, height));
-                            g.DrawRectangle(pen, rect);
-                            // Отрисовка блоков
-                            if (Arr[i, j].IsBlock())
-                                g.FillRectangle(Brushes.Black, rect);
-                            // Отрисовка пройденного пути
-                            if (Arr[i, j].WasVisit())
-                            {
-                                int W = 100 + 100 * (Arr[i, j].IdVisit()+1) / Units.Count;
-                                g.FillRectangle(new SolidBrush(Color.FromArgb(W, W, 255)), rect);
-                            }
-                            // Отрисовка плохих узлов
-                            if (Arr[i, j].IsBad())
-                                g.DrawString("X", new Font("Arial", 7, FontStyle.Bold), Brushes.Red, new Point(XX + 9 + height * i, YY + 9 + height * j));
-                        }
-
-                    var Font = new Font("Arial", 9, FontStyle.Bold);
-                    foreach (var Unit in Units)
-                    {
-                        // Отрисовка цели
-                        g.FillRectangle(Brushes.LawnGreen, new Rectangle(new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()), new Size(height - 5, height - 5)));
-                        g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()));
-                    }
-                    foreach (var Unit in Units)
-                    {
-                        // Отрисовка юнитов
-                        g.FillRectangle(Brushes.Red, new Rectangle(new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()), new Size(height - 5, height - 5)));
-                        g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()));
-                    }
-                }
-            }
-        }
-        public string Save(string name_)
-        {
-            try
-            {
-                StreamWriter sw = (new FileInfo(name_ + ".board")).CreateText();
-                sw.WriteLine(X + " " + Y + " " + Units.Count + " " + KolBad);
-                // Записать в файл доску с блоками и пройденным путем
-                for (int i = 0; i < X; i++)
-                    for (int j = 0; j < Y; j++)
-                        sw.WriteLine(Arr[i, j].ToStr());
-                // Записать в файл юнитов
-                foreach (var item in Units)
-                    sw.WriteLine(item.ToStr());
-                sw.Close();
-                name = name_ + ".board";
-            }
-            catch (Exception e) { }
-            return name;
-        }
-        public bool IsEnd()
-        {
-            bool b = true;
-            // Проверяем, что все юниты дошли до своих целей
-            foreach (var Unit in Units)
-                b = b && Unit.IsRealEnd();
-            return b;
-        }
-        public void MakeStep(Board Board, int kol_iter_a_star)
-        {
-            // Обнуление значений was_step
-            foreach (var Unit in Units)
-                Unit.NotWasStep();
-            // Добавить блоки в пределах видимости юнитов
-            foreach (var Unit in Units)
-            {
-                if (Board.IsBlock(Unit.X(), Unit.Y() - 1))
-                    Arr[Unit.X(), Unit.Y() - 1].MakeBlock();
-                if (Board.IsBlock(Unit.X(), Unit.Y() + 1))
-                    Arr[Unit.X(), Unit.Y() + 1].MakeBlock();
-                if (Board.IsBlock(Unit.X() - 1, Unit.Y()))
-                    Arr[Unit.X() - 1, Unit.Y()].MakeBlock();
-                if (Board.IsBlock(Unit.X() + 1, Unit.Y()))
-                    Arr[Unit.X() + 1, Unit.Y()].MakeBlock();
-            }
-            // Добавить плохие узлы
-            while (true)
-            {
-                int k = 0;
-                for (int i = 0; i < X; i++)
-                    for (int j = 0; j < Y; j++)
-                    {
-                        if (!(IsBad(i, j) || Arr[i, j].IsBlock()))
-                        {
-                            // Проверка на отсутсвие целей
-                            bool b = true;
-                            foreach (var Unit in Units)
-                                b = b && !((Unit.X_Purpose() == i) && (Unit.Y_Purpose() == j)) && !((Unit.X() == i) && (Unit.Y() == j));
-                            if (b)
-                            {
-                                int kk = 0;
-                                if (!IsEmpthy(i - 1, j) || IsBad(i - 1, j))
-                                    kk++;
-                                if (!IsEmpthy(i + 1, j) || IsBad(i + 1, j))
-                                    kk++;
-                                if (!IsEmpthy(i, j - 1) || IsBad(i, j - 1))
-                                    kk++;
-                                if (!IsEmpthy(i, j + 1) || IsBad(i, j + 1))
-                                    kk++;
-                                if (kk == 3)
-                                {
-                                    Arr[i, j].MakeBad();
-                                    k++;
-                                }
-                            }
-                        }
-                    }
-                        
-                if (k == 0)
-                    break;
-                KolBad += k;
-            }
-            // Сделать шаг теми юнитами, которые еще не достигли своей цели, при этом давая приоритет тем юнитам, которые дальше от цели
-            List<Unit> Was_near_end_units = new List<Unit>();
-            List<Unit> NOT_Was_near_end_units = new List<Unit>();
-            foreach (var Unit in Units)
-                if (Unit.Was_near_end())
-                    Was_near_end_units.Add(Unit);
-                else
-                    NOT_Was_near_end_units.Add(Unit);
-
-            foreach (var Unit in NOT_Was_near_end_units.OrderBy(u => -u.F()))
-                if (!Unit.IsEnd())
-                    Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
-            foreach (var Unit in Was_near_end_units.OrderBy(u => -u.F()))
-                if (!Unit.IsEnd())
-                    Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
+            // Проверка на выход за пределы поля
+            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
+                return false;
+            return Arr[x, y].IsBad();
         }
         private bool IsBlock(int x, int y)
         {
@@ -326,22 +352,6 @@ namespace MAPF_System
                 return false;
             return Arr[x, y].IsBlock();
         }
-        public bool IsEmpthy(int x, int y)
-        {
-            // Проверка на выход за пределы поля
-            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
-                return false;
-            return !Arr[x, y].IsBlock();
-        }
-        private bool IsBad(int x, int y)
-        {
-            // Проверка на выход за пределы поля
-            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
-                return false;
-            return Arr[x, y].IsBad();
-        }
-        public void MakeVisit(int x, int y, int id) { Arr[x, y].MakeVisit(id); }
-        public bool IsBadCell(int x, int y) { return Arr[x, y].IsBad(); }
-        public string Name() { return name; }
+    
     }
 }

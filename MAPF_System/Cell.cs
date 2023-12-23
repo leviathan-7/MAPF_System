@@ -33,17 +33,19 @@ namespace MAPF_System
             idVisit = int.Parse(arr[2]);
             isBad = arr[3] == "True";
         }
-        public bool IsBlock() { return isBlock; }
-        public void MakeBlock() { isBlock = true; }
         public Cell CopyWithoutBlock() { return new Cell(false, wasvisited, idVisit, isBad); }
-        public void MakeVisit(int n) { 
+        public int IdVisit() { return idVisit; }
+        public string ToStr() { return isBlock + " " + wasvisited + " " + idVisit + " " + isBad; }
+        public void MakeVisit(int n)
+        {
             wasvisited = true;
             idVisit = n;
         }
-        public bool WasVisit() { return wasvisited; }
-        public int IdVisit() { return idVisit; }
-        public string ToStr() { return isBlock + " " + wasvisited + " " + idVisit + " " + isBad; }
         public void MakeBad() { isBad = true; }
+        public void MakeBlock() { isBlock = true; }
         public bool IsBad() { return isBad; }
+        public bool IsBlock() { return isBlock; }
+        public bool WasVisit() { return wasvisited; }
+
     }
 }
