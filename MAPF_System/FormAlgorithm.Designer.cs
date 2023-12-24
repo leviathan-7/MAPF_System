@@ -30,47 +30,23 @@ namespace MAPF_System
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAlgorithm));
-            this.button_Start = new System.Windows.Forms.Button();
-            this.button_Save = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.textBox_Name = new System.Windows.Forms.TextBox();
             this.label_Error = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label_kol_iterat = new System.Windows.Forms.Label();
-            this.button_step = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox_kol_iter_a_star = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.button_Save = new CustomControls.RJControls.RJButton();
+            this.button_Step = new CustomControls.RJControls.RJButton();
+            this.button_Start = new CustomControls.RJControls.RJButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // button_Start
-            // 
-            this.button_Start.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.button_Start.Location = new System.Drawing.Point(30, 37);
-            this.button_Start.Name = "button_Start";
-            this.button_Start.Size = new System.Drawing.Size(143, 45);
-            this.button_Start.TabIndex = 1;
-            this.button_Start.Text = "▶  Запустить";
-            this.button_Start.UseVisualStyleBackColor = true;
-            this.button_Start.Click += new System.EventHandler(this.button_Start_Click);
-            // 
-            // button_Save
-            // 
-            this.button_Save.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button_Save.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.button_Save.Location = new System.Drawing.Point(772, 37);
-            this.button_Save.Name = "button_Save";
-            this.button_Save.Size = new System.Drawing.Size(143, 45);
-            this.button_Save.TabIndex = 2;
-            this.button_Save.Text = "💾  Сохранить";
-            this.button_Save.UseVisualStyleBackColor = true;
-            this.button_Save.Click += new System.EventHandler(this.button_Save_Click);
             // 
             // label1
             // 
@@ -118,18 +94,6 @@ namespace MAPF_System
             this.label_kol_iterat.TabIndex = 14;
             this.label_kol_iterat.Text = " ";
             // 
-            // button_step
-            // 
-            this.button_step.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button_step.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.button_step.Location = new System.Drawing.Point(438, 37);
-            this.button_step.Name = "button_step";
-            this.button_step.Size = new System.Drawing.Size(143, 45);
-            this.button_step.TabIndex = 15;
-            this.button_step.Text = "▶▶  Пошагово";
-            this.button_step.UseVisualStyleBackColor = true;
-            this.button_step.Click += new System.EventHandler(this.button_Step_Click);
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -151,15 +115,15 @@ namespace MAPF_System
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(236)))), ((int)(((byte)(236)))));
+            this.groupBox1.Controls.Add(this.button_Start);
+            this.groupBox1.Controls.Add(this.button_Step);
+            this.groupBox1.Controls.Add(this.button_Save);
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Controls.Add(this.button_step);
             this.groupBox1.Controls.Add(this.pictureBox1);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.button_Start);
             this.groupBox1.Controls.Add(this.textBox_kol_iter_a_star);
-            this.groupBox1.Controls.Add(this.button_Save);
             this.groupBox1.Controls.Add(this.textBox_Name);
             this.groupBox1.Controls.Add(this.label_kol_iterat);
             this.groupBox1.Controls.Add(this.label1);
@@ -169,6 +133,15 @@ namespace MAPF_System
             this.groupBox1.Size = new System.Drawing.Size(1995, 106);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label5.Location = new System.Drawing.Point(32, 7);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(0, 18);
+            this.label5.TabIndex = 19;
             // 
             // label4
             // 
@@ -192,14 +165,68 @@ namespace MAPF_System
             this.label3.TabIndex = 19;
             this.label3.Text = "Cntrl+S - Сохранить; Esc - Закрыть окно;";
             // 
-            // label5
+            // button_Save
             // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label5.Location = new System.Drawing.Point(32, 7);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(0, 18);
-            this.label5.TabIndex = 19;
+            this.button_Save.BackColor = System.Drawing.Color.SkyBlue;
+            this.button_Save.BackgroundColor = System.Drawing.Color.SkyBlue;
+            this.button_Save.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.button_Save.BorderRadius = 10;
+            this.button_Save.BorderSize = 1;
+            this.button_Save.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_Save.FlatAppearance.BorderSize = 0;
+            this.button_Save.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_Save.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.button_Save.ForeColor = System.Drawing.Color.Black;
+            this.button_Save.Location = new System.Drawing.Point(773, 37);
+            this.button_Save.Name = "button_Save";
+            this.button_Save.Size = new System.Drawing.Size(145, 45);
+            this.button_Save.TabIndex = 21;
+            this.button_Save.Text = "💾  Сохранить";
+            this.button_Save.TextColor = System.Drawing.Color.Black;
+            this.button_Save.UseVisualStyleBackColor = false;
+            this.button_Save.Click += new System.EventHandler(this.button_Save_Click);
+            // 
+            // button_Step
+            // 
+            this.button_Step.BackColor = System.Drawing.Color.SkyBlue;
+            this.button_Step.BackgroundColor = System.Drawing.Color.SkyBlue;
+            this.button_Step.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.button_Step.BorderRadius = 10;
+            this.button_Step.BorderSize = 1;
+            this.button_Step.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_Step.FlatAppearance.BorderSize = 0;
+            this.button_Step.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_Step.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.button_Step.ForeColor = System.Drawing.Color.Black;
+            this.button_Step.Location = new System.Drawing.Point(436, 37);
+            this.button_Step.Name = "button_Step";
+            this.button_Step.Size = new System.Drawing.Size(145, 45);
+            this.button_Step.TabIndex = 20;
+            this.button_Step.Text = "▶▶  Пошагово";
+            this.button_Step.TextColor = System.Drawing.Color.Black;
+            this.button_Step.UseVisualStyleBackColor = false;
+            this.button_Step.Click += new System.EventHandler(this.button_Step_Click);
+            // 
+            // button_Start
+            // 
+            this.button_Start.BackColor = System.Drawing.Color.SkyBlue;
+            this.button_Start.BackgroundColor = System.Drawing.Color.SkyBlue;
+            this.button_Start.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.button_Start.BorderRadius = 10;
+            this.button_Start.BorderSize = 1;
+            this.button_Start.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_Start.FlatAppearance.BorderSize = 0;
+            this.button_Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.button_Start.ForeColor = System.Drawing.Color.Black;
+            this.button_Start.Location = new System.Drawing.Point(26, 37);
+            this.button_Start.Name = "button_Start";
+            this.button_Start.Size = new System.Drawing.Size(145, 45);
+            this.button_Start.TabIndex = 19;
+            this.button_Start.Text = "▶  Запустить";
+            this.button_Start.TextColor = System.Drawing.Color.Black;
+            this.button_Start.UseVisualStyleBackColor = false;
+            this.button_Start.Click += new System.EventHandler(this.button_Start_Click);
             // 
             // FormAlgorithm
             // 
@@ -220,20 +247,19 @@ namespace MAPF_System
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button_Start;
-        private System.Windows.Forms.Button button_Save;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox_Name;
         private System.Windows.Forms.Label label_Error;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label_kol_iterat;
-        private System.Windows.Forms.Button button_step;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textBox_kol_iter_a_star;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private CustomControls.RJControls.RJButton button_Start;
+        private CustomControls.RJControls.RJButton button_Step;
+        private CustomControls.RJControls.RJButton button_Save;
     }
 }

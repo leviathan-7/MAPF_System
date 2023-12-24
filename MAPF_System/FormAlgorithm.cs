@@ -39,8 +39,8 @@ namespace MAPF_System
             {
                 button_Start.Dispose();
                 Controls.Remove(button_Start);
-                button_step.Dispose();
-                Controls.Remove(button_step);
+                button_Step.Dispose();
+                Controls.Remove(button_Step);
                 was_game = true;
                 label4.Text = "";
             }
@@ -96,9 +96,9 @@ namespace MAPF_System
             {
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
                 i++;
-                FormAlgorithm F = new FormAlgorithm(TimeBoard, out bool bbbb, i, false, "" + kol_iter_a_star, true);
+                FormAlgorithm F = new FormAlgorithm(TimeBoard, out _, i, false, "" + kol_iter_a_star, true);
                 F.Show();
-                if(MessageBox.Show("Далее?", "", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+                if(MessageBox.Show("Далее?", "▶▶", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
                 {
                     F.Close();
                     return;

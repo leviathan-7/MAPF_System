@@ -69,8 +69,9 @@ namespace MAPF_System
                 label_Error.Text = "Количество препятствий и юнитов слишком большое!";
                 return;
             }
+
             // Если все данные введены правильно
-            (new FormAlgorithm(new Board(X, Y, Blocks, Units), out bool b, 0, false, "7")).Show();
+            (new FormAlgorithm(new Board(X, Y, Blocks, Units), out _, 0, false, "7")).Show();
         }
         
         private void button_Load_Click(object sender, EventArgs e) 

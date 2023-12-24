@@ -79,6 +79,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RJControls\RJButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Unit.cs" />
     <EmbeddedResource Include="FormGenerateOrOpen.resx">
       <DependentUpon>FormGenerateOrOpen.cs</DependentUpon>

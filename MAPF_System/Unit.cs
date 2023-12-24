@@ -138,7 +138,7 @@ namespace MAPF_System
             }
         }
         
-        private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, Unit AU = null)
+        private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, Unit AU)
         {
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
