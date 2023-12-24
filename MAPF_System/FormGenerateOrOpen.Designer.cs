@@ -42,13 +42,13 @@ namespace MAPF_System
             this.button_Load = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label_Error = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -183,55 +183,15 @@ namespace MAPF_System
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
             // 
-            // groupBox3
+            // label10
             // 
-            this.groupBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(236)))), ((int)(((byte)(236)))));
-            this.groupBox3.Controls.Add(this.button_Generation);
-            this.groupBox3.Location = new System.Drawing.Point(139, 25);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(307, 103);
-            this.groupBox3.TabIndex = 15;
-            this.groupBox3.TabStop = false;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label5.Location = new System.Drawing.Point(183, 83);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(36, 18);
-            this.label5.TabIndex = 16;
-            this.label5.Text = "       ";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label6.Location = new System.Drawing.Point(183, 65);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(36, 18);
-            this.label6.TabIndex = 17;
-            this.label6.Text = "       ";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label7.Location = new System.Drawing.Point(183, 47);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(36, 18);
-            this.label7.TabIndex = 17;
-            this.label7.Text = "       ";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label8.Location = new System.Drawing.Point(178, 29);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(36, 18);
-            this.label8.TabIndex = 17;
-            this.label8.Text = "       ";
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label10.Location = new System.Drawing.Point(183, 7);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(36, 18);
+            this.label10.TabIndex = 17;
+            this.label10.Text = "       ";
             // 
             // label9
             // 
@@ -243,15 +203,55 @@ namespace MAPF_System
             this.label9.TabIndex = 17;
             this.label9.Text = "       ";
             // 
-            // label10
+            // label8
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label10.Location = new System.Drawing.Point(183, 7);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(36, 18);
-            this.label10.TabIndex = 17;
-            this.label10.Text = "       ";
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label8.Location = new System.Drawing.Point(178, 29);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(36, 18);
+            this.label8.TabIndex = 17;
+            this.label8.Text = "       ";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label7.Location = new System.Drawing.Point(183, 47);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(36, 18);
+            this.label7.TabIndex = 17;
+            this.label7.Text = "       ";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label6.Location = new System.Drawing.Point(183, 65);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(36, 18);
+            this.label6.TabIndex = 17;
+            this.label6.Text = "       ";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label5.Location = new System.Drawing.Point(183, 83);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(36, 18);
+            this.label5.TabIndex = 16;
+            this.label5.Text = "       ";
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(236)))), ((int)(((byte)(236)))));
+            this.groupBox3.Controls.Add(this.button_Generation);
+            this.groupBox3.Location = new System.Drawing.Point(139, 25);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(307, 103);
+            this.groupBox3.TabIndex = 15;
+            this.groupBox3.TabStop = false;
             // 
             // label_Error
             // 
@@ -280,7 +280,7 @@ namespace MAPF_System
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormGenerateOrOpen";
-            this.Text = "Создание или загрузка поля";
+            this.Text = "Создание или загрузка поля MAPF";
             this.HelpButtonClicked += new System.ComponentModel.CancelEventHandler(this.FormGenerateOrOpen_HelpButtonClicked);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormGenerateOrOpen_KeyDown);
             this.groupBox2.ResumeLayout(false);
