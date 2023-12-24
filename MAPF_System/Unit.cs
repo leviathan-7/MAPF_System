@@ -80,6 +80,13 @@ namespace MAPF_System
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
                 return;
+            // Алгоритм для решения проблемы перпендикулярного хождения юнитов
+            if (!(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
+            {
+                last__x = -1;
+                last__y = -1;
+                last_AU = null;
+            }
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
             // Список значений расстояний для каждой клетки
@@ -289,7 +296,6 @@ namespace MAPF_System
                 return new Tuple<int, float>(-10, F_); //-10;
             // Возвращаем подходящую нам клетку
             return new Tuple<int, float>(min_i, min);
-            //return min_i;
         }
         private void IfBoardIsEmpthy(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool b = false)
         {
