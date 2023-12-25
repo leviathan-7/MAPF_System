@@ -97,6 +97,7 @@ namespace MAPF_System
 
         private void button_BigStart_Click(object sender, EventArgs e)
         {
+            label11.Text = "⏳";
             using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
             {
                 if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -131,9 +132,11 @@ namespace MAPF_System
                         }
                     }
                     table.WriteXml(selectedPath+"\\results.xml");
+                    label11.Text = "";
                     MessageBox.Show("Результаты сохранены в файл results.xml", "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     System.Diagnostics.Process.Start(selectedPath);
                 }
+                label11.Text = "";
             }
         }
     }

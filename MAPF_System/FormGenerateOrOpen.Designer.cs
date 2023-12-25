@@ -51,6 +51,7 @@ namespace MAPF_System
             this.label_Error = new System.Windows.Forms.Label();
             this.button_Load = new CustomControls.RJControls.RJButton();
             this.button_BigStart = new CustomControls.RJControls.RJButton();
+            this.label11 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
@@ -303,11 +304,21 @@ namespace MAPF_System
             this.button_BigStart.UseVisualStyleBackColor = false;
             this.button_BigStart.Click += new System.EventHandler(this.button_BigStart_Click);
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 44.25F);
+            this.label11.Location = new System.Drawing.Point(463, 257);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(0, 67);
+            this.label11.TabIndex = 18;
+            // 
             // FormGenerateOrOpen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(672, 477);
+            this.Controls.Add(this.label11);
             this.Controls.Add(this.button_BigStart);
             this.Controls.Add(this.button_Load);
             this.Controls.Add(this.groupBox2);
@@ -354,6 +365,7 @@ namespace MAPF_System
         private CustomControls.RJControls.RJButton button_Load;
         private CustomControls.RJControls.RJButton button_Generation;
         private CustomControls.RJControls.RJButton button_BigStart;
+        private System.Windows.Forms.Label label11;
     }
 }
 
