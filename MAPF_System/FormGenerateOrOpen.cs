@@ -8,6 +8,7 @@ using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 namespace MAPF_System
 {
@@ -93,6 +94,47 @@ namespace MAPF_System
             if (e.KeyCode == Keys.F1)
                 FormGenerateOrOpen_HelpButtonClicked(sender, null);
         }
-    
+
+        private void button_BigStart_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
+            {
+                if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    DataTable table = new DataTable("results");
+                    table.Columns.Add("Имя файла", typeof(string));
+                    table.Columns.Add("Колличество шагов", typeof(string));
+                    // Путь к выбранной папке
+                    string selectedPath = folderDialog.SelectedPath;
+                    foreach (var filePath in Directory.GetFiles(selectedPath))
+                    {
+                        var name = filePath.Split('\\').Last();
+                        var extension = Path.GetExtension(filePath).ToLower();
+                        if (extension == ".board")
+                        {
+                            Board Board = new Board(filePath);
+
+                            int kol_iter_a_star = 7;
+                            // Максимальное колличество итераций
+                            int N = 5000;
+                            Board TimeBoard = Board.CopyWithoutBlocks();
+                            int i = 0;
+                            while (!TimeBoard.IsEnd() && i < N)
+                            {
+                                TimeBoard.MakeStep(Board, kol_iter_a_star);
+                                i++;
+                            }
+                            string str = "" + i;
+                            if (i == N)
+                                str = "Ошибка";
+                            table.Rows.Add(name, str);
+                        }
+                    }
+                    table.WriteXml("results.xml");
+                    MessageBox.Show("Результаты сохранены в файл results.xml", "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    System.Diagnostics.Process.Start(selectedPath);
+                }
+            }
+        }
     }
 }
