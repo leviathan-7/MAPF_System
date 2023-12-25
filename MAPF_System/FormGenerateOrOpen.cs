@@ -130,7 +130,7 @@ namespace MAPF_System
                             table.Rows.Add(name, str);
                         }
                     }
-                    table.WriteXml("results.xml");
+                    table.WriteXml(selectedPath+"\\results.xml");
                     MessageBox.Show("Результаты сохранены в файл results.xml", "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                     System.Diagnostics.Process.Start(selectedPath);
                 }
