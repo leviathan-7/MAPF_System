@@ -23,7 +23,6 @@ namespace MAPF_System
                 if (b)
                     F.ShowDialog();
             }
-
         }
         
         private void button_Generation_Click(object sender, EventArgs e)
@@ -105,16 +104,13 @@ namespace MAPF_System
                     DataTable table = new DataTable("results");
                     table.Columns.Add("Имя файла", typeof(string));
                     table.Columns.Add("Колличество шагов", typeof(string));
-                    // Путь к выбранной папке
-                    string selectedPath = folderDialog.SelectedPath;
-                    foreach (var filePath in Directory.GetFiles(selectedPath))
+                    int a = 0;
+                    int b = 0;
+                    foreach (var filePath in Directory.GetFiles(folderDialog.SelectedPath))
                     {
-                        var name = filePath.Split('\\').Last();
-                        var extension = Path.GetExtension(filePath).ToLower();
-                        if (extension == ".board")
+                        if (Path.GetExtension(filePath).ToLower() == ".board")
                         {
                             Board Board = new Board(filePath);
-
                             int kol_iter_a_star = 7;
                             // Максимальное колличество итераций
                             int N = 5000;
@@ -125,16 +121,22 @@ namespace MAPF_System
                                 TimeBoard.MakeStep(Board, kol_iter_a_star);
                                 i++;
                             }
-                            string str = "" + i;
                             if (i == N)
-                                str = "Ошибка";
-                            table.Rows.Add(name, str);
+                            {
+                                table.Rows.Add(filePath.Split('\\').Last(), "Ошибка");
+                                a++;
+                            }
+                            else
+                            {
+                                table.Rows.Add(filePath.Split('\\').Last(), "" + i);
+                                b++;
+                            }
                         }
                     }
-                    table.WriteXml(selectedPath+"\\results.xml");
+                    table.WriteXml(folderDialog.SelectedPath + "\\results.xml");
                     label11.Text = "";
-                    MessageBox.Show("Результаты сохранены в файл results.xml", "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    System.Diagnostics.Process.Start(selectedPath);
+                    MessageBox.Show("Пройденно "+b+" из "+(a+b)+"\nРезультаты сохранены в файл results.xml", "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+                    System.Diagnostics.Process.Start(folderDialog.SelectedPath);
                 }
                 label11.Text = "";
             }
