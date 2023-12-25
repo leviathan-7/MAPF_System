@@ -47,11 +47,12 @@ namespace MAPF_System
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.button_Generation = new CustomControls.RJControls.RJButton();
             this.label_Error = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.button_BigStart = new CustomControls.RJControls.RJButton();
             this.button_Load = new CustomControls.RJControls.RJButton();
-            this.button_Generation = new CustomControls.RJControls.RJButton();
+            this.label12 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
@@ -231,6 +232,27 @@ namespace MAPF_System
             this.groupBox3.TabIndex = 15;
             this.groupBox3.TabStop = false;
             // 
+            // button_Generation
+            // 
+            this.button_Generation.BackColor = System.Drawing.Color.SkyBlue;
+            this.button_Generation.BackgroundColor = System.Drawing.Color.SkyBlue;
+            this.button_Generation.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.button_Generation.BorderRadius = 10;
+            this.button_Generation.BorderSize = 1;
+            this.button_Generation.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_Generation.FlatAppearance.BorderSize = 0;
+            this.button_Generation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_Generation.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.button_Generation.ForeColor = System.Drawing.Color.Black;
+            this.button_Generation.Location = new System.Drawing.Point(128, 20);
+            this.button_Generation.Name = "button_Generation";
+            this.button_Generation.Size = new System.Drawing.Size(158, 63);
+            this.button_Generation.TabIndex = 17;
+            this.button_Generation.Text = "⚙️ Сгенерировать поле с юнитами";
+            this.button_Generation.TextColor = System.Drawing.Color.Black;
+            this.button_Generation.UseVisualStyleBackColor = false;
+            this.button_Generation.Click += new System.EventHandler(this.button_Generation_Click);
+            // 
             // label_Error
             // 
             this.label_Error.AutoSize = true;
@@ -292,32 +314,21 @@ namespace MAPF_System
             this.button_Load.UseVisualStyleBackColor = false;
             this.button_Load.Click += new System.EventHandler(this.button_Load_Click);
             // 
-            // button_Generation
+            // label12
             // 
-            this.button_Generation.BackColor = System.Drawing.Color.SkyBlue;
-            this.button_Generation.BackgroundColor = System.Drawing.Color.SkyBlue;
-            this.button_Generation.BorderColor = System.Drawing.Color.LightSlateGray;
-            this.button_Generation.BorderRadius = 10;
-            this.button_Generation.BorderSize = 1;
-            this.button_Generation.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button_Generation.FlatAppearance.BorderSize = 0;
-            this.button_Generation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_Generation.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.button_Generation.ForeColor = System.Drawing.Color.Black;
-            this.button_Generation.Location = new System.Drawing.Point(128, 20);
-            this.button_Generation.Name = "button_Generation";
-            this.button_Generation.Size = new System.Drawing.Size(158, 63);
-            this.button_Generation.TabIndex = 17;
-            this.button_Generation.Text = "⚙️ Сгенерировать поле с юнитами";
-            this.button_Generation.TextColor = System.Drawing.Color.Black;
-            this.button_Generation.UseVisualStyleBackColor = false;
-            this.button_Generation.Click += new System.EventHandler(this.button_Generation_Click);
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 44.25F);
+            this.label12.Location = new System.Drawing.Point(463, 153);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(0, 67);
+            this.label12.TabIndex = 19;
             // 
             // FormGenerateOrOpen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(672, 477);
+            this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.button_BigStart);
             this.Controls.Add(this.button_Load);
@@ -366,6 +377,7 @@ namespace MAPF_System
         private CustomControls.RJControls.RJButton button_Generation;
         private CustomControls.RJControls.RJButton button_BigStart;
         private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
     }
 }
 

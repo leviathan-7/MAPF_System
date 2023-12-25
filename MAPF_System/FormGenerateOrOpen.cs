@@ -27,6 +27,7 @@ namespace MAPF_System
         
         private void button_Generation_Click(object sender, EventArgs e)
         {
+            label_Error.Text = "";
             // Считывание введенных данных
             int X = 0, Y = 0, Blocks = 0, Units = 0;
             bool isNumeric = int.TryParse(textBox_X.Text, out X) && int.TryParse(textBox_Y.Text, out Y)
@@ -76,7 +77,10 @@ namespace MAPF_System
         
         private void button_Load_Click(object sender, EventArgs e) 
         {
+            label_Error.Text = "";
+            label12.Text = "⏳";
             FormAlgorithm F = new FormAlgorithm(new Board(), out bool b, 0, false, "7");
+            label12.Text = "";
             if (b)
                 F.Show();
         }
@@ -96,6 +100,7 @@ namespace MAPF_System
 
         private void button_BigStart_Click(object sender, EventArgs e)
         {
+            label_Error.Text = "";
             label11.Text = "⏳";
             using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
             {
