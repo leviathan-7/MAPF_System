@@ -85,19 +85,6 @@ namespace MAPF_System
                 F.Show();
         }
         
-        private void FormGenerateOrOpen_HelpButtonClicked(object sender, CancelEventArgs e)
-        {
-            MessageBox.Show("Программа для генерации полей для MAPF и алгоритм решения данной задачи.", "О программе.",MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-            if(!(e is null))
-                e.Cancel = true;
-        }
-        
-        private void FormGenerateOrOpen_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.F1)
-                FormGenerateOrOpen_HelpButtonClicked(sender, null);
-        }
-
         private void button_BigStart_Click(object sender, EventArgs e)
         {
             label_Error.Text = "";
@@ -145,6 +132,19 @@ namespace MAPF_System
                 }
                 label11.Text = "";
             }
+        }
+
+        private void FormGenerateOrOpen_HelpButtonClicked(object sender, CancelEventArgs e)
+        {
+            MessageBox.Show("Программа для генерации полей для MAPF и алгоритм решения данной задачи. \n\nСсылка на GitHub: \nhttps://github.com/leviathan-7/MAPF_System", "О программе.", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            if (!(e is null))
+                e.Cancel = true;
+        }
+
+        private void FormGenerateOrOpen_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F1)
+                FormGenerateOrOpen_HelpButtonClicked(sender, null);
         }
     }
 }
