@@ -96,8 +96,7 @@ namespace MAPF_System
                     DataTable table = new DataTable("results");
                     table.Columns.Add("Имя файла", typeof(string));
                     table.Columns.Add("Колличество шагов", typeof(string));
-                    int a = 0;
-                    int b = 0;
+                    int a = 0, b = 0;
                     foreach (var filePath in Directory.GetFiles(folderDialog.SelectedPath))
                     {
                         if (Path.GetExtension(filePath).ToLower() == ".board")
@@ -108,11 +107,8 @@ namespace MAPF_System
                             int N = 5000;
                             Board TimeBoard = Board.CopyWithoutBlocks();
                             int i = 0;
-                            while (!TimeBoard.IsEnd() && i < N)
-                            {
+                            while (!TimeBoard.IsEnd() && (i++) < (N - 1))
                                 TimeBoard.MakeStep(Board, kol_iter_a_star);
-                                i++;
-                            }
                             if (i == N)
                             {
                                 table.Rows.Add(filePath.Split('\\').Last(), "Ошибка");

@@ -48,8 +48,7 @@ namespace MAPF_System
 
         private void button_Start_Click(object sender, EventArgs e)
         {
-            int kol_iter_a_star;
-            bool b = int.TryParse(textBox_kol_iter_a_star.Text, out kol_iter_a_star);
+            bool b = int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star);
             if (!b || (kol_iter_a_star < 7) || (kol_iter_a_star > 15))
             {
                 SystemSounds.Beep.Play();
@@ -60,30 +59,14 @@ namespace MAPF_System
             int N = 5000;
             Board TimeBoard = Board.CopyWithoutBlocks();
             int i = 0;
-            while (!TimeBoard.IsEnd() && i < N)
-            {
+            while (!TimeBoard.IsEnd() && (i++) < (N-1))
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
-                i++;
-            }
             (new FormAlgorithm(TimeBoard, out bool bbbb, i, i == N, "" + kol_iter_a_star, true)).Show();
-        }
-
-        private void button_Save_Click(object sender, EventArgs e)
-        {
-            if(textBox_Name.Text.Length == 0)
-            {
-                SystemSounds.Beep.Play();
-                label_Error.Text = "Вы не ввели имя файла!";
-                return;
-            }
-            label5.Text = Board.Save(textBox_Name.Text);
-            label_Error.Text = "Сохранено!";
         }
 
         private void button_Step_Click(object sender, EventArgs e)
         {
-            int kol_iter_a_star;
-            bool b = int.TryParse(textBox_kol_iter_a_star.Text, out kol_iter_a_star);
+            bool b = int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star);
             if (!b || (kol_iter_a_star < 7) || (kol_iter_a_star > 15))
             {
                 SystemSounds.Beep.Play();
@@ -91,22 +74,22 @@ namespace MAPF_System
                 return;
             }
             Board TimeBoard = Board.CopyWithoutBlocks();
-            int i = 0;
+            int i = 1;
+            FormAlgorithm FF = null;
             while (!TimeBoard.IsEnd()) 
             {
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
-                i++;
-                FormAlgorithm F = new FormAlgorithm(TimeBoard, out _, i, false, "" + kol_iter_a_star, true);
+                FormAlgorithm F = new FormAlgorithm(TimeBoard, out _, i++, false, "" + kol_iter_a_star, true);
                 F.Show();
-                if(MessageBox.Show("Далее?", "▶▶", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+                if (MessageBox.Show("Далее?", "▶▶", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
                 {
                     F.Close();
                     return;
                 }
-                if (!TimeBoard.IsEnd())
-                    F.Close();
+                if (!(FF is null))
+                    FF.Close();
+                FF = F;
             }
-            
         }
 
         private void FormAlgorithm_KeyDown(object sender, KeyEventArgs e)
@@ -120,6 +103,18 @@ namespace MAPF_System
             if (!was_game && e.KeyCode == Keys.F10)
                 button_Step_Click(sender, null);
         }
-    
+
+        private void button_Save_Click(object sender, EventArgs e)
+        {
+            if (textBox_Name.Text.Length == 0)
+            {
+                SystemSounds.Beep.Play();
+                label_Error.Text = "Вы не ввели имя файла!";
+                return;
+            }
+            label5.Text = Board.Save(textBox_Name.Text);
+            label_Error.Text = "Сохранено!";
+        }
+
     }
 }
