@@ -129,7 +129,7 @@ namespace MAPF_System
 
         private void FormGenerateOrOpen_HelpButtonClicked(object sender, CancelEventArgs e)
         {
-            MessageBox.Show("Программа для генерации полей для MAPF и алгоритм решения данной задачи. \n\nСсылка на GitHub: \nhttps://github.com/leviathan-7/MAPF_System", "О программе.", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
+            (new FormAbout()).Show();
             if (!(e is null))
                 e.Cancel = true;
         }
