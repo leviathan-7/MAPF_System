@@ -16,13 +16,15 @@ namespace MAPF_System
         private bool wasvisited;
         private int idVisit;
         private bool isBad;
+        private bool isTunell;
 
-        public Cell(bool isBlock, bool wasvisited = false, int idVisit = -1, bool isBad = false)
+        public Cell(bool isBlock, bool wasvisited = false, int idVisit = -1, bool isBad = false, bool isTunell = false)
         {
             this.isBlock = isBlock;
             this.wasvisited = wasvisited;
             this.idVisit = idVisit;
             this.isBad = isBad;
+            this.isTunell = isTunell;
         }
         public Cell(string str)
         {
@@ -32,8 +34,9 @@ namespace MAPF_System
             wasvisited = arr[1] == "True";
             idVisit = int.Parse(arr[2]);
             isBad = arr[3] == "True";
+            isTunell = isBad;
         }
-        public Cell CopyWithoutBlock() { return new Cell(false, wasvisited, idVisit, isBad); }
+        public Cell CopyWithoutBlock() { return new Cell(false, wasvisited, idVisit, isBad, isTunell); }
         public int IdVisit() { return idVisit; }
         public string ToStr() { return isBlock + " " + wasvisited + " " + idVisit + " " + isBad; }
         public void MakeVisit(int n)
@@ -42,9 +45,11 @@ namespace MAPF_System
             idVisit = n;
         }
         public void MakeBad() { isBad = true; }
+        public void MakeTunell() { isTunell = true; }
         public void MakeBlock() { isBlock = true; }
         public bool IsBad() { return isBad; }
         public bool IsBlock() { return isBlock; }
+        public bool IsTunell() { return isTunell; }
         public bool WasVisit() { return wasvisited; }
 
     }

@@ -185,6 +185,35 @@ namespace MAPF_System
                     break;
                 KolBad += k;
             }
+            // Добавить узлы -- части туннелей
+            while (true)
+            {
+                int k = 0;
+                for (int i = 0; i < X; i++)
+                    for (int j = 0; j < Y; j++)
+                    {
+                        if (!(IsTunell(i, j) || Arr[i, j].IsTunell()))
+                        {
+                            int kk = 0;
+                            if (!IsEmpthy(i - 1, j) || IsTunell(i - 1, j))
+                                kk++;
+                            if (!IsEmpthy(i + 1, j) || IsTunell(i + 1, j))
+                                kk++;
+                            if (!IsEmpthy(i, j - 1) || IsTunell(i, j - 1))
+                                kk++;
+                            if (!IsEmpthy(i, j + 1) || IsTunell(i, j + 1))
+                                kk++;
+                            if (kk == 3)
+                            {
+                                Arr[i, j].MakeTunell();
+                                k++;
+                            }
+                        }
+                    }
+
+                if (k == 0)
+                    break;
+            }
             // Сделать шаг теми юнитами, которые еще не достигли своей цели, при этом давая приоритет тем юнитам, которые дальше от цели
             List<Unit> Was_near_end_units = new List<Unit>();
             List<Unit> NOT_Was_near_end_units = new List<Unit>();
@@ -213,6 +242,15 @@ namespace MAPF_System
         {
             // Проверка на выход за пределы поля
             if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
+                return false;
+            return !Arr[x, y].IsBlock();
+        }
+        public bool IsEmpthyAndNoTunel(int x, int y)
+        {
+            // Проверка на выход за пределы поля
+            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
+                return false;
+            if (Arr[x, y].IsTunell())
                 return false;
             return !Arr[x, y].IsBlock();
         }
@@ -344,6 +382,13 @@ namespace MAPF_System
             if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
                 return false;
             return Arr[x, y].IsBad();
+        }
+        private bool IsTunell(int x, int y)
+        {
+            // Проверка на выход за пределы поля
+            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
+                return false;
+            return Arr[x, y].IsTunell();
         }
         private bool IsBlock(int x, int y)
         {

@@ -145,15 +145,15 @@ namespace MAPF_System
                 return false;
             // Проверяем, надо ли ставить флаг того, что 2 юнита оказались в тупике и им надо на места друг-друга
             int t = 0;
-            if (!Board.IsEmpthy(x, y - 1))
+            if (!Board.IsEmpthyAndNoTunel(x, y - 1))
                 t++;
-            if (!Board.IsEmpthy(x, y + 1))
+            if (!Board.IsEmpthyAndNoTunel(x, y + 1))
                 t++;
-            if (!Board.IsEmpthy(x - 1, y))
+            if (!Board.IsEmpthyAndNoTunel(x - 1, y))
                 t++;
-            if (!Board.IsEmpthy(x + 1, y))
+            if (!Board.IsEmpthyAndNoTunel(x + 1, y))
                 t++;
-            if ((h(x, y) == 1) && (t == 3 || t == 2))
+            if ((h(x, y) == 1) && (t >= 2))
                 flag = signal;
             if (flag)
             {
