@@ -48,8 +48,7 @@ namespace MAPF_System
 
         private void button_Start_Click(object sender, EventArgs e)
         {
-            bool b = int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star);
-            if (!b || (kol_iter_a_star < 7) || (kol_iter_a_star > 15))
+            if (!int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star) || (kol_iter_a_star < 7) || (kol_iter_a_star > 15))
             {
                 SystemSounds.Beep.Play();
                 label_Error.Text = "Глубина не верна!";
@@ -61,13 +60,12 @@ namespace MAPF_System
             int i = 0;
             while (!TimeBoard.IsEnd() && (i++) < (N-1))
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
-            (new FormAlgorithm(TimeBoard, out bool bbbb, i, i == N, "" + kol_iter_a_star, true)).Show();
+            (new FormAlgorithm(TimeBoard, out _, i, i == N, "" + kol_iter_a_star, true)).Show();
         }
 
         private void button_Step_Click(object sender, EventArgs e)
         {
-            bool b = int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star);
-            if (!b || (kol_iter_a_star < 7) || (kol_iter_a_star > 15))
+            if (!int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star) || (kol_iter_a_star < 7) || (kol_iter_a_star > 15))
             {
                 SystemSounds.Beep.Play();
                 label_Error.Text = "Глубина не верна!";
@@ -84,6 +82,8 @@ namespace MAPF_System
                 if (MessageBox.Show("Далее?", "▶▶", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
                 {
                     F.Close();
+                    if (!(FF is null))
+                        FF.Close();
                     return;
                 }
                 if (!(FF is null))

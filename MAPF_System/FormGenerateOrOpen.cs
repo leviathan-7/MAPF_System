@@ -97,28 +97,25 @@ namespace MAPF_System
                     table.Columns.Add("Имя файла", typeof(string));
                     table.Columns.Add("Колличество шагов", typeof(string));
                     int a = 0, b = 0;
-                    foreach (var filePath in Directory.GetFiles(folderDialog.SelectedPath))
+                    foreach (var f in (from f in Directory.GetFiles(folderDialog.SelectedPath) where Path.GetExtension(f).ToLower() == ".board" select f))
                     {
-                        if (Path.GetExtension(filePath).ToLower() == ".board")
+                        Board Board = new Board(f);
+                        int kol_iter_a_star = 7;
+                        // Максимальное колличество итераций
+                        int N = 5000;
+                        Board TimeBoard = Board.CopyWithoutBlocks();
+                        int i = 0;
+                        while (!TimeBoard.IsEnd() && (i++) < (N - 1))
+                            TimeBoard.MakeStep(Board, kol_iter_a_star);
+                        if (i == N)
                         {
-                            Board Board = new Board(filePath);
-                            int kol_iter_a_star = 7;
-                            // Максимальное колличество итераций
-                            int N = 5000;
-                            Board TimeBoard = Board.CopyWithoutBlocks();
-                            int i = 0;
-                            while (!TimeBoard.IsEnd() && (i++) < (N - 1))
-                                TimeBoard.MakeStep(Board, kol_iter_a_star);
-                            if (i == N)
-                            {
-                                table.Rows.Add(filePath.Split('\\').Last(), "Ошибка");
-                                a++;
-                            }
-                            else
-                            {
-                                table.Rows.Add(filePath.Split('\\').Last(), "" + i);
-                                b++;
-                            }
+                            table.Rows.Add(f.Split('\\').Last(), "Ошибка");
+                            a++;
+                        }
+                        else
+                        {
+                            table.Rows.Add(f.Split('\\').Last(), "" + i);
+                            b++;
                         }
                     }
                     table.WriteXml(folderDialog.SelectedPath + "\\results.xml");
