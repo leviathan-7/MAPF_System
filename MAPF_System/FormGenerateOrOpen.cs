@@ -89,15 +89,15 @@ namespace MAPF_System
         {
             label_Error.Text = "";
             label11.Text = "⏳";
-            using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
             {
-                if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (fbd.ShowDialog() == DialogResult.OK)
                 {
                     DataTable table = new DataTable("results");
                     table.Columns.Add("Имя файла", typeof(string));
                     table.Columns.Add("Колличество шагов", typeof(string));
                     int a = 0, b = 0;
-                    foreach (var f in (from f in Directory.GetFiles(folderDialog.SelectedPath) where Path.GetExtension(f).ToLower() == ".board" select f))
+                    foreach (var f in (from f in Directory.GetFiles(fbd.SelectedPath) where Path.GetExtension(f).ToLower() == ".board" select f))
                     {
                         Board Board = new Board(f);
                         int kol_iter_a_star = 7;
@@ -118,10 +118,10 @@ namespace MAPF_System
                             b++;
                         }
                     }
-                    table.WriteXml(folderDialog.SelectedPath + "\\results.xml");
+                    table.WriteXml(fbd.SelectedPath + "\\results.xml");
                     label11.Text = "";
-                    MessageBox.Show("Пройденно "+b+" из "+(a+b)+"\nРезультаты сохранены в файл results.xml", "", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    System.Diagnostics.Process.Start(folderDialog.SelectedPath);
+                    if(MessageBox.Show("Пройденно "+b+" из "+(a+b)+ "\nРезультаты сохранены в файл results.xml\nОткрыть файл?", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.OK)
+                        System.Diagnostics.Process.Start("results.xml");
                 }
                 label11.Text = "";
             }
@@ -130,14 +130,13 @@ namespace MAPF_System
         private void FormGenerateOrOpen_HelpButtonClicked(object sender, CancelEventArgs e)
         {
             (new FormAbout()).Show();
-            if (!(e is null))
-                e.Cancel = true;
+            e.Cancel = true;
         }
 
         private void FormGenerateOrOpen_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F1)
-                FormGenerateOrOpen_HelpButtonClicked(sender, null);
+                (new FormAbout()).Show();
         }
     }
 }
