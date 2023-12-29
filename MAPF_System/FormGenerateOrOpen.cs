@@ -18,11 +18,7 @@ namespace MAPF_System
         { 
             InitializeComponent();
             if (args.Length != 0)
-            {
-                FormAlgorithm F = new FormAlgorithm(new Board(args[0]), out bool b, 0, false, "7");
-                if (b)
-                    F.ShowDialog();
-            }
+                (new FormAlgorithm(new Board(args[0]), 0, false, "7")).ShowDialog();
         }
         
         private void button_Generation_Click(object sender, EventArgs e)
@@ -72,17 +68,15 @@ namespace MAPF_System
             }
 
             // Если все данные введены правильно
-            (new FormAlgorithm(new Board(X, Y, Blocks, Units), out _, 0, false, "7")).Show();
+            (new FormAlgorithm(new Board(X, Y, Blocks, Units), 0, false, "7")).Show();
         }
         
         private void button_Load_Click(object sender, EventArgs e) 
         {
             label_Error.Text = "";
             label12.Text = "⏳";
-            FormAlgorithm F = new FormAlgorithm(new Board(), out bool b, 0, false, "7");
+            (new FormAlgorithm(new Board(), 0, false, "7")).Show();
             label12.Text = "";
-            if (b)
-                F.Show();
         }
         
         private void button_BigStart_Click(object sender, EventArgs e)

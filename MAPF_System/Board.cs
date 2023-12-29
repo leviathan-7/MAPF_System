@@ -12,8 +12,7 @@ namespace MAPF_System
 {
     public class Board
     {
-        public List<Unit> Units;
-
+        private List<Unit> units;
         private Cell[,] Arr;
         private int X;
         private int Y;
@@ -33,13 +32,13 @@ namespace MAPF_System
             GenerationUnits(N_Units);
             GenerationBlocks();
         }
-        public Board(int X, int Y, Cell[,] Arr, List<Unit> Units, int KolBad, string name)
+        public Board(int X, int Y, Cell[,] Arr, List<Unit> units, int KolBad, string name)
         {
             this.name = name;
             this.X = X;
             this.Y = Y;
             this.Arr = Arr;
-            this.Units = Units;
+            this.units = units;
             this.KolBad = KolBad;
         }
         public Board()
@@ -58,7 +57,7 @@ namespace MAPF_System
             Cell[,] CopyArr = new Cell[X, Y];
             List<Unit> CopyUnits = new List<Unit>();
             // Скопировать юнитов
-            foreach (var Unit in Units)
+            foreach (var Unit in units)
                 CopyUnits.Add(Unit.Copy());
             // Скопировать доску без блоков
             for (int i = 0; i < X; i++)
@@ -70,16 +69,21 @@ namespace MAPF_System
         public void Draw(Graphics t)
         {
             int height = 17;
-            int YY = 110;
-            int XX = 10;
+            int YY = 115;
+            int XX = 15;
             using (Graphics g = t)
             {
                 g.Clear(SystemColors.Control); // Clear the draw area
                 using (Pen pen = new Pen(Color.Blue, 1))
                 {
+                    var Font = new Font("Arial", 9, FontStyle.Bold);
                     for (int i = 0; i < X; i++)
+                    {
+                        g.DrawString("" + i, new Font("Arial", 7, FontStyle.Bold), Brushes.Coral, new Point(XX + 9 + height * i, YY - 7));
                         for (int j = 0; j < Y; j++)
                         {
+                            g.DrawString("" + j, new Font("Arial", 7, FontStyle.Bold), Brushes.Coral, new Point(XX - 7, YY + 9 + height * j));
+
                             Rectangle rect = new Rectangle(new Point(XX + 5 + height * i, YY + 5 + height * j), new Size(height, height));
                             g.DrawRectangle(pen, rect);
                             // Отрисовка блоков
@@ -88,22 +92,22 @@ namespace MAPF_System
                             // Отрисовка пройденного пути
                             if (Arr[i, j].WasVisit())
                             {
-                                int W = 100 + 100 * (Arr[i, j].IdVisit() + 1) / Units.Count;
+                                int W = 100 + 100 * (Arr[i, j].IdVisit() + 1) / units.Count;
                                 g.FillRectangle(new SolidBrush(Color.FromArgb(W, W, 255)), rect);
                             }
                             // Отрисовка плохих узлов
                             if (Arr[i, j].IsBad())
                                 g.DrawString("X", new Font("Arial", 7, FontStyle.Bold), Brushes.Red, new Point(XX + 9 + height * i, YY + 9 + height * j));
                         }
+                    }
 
-                    var Font = new Font("Arial", 9, FontStyle.Bold);
-                    foreach (var Unit in Units)
+                    foreach (var Unit in units)
                     {
                         // Отрисовка цели
                         g.FillRectangle(Brushes.LawnGreen, new Rectangle(new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()), new Size(height - 5, height - 5)));
                         g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()));
                     }
-                    foreach (var Unit in Units)
+                    foreach (var Unit in units)
                     {
                         // Отрисовка юнитов
                         g.FillRectangle(Brushes.Red, new Rectangle(new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()), new Size(height - 5, height - 5)));
@@ -117,13 +121,13 @@ namespace MAPF_System
             try
             {
                 StreamWriter sw = (new FileInfo(name_ + ".board")).CreateText();
-                sw.WriteLine(X + " " + Y + " " + Units.Count + " " + KolBad);
+                sw.WriteLine(X + " " + Y + " " + units.Count + " " + KolBad);
                 // Записать в файл доску с блоками и пройденным путем
                 for (int i = 0; i < X; i++)
                     for (int j = 0; j < Y; j++)
                         sw.WriteLine(Arr[i, j].ToStr());
                 // Записать в файл юнитов
-                foreach (var item in Units)
+                foreach (var item in units)
                     sw.WriteLine(item.ToStr());
                 sw.Close();
                 name = name_ + ".board";
@@ -134,10 +138,10 @@ namespace MAPF_System
         public void MakeStep(Board Board, int kol_iter_a_star)
         {
             // Обнуление значений was_step
-            foreach (var Unit in Units)
+            foreach (var Unit in units)
                 Unit.NotWasStep();
             // Добавить блоки в пределах видимости юнитов
-            foreach (var Unit in Units)
+            foreach (var Unit in units)
             {
                 if (Board.IsBlock(Unit.X(), Unit.Y() - 1))
                     Arr[Unit.X(), Unit.Y() - 1].MakeBlock();
@@ -159,7 +163,7 @@ namespace MAPF_System
                         {
                             // Проверка на отсутсвие целей
                             bool b = true;
-                            foreach (var Unit in Units)
+                            foreach (var Unit in units)
                                 b = b && !((Unit.X_Purpose() == i) && (Unit.Y_Purpose() == j)) && !((Unit.X() == i) && (Unit.Y() == j));
                             if (b)
                             {
@@ -218,7 +222,7 @@ namespace MAPF_System
             List<Unit> Was_bool_step_units = new List<Unit>();
             List<Unit> Was_near_end_units = new List<Unit>();
             List<Unit> NOT_Was_near_end_units = new List<Unit>();
-            foreach (var Unit in Units)
+            foreach (var Unit in units)
                 if (Unit.Was_near_end())
                 {
                     if (Unit.Was_bool_step())
@@ -231,19 +235,19 @@ namespace MAPF_System
 
             foreach (var Unit in NOT_Was_near_end_units.OrderBy(u => -u.F()))
                 if (!Unit.IsEnd())
-                    Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
+                    Unit.MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
             foreach (var Unit in Was_near_end_units.OrderBy(u => -u.F()))
                 if (!Unit.IsEnd())
-                    Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
+                    Unit.MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
             foreach (var Unit in Was_bool_step_units.OrderBy(u => -u.F()))
                 if (!Unit.IsEnd())
-                    Unit.MakeStep(this, from u in Units where u != Unit select u, kol_iter_a_star);
+                    Unit.MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
         }
         public bool IsEnd()
         {
             bool b = true;
             // Проверяем, что все юниты дошли до своих целей
-            foreach (var Unit in Units)
+            foreach (var Unit in units)
                 b = b && Unit.IsRealEnd();
             return b;
         }
@@ -273,7 +277,8 @@ namespace MAPF_System
         public bool IsBadCell(int x, int y) { return Arr[x, y].IsBad(); }
         public void MakeVisit(int x, int y, int id) { Arr[x, y].MakeVisit(id); }
         public string Name() { return name; }
-        
+        public List<Unit> Units() { return units; }
+
         private void Constructor(string path)
         {
             try
@@ -298,10 +303,10 @@ namespace MAPF_System
                         t++;
                     }
                 // Создать юнитов по данным файла
-                Units = new List<Unit>();
+                units = new List<Unit>();
                 for (int i = 0; i < N_Units; i++)
                 {
-                    Units.Add(new Unit(readText[t], i, X, Y));
+                    units.Add(new Unit(readText[t], i, X, Y));
                     t++;
                 }
             }
@@ -361,7 +366,7 @@ namespace MAPF_System
         }
         private void GenerationUnits(int N_Units)
         {
-            Units = new List<Unit>();
+            units = new List<Unit>();
             int id = 0;
             while (N_Units > 0)
             {
@@ -373,13 +378,13 @@ namespace MAPF_System
 
                 bool b = (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
 
-                foreach (var Unit in Units)
+                foreach (var Unit in units)
                     b = b && !((Unit.X() == x) && (Unit.Y() == y)) && !((Unit.X_Purpose() == x_Purpose) && (Unit.Y_Purpose() == y_Purpose))
                         && !((Unit.X() == x_Purpose) && (Unit.Y() == y_Purpose)) && !((Unit.X_Purpose() == x) && (Unit.Y_Purpose() == y));
 
                 if (b)
                 {
-                    Units.Add(new Unit(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
+                    units.Add(new Unit(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
                     N_Units--;
                     id++;
                 }

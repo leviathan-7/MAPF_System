@@ -247,7 +247,7 @@ namespace MAPF_System
             bool bb = min_i != 4;
             was_step = true;
             if (!(UsUnits[min_i] is null))
-                bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units() where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             int min_i_1 = min_i;
             if (!bb)
             {
@@ -266,7 +266,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units() where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_2 = min_i;
             if (!bb)
@@ -286,7 +286,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units() where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_3 = min_i;
             if (!bb)
@@ -306,7 +306,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units() where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет
             if (!bb)

@@ -16,12 +16,8 @@ namespace MAPF_System
         private Board Board;
         private bool was_game;
 
-        public FormAlgorithm(Board Board, out bool b, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false)
+        public FormAlgorithm(Board Board, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false)
         {
-            b = false;
-            if (Board.Units is null)
-                return;
-            b = true;
             this.Board = Board;
             InitializeComponent();
             textBox_kol_iter_a_star.Text = str_kol_iter_a_star;
@@ -60,7 +56,7 @@ namespace MAPF_System
             int i = 0;
             while (!TimeBoard.IsEnd() && (i++) < (N-1))
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
-            (new FormAlgorithm(TimeBoard, out _, i, i == N, "" + kol_iter_a_star, true)).Show();
+            (new FormAlgorithm(TimeBoard, i, i == N, "" + kol_iter_a_star, true)).Show();
         }
 
         private void button_Step_Click(object sender, EventArgs e)
@@ -77,7 +73,7 @@ namespace MAPF_System
             while (!TimeBoard.IsEnd()) 
             {
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
-                FormAlgorithm F = new FormAlgorithm(TimeBoard, out _, i++, false, "" + kol_iter_a_star, true);
+                FormAlgorithm F = new FormAlgorithm(TimeBoard, i++, false, "" + kol_iter_a_star, true);
                 F.Show();
                 if (MessageBox.Show("Далее?", "▶▶", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
                 {
