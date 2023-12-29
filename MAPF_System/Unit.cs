@@ -20,6 +20,7 @@ namespace MAPF_System
         private int y_Purpose;
         private bool was_step;
         private bool was_near_end;
+        private bool was_bool_step;
         private bool flag;
         private int[,] Arr;
         private Unit last_AU;
@@ -69,6 +70,7 @@ namespace MAPF_System
         public int Id() { return id; }
         public float F() { return F_; }
         public bool Was_near_end() { return was_near_end; }
+        public bool Was_bool_step() { return was_bool_step; }
         public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
         public bool IsEnd(){ return IsRealEnd() && !flag; }
         public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
@@ -104,6 +106,7 @@ namespace MAPF_System
             was_step = (T.Item1 != -10);
             if (was_step)
             {
+                was_bool_step = false;
                 // Сохраняем прошлое местоположение юнита 
                 last__x = x;
                 last__y = y;
@@ -153,6 +156,9 @@ namespace MAPF_System
         
         private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, Unit AU)
         {
+            //MessageBox.Show(" id = " + id);
+            //if(id == 2)
+            //    MessageBox.Show("last__x = " + last__x + "  last__y = " + last__y);
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
                 return false;
@@ -187,6 +193,7 @@ namespace MAPF_System
             was_step = (T.Item1 != -10);
             if (was_step)
             {
+                was_bool_step = true;
                 // Сохраняем прошлое местоположение юнита 
                 last__x = x;
                 last__y = y;
@@ -310,20 +317,20 @@ namespace MAPF_System
             // Возвращаем подходящую нам клетку
             return new Tuple<int, float>(min_i, min);
         }
-        private void IfBoardIsEmpthy(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool b = false)
+        private void IfBoardIsEmpthy(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool is_bool_step = false)
         {
-            if (Board.IsEmpthy(x, y - 1) && (!((last__x == x) && (last__y == y - 1)) || b))
-                GetUnitAndF(0, hh, ff, UsUnits, x, y - 1, x, y, Board, kol_iter_a_star, AnotherUnits);
-            if (Board.IsEmpthy(x, y + 1) && (!((last__x == x) && (last__y == y + 1)) || b))
-                GetUnitAndF(1, hh, ff, UsUnits, x, y + 1, x, y, Board, kol_iter_a_star, AnotherUnits);
-            if (Board.IsEmpthy(x - 1, y) && (!((last__x == x - 1) && (last__y == y)) || b))
-                GetUnitAndF(2, hh, ff, UsUnits, x - 1, y, x, y, Board, kol_iter_a_star, AnotherUnits);
-            if (Board.IsEmpthy(x + 1, y) && (!((last__x == x + 1) && (last__y == y)) || b))
-                GetUnitAndF(3, hh, ff, UsUnits, x + 1, y, x, y, Board, kol_iter_a_star, AnotherUnits);
+            if (Board.IsEmpthy(x, y - 1) && (!((last__x == x) && (last__y == y - 1)) || is_bool_step))
+                GetUnitAndF(0, hh, ff, UsUnits, x, y - 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+            if (Board.IsEmpthy(x, y + 1) && (!((last__x == x) && (last__y == y + 1)) || is_bool_step))
+                GetUnitAndF(1, hh, ff, UsUnits, x, y + 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+            if (Board.IsEmpthy(x - 1, y) && (!((last__x == x - 1) && (last__y == y)) || is_bool_step))
+                GetUnitAndF(2, hh, ff, UsUnits, x - 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+            if (Board.IsEmpthy(x + 1, y) && (!((last__x == x + 1) && (last__y == y)) || is_bool_step))
+                GetUnitAndF(3, hh, ff, UsUnits, x + 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
         }
-        private void GetUnitAndF(int i, List<float> hh, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits)
+        private void GetUnitAndF(int i, List<float> hh, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits, bool is_bool_step)
         {
-            ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y);
+            ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step);
             // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
             if (!was_near_end && (ff[i] != 0))
                 ff[i] += Arr[x0, y0];
@@ -345,14 +352,20 @@ namespace MAPF_System
                     return;
                 }
         }
-        private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y)
+        private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step = false)
         {
             // Стоимость нулевая, если юнит достиг цели
             if ((x == x_Purpose) && (y == y_Purpose))
                 return 0;
             // Случай, когда узел плохой
             if (Board.IsBadCell(x, y))
+            {
+                // В случае "выталкивания", плохой случай наоборот считается хорошим
+                if (is_bool_step && !Board.IsTunell(last_x, last_y))
+                    return 1;
                 return int.MaxValue - 100;
+            }
+                
             // Если глубина не достигнута, тогда рассматриваем клетки, в которвые можем попасть
             if (kol_iter_a_star != 0)
             {
