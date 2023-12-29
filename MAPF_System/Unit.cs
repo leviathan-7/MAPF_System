@@ -156,9 +156,6 @@ namespace MAPF_System
         
         private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, Unit AU)
         {
-            //MessageBox.Show(" id = " + id);
-            //if(id == 2)
-            //    MessageBox.Show("last__x = " + last__x + "  last__y = " + last__y);
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
                 return false;

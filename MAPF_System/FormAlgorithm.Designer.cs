@@ -38,12 +38,12 @@ namespace MAPF_System
             this.label2 = new System.Windows.Forms.Label();
             this.textBox_kol_iter_a_star = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button_Start = new CustomControls.RJControls.RJButton();
+            this.button_Step = new CustomControls.RJControls.RJButton();
+            this.button_Save = new CustomControls.RJControls.RJButton();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.button_Save = new CustomControls.RJControls.RJButton();
-            this.button_Step = new CustomControls.RJControls.RJButton();
-            this.button_Start = new CustomControls.RJControls.RJButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -134,10 +134,73 @@ namespace MAPF_System
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             // 
+            // button_Start
+            // 
+            this.button_Start.BackColor = System.Drawing.Color.SkyBlue;
+            this.button_Start.BackgroundColor = System.Drawing.Color.SkyBlue;
+            this.button_Start.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.button_Start.BorderRadius = 10;
+            this.button_Start.BorderSize = 1;
+            this.button_Start.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_Start.FlatAppearance.BorderSize = 0;
+            this.button_Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.button_Start.ForeColor = System.Drawing.Color.Black;
+            this.button_Start.Location = new System.Drawing.Point(26, 37);
+            this.button_Start.Name = "button_Start";
+            this.button_Start.Size = new System.Drawing.Size(145, 45);
+            this.button_Start.TabIndex = 19;
+            this.button_Start.Text = "▶  Запустить";
+            this.button_Start.TextColor = System.Drawing.Color.Black;
+            this.button_Start.UseVisualStyleBackColor = false;
+            this.button_Start.Click += new System.EventHandler(this.button_Start_Click);
+            // 
+            // button_Step
+            // 
+            this.button_Step.BackColor = System.Drawing.Color.SkyBlue;
+            this.button_Step.BackgroundColor = System.Drawing.Color.SkyBlue;
+            this.button_Step.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.button_Step.BorderRadius = 10;
+            this.button_Step.BorderSize = 1;
+            this.button_Step.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_Step.FlatAppearance.BorderSize = 0;
+            this.button_Step.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_Step.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.button_Step.ForeColor = System.Drawing.Color.Black;
+            this.button_Step.Location = new System.Drawing.Point(436, 37);
+            this.button_Step.Name = "button_Step";
+            this.button_Step.Size = new System.Drawing.Size(145, 45);
+            this.button_Step.TabIndex = 20;
+            this.button_Step.Text = "▶▶  Пошагово";
+            this.button_Step.TextColor = System.Drawing.Color.Black;
+            this.button_Step.UseVisualStyleBackColor = false;
+            this.button_Step.Click += new System.EventHandler(this.button_Step_Click);
+            // 
+            // button_Save
+            // 
+            this.button_Save.BackColor = System.Drawing.Color.SkyBlue;
+            this.button_Save.BackgroundColor = System.Drawing.Color.SkyBlue;
+            this.button_Save.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.button_Save.BorderRadius = 10;
+            this.button_Save.BorderSize = 1;
+            this.button_Save.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_Save.FlatAppearance.BorderSize = 0;
+            this.button_Save.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_Save.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.button_Save.ForeColor = System.Drawing.Color.Black;
+            this.button_Save.Location = new System.Drawing.Point(773, 37);
+            this.button_Save.Name = "button_Save";
+            this.button_Save.Size = new System.Drawing.Size(145, 45);
+            this.button_Save.TabIndex = 21;
+            this.button_Save.Text = "💾  Сохранить";
+            this.button_Save.TextColor = System.Drawing.Color.Black;
+            this.button_Save.UseVisualStyleBackColor = false;
+            this.button_Save.Click += new System.EventHandler(this.button_Save_Click);
+            // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label5.Location = new System.Drawing.Point(32, 7);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(0, 18);
@@ -164,69 +227,6 @@ namespace MAPF_System
             this.label3.Size = new System.Drawing.Size(294, 18);
             this.label3.TabIndex = 19;
             this.label3.Text = "Cntrl+S - Сохранить; Esc - Закрыть окно;";
-            // 
-            // button_Save
-            // 
-            this.button_Save.BackColor = System.Drawing.Color.SkyBlue;
-            this.button_Save.BackgroundColor = System.Drawing.Color.SkyBlue;
-            this.button_Save.BorderColor = System.Drawing.Color.LightSlateGray;
-            this.button_Save.BorderRadius = 10;
-            this.button_Save.BorderSize = 1;
-            this.button_Save.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button_Save.FlatAppearance.BorderSize = 0;
-            this.button_Save.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_Save.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.button_Save.ForeColor = System.Drawing.Color.Black;
-            this.button_Save.Location = new System.Drawing.Point(773, 37);
-            this.button_Save.Name = "button_Save";
-            this.button_Save.Size = new System.Drawing.Size(145, 45);
-            this.button_Save.TabIndex = 21;
-            this.button_Save.Text = "💾  Сохранить";
-            this.button_Save.TextColor = System.Drawing.Color.Black;
-            this.button_Save.UseVisualStyleBackColor = false;
-            this.button_Save.Click += new System.EventHandler(this.button_Save_Click);
-            // 
-            // button_Step
-            // 
-            this.button_Step.BackColor = System.Drawing.Color.SkyBlue;
-            this.button_Step.BackgroundColor = System.Drawing.Color.SkyBlue;
-            this.button_Step.BorderColor = System.Drawing.Color.LightSlateGray;
-            this.button_Step.BorderRadius = 10;
-            this.button_Step.BorderSize = 1;
-            this.button_Step.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button_Step.FlatAppearance.BorderSize = 0;
-            this.button_Step.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_Step.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.button_Step.ForeColor = System.Drawing.Color.Black;
-            this.button_Step.Location = new System.Drawing.Point(436, 37);
-            this.button_Step.Name = "button_Step";
-            this.button_Step.Size = new System.Drawing.Size(145, 45);
-            this.button_Step.TabIndex = 20;
-            this.button_Step.Text = "▶▶  Пошагово";
-            this.button_Step.TextColor = System.Drawing.Color.Black;
-            this.button_Step.UseVisualStyleBackColor = false;
-            this.button_Step.Click += new System.EventHandler(this.button_Step_Click);
-            // 
-            // button_Start
-            // 
-            this.button_Start.BackColor = System.Drawing.Color.SkyBlue;
-            this.button_Start.BackgroundColor = System.Drawing.Color.SkyBlue;
-            this.button_Start.BorderColor = System.Drawing.Color.LightSlateGray;
-            this.button_Start.BorderRadius = 10;
-            this.button_Start.BorderSize = 1;
-            this.button_Start.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.button_Start.FlatAppearance.BorderSize = 0;
-            this.button_Start.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.button_Start.ForeColor = System.Drawing.Color.Black;
-            this.button_Start.Location = new System.Drawing.Point(26, 37);
-            this.button_Start.Name = "button_Start";
-            this.button_Start.Size = new System.Drawing.Size(145, 45);
-            this.button_Start.TabIndex = 19;
-            this.button_Start.Text = "▶  Запустить";
-            this.button_Start.TextColor = System.Drawing.Color.Black;
-            this.button_Start.UseVisualStyleBackColor = false;
-            this.button_Start.Click += new System.EventHandler(this.button_Start_Click);
             // 
             // FormAlgorithm
             // 
