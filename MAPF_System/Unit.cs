@@ -74,6 +74,7 @@ namespace MAPF_System
         public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
         public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star)
         {
+            bool flagflag = flag;
             // Обнуление флага, когда юнит прошел через свою цель
             if (flag && (x == x_Purpose) && (y == y_Purpose))
                 flag = false;
@@ -135,6 +136,18 @@ namespace MAPF_System
             {
                 last__x = -1;
                 last__y = -1;
+                // Добавление дополнительного флага, в случае, когда юнит с флагом не вышел из туннеля
+                int t = 0;
+                if (Board.IsEmpthy(x - 1, y))
+                    t++;
+                if (Board.IsEmpthy(x + 1, y))
+                    t++;
+                if (Board.IsEmpthy(x, y - 1))
+                    t++;
+                if (Board.IsEmpthy(x, y + 1))
+                    t++;
+                if (t != 1)
+                    flag = flagflag;
             }
         }
         
