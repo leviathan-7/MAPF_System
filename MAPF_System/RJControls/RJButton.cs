@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -74,10 +73,8 @@ namespace CustomControls.RJControls
             Size = new Size(150, 40);
             BackColor = Color.MediumSlateBlue;
             ForeColor = Color.White;
-            Resize += new EventHandler(Button_Resize);
         }
 
-        //Methods
         private GraphicsPath GetFigurePath(Rectangle rect, int radius)
         {
             GraphicsPath path = new GraphicsPath();
@@ -137,20 +134,6 @@ namespace CustomControls.RJControls
                 }
             }
         }
-        protected override void OnHandleCreated(EventArgs e)
-        {
-            base.OnHandleCreated(e);
-            Parent.BackColorChanged += new EventHandler(Container_BackColorChanged);
-        }
 
-        private void Container_BackColorChanged(object sender, EventArgs e)
-        {
-            Invalidate();
-        }
-        private void Button_Resize(object sender, EventArgs e)
-        {
-            if (borderRadius > Height)
-                borderRadius = Height;
-        }
     }
 }

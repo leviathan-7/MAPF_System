@@ -36,7 +36,7 @@ namespace MAPF_System
                 label_Error.Text = "Вы ввели не число!";
                 return;
             }
-            if ((X > 50) || (Y > 50))
+            if ((X > 45) || (Y > 45))
             {
                 SystemSounds.Beep.Play();
                 label_Error.Text = "Размер поля превышает пределы!";

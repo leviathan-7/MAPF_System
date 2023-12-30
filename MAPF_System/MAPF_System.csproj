@@ -139,5 +139,6 @@
   <ItemGroup>
     <Content Include="mapf_img.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

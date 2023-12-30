@@ -68,7 +68,7 @@ namespace MAPF_System
         }
         public void Draw(Graphics t)
         {
-            int height = 17;
+            int height = 18;
             int YY = 115;
             int XX = 15;
             using (Graphics g = t)

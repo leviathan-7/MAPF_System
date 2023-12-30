@@ -89,7 +89,7 @@ namespace MAPF_System
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(162, 18);
             this.label2.TabIndex = 5;
-            this.label2.Text = "Размер поля Y <= 50 :";
+            this.label2.Text = "Размер поля Y <= 45 :";
             // 
             // label3
             // 
@@ -109,7 +109,7 @@ namespace MAPF_System
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(163, 18);
             this.label1.TabIndex = 8;
-            this.label1.Text = "Размер поля X <= 50 :";
+            this.label1.Text = "Размер поля X <= 45 :";
             // 
             // label4
             // 
