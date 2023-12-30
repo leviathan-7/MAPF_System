@@ -88,8 +88,8 @@ namespace MAPF_System
             {
                 last__x = -1;
                 last__y = -1;
-                last_AU = null;
             }
+            last_AU = null;
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
             // Список значений расстояний для каждой клетки
