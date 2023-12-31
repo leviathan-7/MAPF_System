@@ -69,6 +69,8 @@ namespace MAPF_System
         public void Draw(Graphics t)
         {
             int height = 18;
+            if (Math.Max(X, Y) < 30)
+                height = 24;
             int YY = 115;
             int XX = 15;
             using (Graphics g = t)
@@ -76,15 +78,17 @@ namespace MAPF_System
                 g.Clear(SystemColors.Control); // Clear the draw area
                 using (Pen pen = new Pen(Color.Blue, 1))
                 {
+                    var Size = new Size(height, height);
                     var Font = new Font("Arial", 9, FontStyle.Bold);
+                    var Font1 = new Font("Arial", 7, FontStyle.Bold);
                     for (int i = 0; i < X; i++)
                     {
-                        g.DrawString("" + i, new Font("Arial", 7, FontStyle.Bold), Brushes.Coral, new Point(XX + 9 + height * i, YY - 7));
+                        g.DrawString("" + i, Font1, Brushes.Coral, new Point(XX + 9 + height * i, YY - 7));
                         for (int j = 0; j < Y; j++)
                         {
-                            g.DrawString("" + j, new Font("Arial", 7, FontStyle.Bold), Brushes.Coral, new Point(XX - 7, YY + 9 + height * j));
+                            g.DrawString("" + j, Font1, Brushes.Coral, new Point(XX - 7, YY + 9 + height * j));
 
-                            Rectangle rect = new Rectangle(new Point(XX + 5 + height * i, YY + 5 + height * j), new Size(height, height));
+                            Rectangle rect = new Rectangle(new Point(XX + 5 + height * i, YY + 5 + height * j), Size);
                             g.DrawRectangle(pen, rect);
                             // Отрисовка блоков
                             if (Arr[i, j].IsBlock())
@@ -97,20 +101,17 @@ namespace MAPF_System
                             }
                             // Отрисовка плохих узлов
                             if (Arr[i, j].IsBad())
-                                g.DrawString("X", new Font("Arial", 7, FontStyle.Bold), Brushes.Red, new Point(XX + 9 + height * i, YY + 9 + height * j));
+                                g.DrawString("X", Font1, Brushes.Red, new Point(XX + 9 + height * i, YY + 9 + height * j));
                         }
                     }
-
+                    Size = new Size(height - 5, height - 5);
                     foreach (var Unit in units)
                     {
                         // Отрисовка цели
-                        g.FillRectangle(Brushes.LawnGreen, new Rectangle(new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()), new Size(height - 5, height - 5)));
+                        g.FillRectangle(Brushes.LawnGreen, new Rectangle(new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()), Size));
                         g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()));
-                    }
-                    foreach (var Unit in units)
-                    {
                         // Отрисовка юнитов
-                        g.FillRectangle(Brushes.Red, new Rectangle(new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()), new Size(height - 5, height - 5)));
+                        g.FillRectangle(Brushes.Red, new Rectangle(new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()), Size));
                         g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()));
                     }
                 }
@@ -196,7 +197,7 @@ namespace MAPF_System
                 for (int i = 0; i < X; i++)
                     for (int j = 0; j < Y; j++)
                     {
-                        if (!(IsTunell(i, j) || Arr[i, j].IsTunell()))
+                        if (!(IsTunell(i, j) || Arr[i, j].IsBlock()))
                         {
                             int kk = 0;
                             if (!IsEmpthy(i - 1, j) || IsTunell(i - 1, j))
