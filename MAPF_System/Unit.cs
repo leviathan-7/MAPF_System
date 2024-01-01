@@ -21,10 +21,11 @@ namespace MAPF_System
         private bool was_step;
         private bool was_near_end;
         private bool was_bool_step;
-        private bool flag;
         private int[,] Arr;
         private Unit last_AU;
         private float F_;
+
+        public bool flag;
 
         public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) {
             this.id = id;
@@ -74,7 +75,6 @@ namespace MAPF_System
         public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
         public bool IsEnd(){ return IsRealEnd() && !flag; }
         public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
-        public void MakeFlag() { flag = true; }
         public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star)
         {
             bool flagflag = flag;

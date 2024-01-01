@@ -31,9 +31,11 @@ namespace MAPF_System
             bool b = true;
             foreach (var Unit in tunell_units)
             {
-                b = b && Unit.IsEnd();
-                if (Unit.IsEnd() && !b)
-                    Unit.MakeFlag();
+                if (Unit.IsRealEnd())
+                    Unit.flag = false;
+                b = b && Unit.IsRealEnd();
+                if (Unit.IsRealEnd() && !b)
+                    Unit.flag = true;
             }
         }
         public int Id()
