@@ -13,6 +13,7 @@ namespace MAPF_System
     public class Board
     {
         private List<Unit> units;
+        private List<Tunell> tunells;
         private Cell[,] Arr;
         private int X;
         private int Y;
@@ -28,11 +29,12 @@ namespace MAPF_System
             Arr = new Cell[X, Y];
             rnd = new Random();
             KolBad = 0;
+            tunells = new List<Tunell>();
             GenerationDefaults(Blocks);
             GenerationUnits(N_Units);
             GenerationBlocks();
         }
-        public Board(int X, int Y, Cell[,] Arr, List<Unit> units, int KolBad, string name)
+        public Board(int X, int Y, Cell[,] Arr, List<Unit> units, int KolBad, string name, List<Tunell> tunells)
         {
             this.name = name;
             this.X = X;
@@ -40,6 +42,7 @@ namespace MAPF_System
             this.Arr = Arr;
             this.units = units;
             this.KolBad = KolBad;
+            this.tunells = tunells;
         }
         public Board()
         {
@@ -64,7 +67,7 @@ namespace MAPF_System
                 for (int j = 0; j < Y; j++)
                     CopyArr[i, j] = Arr[i, j].CopyWithoutBlock();
 
-            return new Board(X, Y, CopyArr, CopyUnits, KolBad, name);
+            return new Board(X, Y, CopyArr, CopyUnits, KolBad, name, tunells);
         }
         public void Draw(Graphics t)
         {
@@ -215,12 +218,79 @@ namespace MAPF_System
                             {
                                 Arr[i, j].MakeTunell();
                                 k++;
+
+                                int kkk = 0;
+                                if (!IsEmpthy(i - 1, j) || TunellIsNotNull(i - 1, j))
+                                    kkk++;
+                                if (!IsEmpthy(i + 1, j) || TunellIsNotNull(i + 1, j))
+                                    kkk++;
+                                if (!IsEmpthy(i, j - 1) || TunellIsNotNull(i, j - 1))
+                                    kkk++;
+                                if (!IsEmpthy(i, j + 1) || TunellIsNotNull(i, j + 1))
+                                    kkk++;
+                                if (kkk == 3)
+                                {
+                                    int e = 0;
+                                    Tunell T = null;
+                                    if (TunellIsNotNull(i - 1, j))
+                                    {
+                                        e++;
+                                        T = Arr[i - 1, j].Tunell;
+                                    }
+                                    if (TunellIsNotNull(i + 1, j))
+                                    {
+                                        e++;
+                                        T = Arr[i + 1, j].Tunell;
+                                    }
+                                    if (TunellIsNotNull(i, j - 1))
+                                    {
+                                        e++;
+                                        T = Arr[i, j - 1].Tunell;
+                                    }
+                                    if (TunellIsNotNull(i, j + 1))
+                                    {
+                                        e++;
+                                        T = Arr[i, j + 1].Tunell;
+                                    }
+                                    if (e == 1)
+                                    {
+                                        Arr[i, j].Tunell = T;
+                                        T.Add(i, j);
+                                    }
+                                    if (e == 0)
+                                    {
+                                        kkk = 0;
+                                        if (!IsEmpthy(i - 1, j))
+                                            kkk++;
+                                        if (!IsEmpthy(i + 1, j))
+                                            kkk++;
+                                        if (!IsEmpthy(i, j - 1))
+                                            kkk++;
+                                        if (!IsEmpthy(i, j + 1))
+                                            kkk++;
+                                        if (kkk == 3)
+                                        {
+                                            T = new Tunell(units);
+                                            Arr[i, j].Tunell = T;
+                                            tunells.Add(T);
+                                            T.Add(i, j);
+                                        }
+                                    }
+                                }
+
+
+                                
                             }
                         }
                     }
 
                 if (k == 0)
                     break;
+            }
+            // Поставить флаги юнитам, которые в простом туннеле перегораживают проезд
+            foreach (var t in tunells)
+            {
+                t.MakeFlags();
             }
             // Сделать шаг теми юнитами, которые еще не достигли своей цели, при этом давая приоритет тем юнитам, которые дальше от цели
             List<Unit> Was_bool_step_units = new List<Unit>();
@@ -278,10 +348,21 @@ namespace MAPF_System
                 return false;
             return Arr[x, y].IsTunell();
         }
+        public bool TunellIsNotNull(int x, int y)
+        {
+            // Проверка на выход за пределы поля
+            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
+                return false;
+            return !(Arr[x, y].Tunell is null);
+        }
         public bool IsBadCell(int x, int y) { return Arr[x, y].IsBad(); }
         public void MakeVisit(int x, int y, int id) { Arr[x, y].MakeVisit(id); }
         public string Name() { return name; }
         public List<Unit> Units() { return units; }
+        public int TunellId(int x, int y)
+        {
+            return Arr[x, y].Tunell.Id();
+        }
 
         private void Constructor(string path)
         {
@@ -313,6 +394,7 @@ namespace MAPF_System
                     units.Add(new Unit(readText[t], i, X, Y));
                     t++;
                 }
+                tunells = new List<Tunell>();
             }
             catch (Exception e) 
             {
@@ -415,6 +497,6 @@ namespace MAPF_System
                 return false;
             return Arr[x, y].IsBlock();
         }
-    
+        
     }
 }

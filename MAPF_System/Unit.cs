@@ -74,6 +74,7 @@ namespace MAPF_System
         public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
         public bool IsEnd(){ return IsRealEnd() && !flag; }
         public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
+        public void MakeFlag() { flag = true; }
         public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star)
         {
             bool flagflag = flag;
@@ -368,6 +369,14 @@ namespace MAPF_System
                 if (is_bool_step && !Board.IsTunell(last_x, last_y))
                     return 1;
                 return int.MaxValue - 100;
+            }
+            // Случай, когда простой туннель
+            if (Board.IsTunell(x, y) && Board.TunellIsNotNull(x, y))
+            {
+                if (Board.TunellId(x, y) == id)
+                    return 1;
+                if (!(Board.TunellId(x, y) == -1))
+                    return int.MaxValue - 100;
             }
                 
             // Если глубина не достигнута, тогда рассматриваем клетки, в которвые можем попасть
