@@ -378,7 +378,6 @@ namespace MAPF_System
                 if (!(Board.TunellId(x, y) == -1))
                     return int.MaxValue - 100;
             }
-                
             // Если глубина не достигнута, тогда рассматриваем клетки, в которвые можем попасть
             if (kol_iter_a_star != 0)
             {

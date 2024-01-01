@@ -218,7 +218,6 @@ namespace MAPF_System
                             {
                                 Arr[i, j].MakeTunell();
                                 k++;
-
                                 int kkk = 0;
                                 if (!IsEmpthy(i - 1, j) || TunellIsNotNull(i - 1, j))
                                     kkk++;
@@ -277,21 +276,15 @@ namespace MAPF_System
                                         }
                                     }
                                 }
-
-
-                                
                             }
                         }
                     }
-
                 if (k == 0)
                     break;
             }
             // Поставить флаги юнитам, которые в простом туннеле перегораживают проезд
             foreach (var t in tunells)
-            {
                 t.MakeFlags();
-            }
             // Сделать шаг теми юнитами, которые еще не достигли своей цели, при этом давая приоритет тем юнитам, которые дальше от цели
             List<Unit> Was_bool_step_units = new List<Unit>();
             List<Unit> Was_near_end_units = new List<Unit>();
@@ -359,10 +352,7 @@ namespace MAPF_System
         public void MakeVisit(int x, int y, int id) { Arr[x, y].MakeVisit(id); }
         public string Name() { return name; }
         public List<Unit> Units() { return units; }
-        public int TunellId(int x, int y)
-        {
-            return Arr[x, y].Tunell.Id();
-        }
+        public int TunellId(int x, int y){ return Arr[x, y].Tunell.Id(); }
 
         private void Constructor(string path)
         {

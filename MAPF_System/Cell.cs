@@ -17,6 +17,7 @@ namespace MAPF_System
         private int idVisit;
         private bool isBad;
         private bool isTunell;
+
         public Tunell Tunell;
 
         public Cell(bool isBlock, bool wasvisited = false, int idVisit = -1, bool isBad = false, bool isTunell = false)
