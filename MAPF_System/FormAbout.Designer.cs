@@ -116,6 +116,7 @@ namespace MAPF_System
             this.MinimizeBox = false;
             this.Name = "FormAbout";
             this.Text = "О программе";
+            this.Deactivate += new System.EventHandler(this.FormAbout_Deactivate);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormAlgorithm_KeyDown);
             this.ResumeLayout(false);
             this.PerformLayout();

@@ -34,5 +34,9 @@ namespace MAPF_System
                 Close();
         }
 
+        private void FormAbout_Deactivate(object sender, EventArgs e)
+        {
+            Close();
+        }
     }
 }
