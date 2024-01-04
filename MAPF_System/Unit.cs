@@ -32,8 +32,8 @@ namespace MAPF_System
             this.id = id;
             this.was_step = was_step;
             this.flag = flag;
-            this.X_Board = X;
-            this.Y_Board = Y;
+            X_Board = X;
+            Y_Board = Y;
             // Задание местоположения юнита
             this.x = x;
             this.y = y;
@@ -50,8 +50,8 @@ namespace MAPF_System
             flag = false;
             was_step = false;
             string[] arr = str.Split(' ');
-            this.X_Board = X;
-            this.Y_Board = Y;
+            X_Board = X;
+            Y_Board = Y;
             // Задание параметров юнита на основе строки из файла
             x = int.Parse(arr[0]);
             y = int.Parse(arr[1]);
@@ -374,7 +374,6 @@ namespace MAPF_System
                                 ff[i] += 0.5f;
                         }
             }
-
             foreach (var au in AnotherUnits)
                 if ((au.x == x0) && (au.y == y0))
                 {

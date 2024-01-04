@@ -44,8 +44,6 @@ namespace MAPF_System
         }
         public int Id()
         {
-            if (tunell_units.Count <= 1)
-                return -1;
             foreach (var Unit in tunell_units)
                 if (!board.InTunell(Unit, this))
                     return Unit.Id();

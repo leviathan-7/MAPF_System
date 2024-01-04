@@ -30,9 +30,72 @@ namespace MAPF_System
             rnd = new Random();
             KolBad = 0;
             tunells = new List<Tunell>();
-            GenerationDefaults(Blocks);
-            GenerationUnits(N_Units);
-            GenerationBlocks();
+            // Генерация пустых узлов
+            int N = X * Y - Blocks - 1;
+            int x = rnd.Next(X);
+            int y = rnd.Next(Y);
+            int x_sum = x;
+            int y_sum = y;
+            int kol = 1;
+            Arr[x, y] = new Cell(false);
+            while (N > 0)
+            {
+                int x1 = rnd.Next(X);
+                int y1 = rnd.Next(Y);
+                int x2 = rnd.Next(X);
+                int y2 = rnd.Next(Y);
+                int x3 = rnd.Next(X);
+                int y3 = rnd.Next(Y);
+                if (Math.Abs(x1 - x_sum / kol) > Math.Abs(x2 - x_sum / kol))
+                    x = x1;
+                else
+                    x = x2;
+                if (Math.Abs(y1 - y_sum / kol) > Math.Abs(y2 - y_sum / kol))
+                    y = y1;
+                else
+                    y = y2;
+                if (Math.Abs(x - x_sum / kol) < Math.Abs(x3 - x_sum / kol))
+                    x = x3;
+                if (Math.Abs(y - y_sum / kol) < Math.Abs(y3 - y_sum / kol))
+                    y = y3;
+                x_sum += x;
+                y_sum += y;
+                kol++;
+                bool a = (x == 0) || (Arr[x - 1, y] is null);
+                bool b = (x == X - 1) || (Arr[x + 1, y] is null);
+                bool c = (y == 0) || (Arr[x, y - 1] is null);
+                bool d = (y == Y - 1) || (Arr[x, y + 1] is null);
+                if (Arr[x, y] is null && !(a && b && c && d))
+                {
+                    Arr[x, y] = new Cell(false);
+                    N--;
+                }
+            }
+            // Генерация юнитов
+            units = new List<Unit>();
+            int id = 0;
+            while (N_Units > 0)
+            {
+                x = rnd.Next(X);
+                y = rnd.Next(Y);
+                int x_Purpose = rnd.Next(X);
+                int y_Purpose = rnd.Next(Y);
+                bool b = (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
+                foreach (var Unit in units)
+                    b = b && !((Unit.X() == x) && (Unit.Y() == y)) && !((Unit.X_Purpose() == x_Purpose) && (Unit.Y_Purpose() == y_Purpose))
+                        && !((Unit.X() == x_Purpose) && (Unit.Y() == y_Purpose)) && !((Unit.X_Purpose() == x) && (Unit.Y_Purpose() == y));
+                if (b)
+                {
+                    units.Add(new Unit(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
+                    N_Units--;
+                    id++;
+                }
+            }
+            // Генерация препятствий
+            for (int i = 0; i < X; i++)
+                for (int j = 0; j < Y; j++)
+                    if (Arr[i, j] is null)
+                        Arr[i, j] = new Cell(true);
         }
         public Board(int X, int Y, Cell[,] Arr, List<Unit> units, int KolBad, string name, List<Tunell> tunells)
         {
@@ -66,7 +129,6 @@ namespace MAPF_System
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y; j++)
                     CopyArr[i, j] = Arr[i, j].CopyWithoutBlock();
-
             return new Board(X, Y, CopyArr, CopyUnits, KolBad, name, tunells);
         }
         public void Draw(Graphics t)
@@ -392,88 +454,6 @@ namespace MAPF_System
                 MessageBox.Show("Файл повреждён.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void GenerationDefaults(int Blocks)
-        {
-            int N = X * Y - Blocks - 1;
-
-            int x = rnd.Next(X);
-            int y = rnd.Next(Y);
-
-            int x_sum = x;
-            int y_sum = y;
-            int kol = 1;
-
-            Arr[x, y] = new Cell(false);
-            while (N > 0)
-            {
-                int x1 = rnd.Next(X);
-                int y1 = rnd.Next(Y);
-                int x2 = rnd.Next(X);
-                int y2 = rnd.Next(Y);
-                int x3 = rnd.Next(X);
-                int y3 = rnd.Next(Y);
-                if (Math.Abs(x1 - x_sum / kol) > Math.Abs(x2 - x_sum / kol))
-                    x = x1;
-                else
-                    x = x2;
-                if (Math.Abs(y1 - y_sum / kol) > Math.Abs(y2 - y_sum / kol))
-                    y = y1;
-                else
-                    y = y2;
-
-                if (Math.Abs(x - x_sum / kol) < Math.Abs(x3 - x_sum / kol))
-                    x = x3;
-                if (Math.Abs(y - y_sum / kol) < Math.Abs(y3 - y_sum / kol))
-                    y = y3;
-
-                x_sum += x;
-                y_sum += y;
-                kol++;
-
-                bool a = (x == 0) || (Arr[x - 1, y] is null);
-                bool b = (x == X - 1) || (Arr[x + 1, y] is null);
-                bool c = (y == 0) || (Arr[x, y - 1] is null);
-                bool d = (y == Y - 1) || (Arr[x, y + 1] is null);
-                if (Arr[x, y] is null && !(a && b && c && d))
-                {
-                    Arr[x, y] = new Cell(false);
-                    N--;
-                }
-            }
-        }
-        private void GenerationUnits(int N_Units)
-        {
-            units = new List<Unit>();
-            int id = 0;
-            while (N_Units > 0)
-            {
-                int x = rnd.Next(X);
-                int y = rnd.Next(Y);
-
-                int x_Purpose = rnd.Next(X);
-                int y_Purpose = rnd.Next(Y);
-
-                bool b = (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
-
-                foreach (var Unit in units)
-                    b = b && !((Unit.X() == x) && (Unit.Y() == y)) && !((Unit.X_Purpose() == x_Purpose) && (Unit.Y_Purpose() == y_Purpose))
-                        && !((Unit.X() == x_Purpose) && (Unit.Y() == y_Purpose)) && !((Unit.X_Purpose() == x) && (Unit.Y_Purpose() == y));
-
-                if (b)
-                {
-                    units.Add(new Unit(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
-                    N_Units--;
-                    id++;
-                }
-            }
-        }
-        private void GenerationBlocks()
-        {
-            for (int i = 0; i < X; i++)
-                for (int j = 0; j < Y; j++)
-                    if (Arr[i, j] is null)
-                        Arr[i, j] = new Cell(true);
-        }
         private bool IsBad(int x, int y)
         {
             // Проверка на выход за пределы поля
@@ -488,6 +468,6 @@ namespace MAPF_System
                 return false;
             return Arr[x, y].IsBlock();
         }
-        
+
     }
 }
