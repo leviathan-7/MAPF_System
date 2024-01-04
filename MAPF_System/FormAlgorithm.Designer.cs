@@ -237,7 +237,7 @@ namespace MAPF_System
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Name = "FormAlgorithm";
-            this.Text = "Запуск MAPF";
+            this.Text = "Запуск алгоритма MAPF";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormAlgorithm_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);

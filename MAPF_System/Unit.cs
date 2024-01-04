@@ -24,6 +24,7 @@ namespace MAPF_System
         private int[,] Arr;
         private Unit last_AU;
         private float F_;
+        private bool gotolast;
 
         public bool flag;
 
@@ -64,8 +65,11 @@ namespace MAPF_System
         }
         public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y, X_Board, Y_Board, was_step, flag); }
         public void NotWasStep() { was_step = false; }
+        public void GoToLast() { gotolast = true; }
         public int X() { return x; }
         public int Y() { return y; }
+        public int Last_X() { return last__x; }
+        public int Last_Y() { return last__y; }
         public int X_Purpose() { return x_Purpose; }
         public int Y_Purpose() { return y_Purpose; }
         public int Id() { return id; }
@@ -85,7 +89,7 @@ namespace MAPF_System
             if (was_step)
                 return;
             // Алгоритм для решения проблемы перпендикулярного хождения юнитов
-            if (!(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
+            if (!gotolast && !(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
             {
                 last__x = -1;
                 last__y = -1;
@@ -122,7 +126,7 @@ namespace MAPF_System
                 if (T.Item1 != 4)
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
-                    if (!(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
+                    if (!gotolast && !(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
                     {
                         last__x = -1;
                         last__y = -1;
@@ -138,8 +142,11 @@ namespace MAPF_System
             }
             else
             {
-                last__x = -1;
-                last__y = -1;
+                if (!gotolast)
+                {
+                    last__x = -1;
+                    last__y = -1;
+                }
                 // Добавление дополнительного флага, в случае, когда юнит с флагом не вышел из туннеля
                 int t = 0;
                 if (Board.IsEmpthy(x - 1, y))
@@ -154,7 +161,7 @@ namespace MAPF_System
                     flag = flagflag;
             }
         }
-        
+
         private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, Unit AU)
         {
             // Проверяем, что юнит еще не работал на данной итерации
@@ -214,7 +221,7 @@ namespace MAPF_System
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
                     var q = AU;
-                    if (!(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
+                    if (!gotolast && !(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
                     {
                         last__x = -1;
                         last__y = -1;
@@ -230,8 +237,11 @@ namespace MAPF_System
             }
             else
             {
-                last__x = -1;
-                last__y = -1;
+                if (!gotolast)
+                {
+                    last__x = -1;
+                    last__y = -1;
+                }
             }
 
             return was_step;
@@ -239,6 +249,8 @@ namespace MAPF_System
         private Tuple<int, float> MIN_I(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
         {
             ff[4] = int.MaxValue - 100;
+            if (gotolast)
+                ff[4] = 1;
             float min = ff[4];
             float minh = ff[4];
             int min_i = 4;
@@ -316,39 +328,52 @@ namespace MAPF_System
                 if (!(UsUnits[min_i] is null))
                     bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units() where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
+
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет
             if (!bb)
                 return new Tuple<int, float>(-10, F_); //-10;
+            
+            gotolast = false;
             // Возвращаем подходящую нам клетку
             return new Tuple<int, float>(min_i, min);
         }
         private void IfBoardIsEmpthy(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool is_bool_step = false)
         {
-            if (Board.IsEmpthy(x, y - 1) && (!((last__x == x) && (last__y == y - 1)) || is_bool_step))
+            if (Board.IsEmpthy(x, y - 1) && (!((last__x == x) && (last__y == y - 1)) || is_bool_step || gotolast))
                 GetUnitAndF(0, hh, ff, UsUnits, x, y - 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
-            if (Board.IsEmpthy(x, y + 1) && (!((last__x == x) && (last__y == y + 1)) || is_bool_step))
+            if (Board.IsEmpthy(x, y + 1) && (!((last__x == x) && (last__y == y + 1)) || is_bool_step || gotolast))
                 GetUnitAndF(1, hh, ff, UsUnits, x, y + 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
-            if (Board.IsEmpthy(x - 1, y) && (!((last__x == x - 1) && (last__y == y)) || is_bool_step))
+            if (Board.IsEmpthy(x - 1, y) && (!((last__x == x - 1) && (last__y == y)) || is_bool_step || gotolast))
                 GetUnitAndF(2, hh, ff, UsUnits, x - 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
-            if (Board.IsEmpthy(x + 1, y) && (!((last__x == x + 1) && (last__y == y)) || is_bool_step))
+            if (Board.IsEmpthy(x + 1, y) && (!((last__x == x + 1) && (last__y == y)) || is_bool_step || gotolast))
                 GetUnitAndF(3, hh, ff, UsUnits, x + 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
         }
         private void GetUnitAndF(int i, List<float> hh, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits, bool is_bool_step)
         {
-            ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step);
-            // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
-            if (!was_near_end && (ff[i] != 0))
-                ff[i] += Arr[x0, y0];
-            hh[i] = h(x0, y0);
-            // Алгоритм для решения проблемы параллельного хождения
-            if(was_near_end)
-                foreach (var au in AnotherUnits)
-                    if ((au.x_Purpose == x0) && (au.y_Purpose == y0))
-                    {
-                        ff[i]+=0.5f;
-                        if (!au.IsEnd())
+            if (gotolast)
+            {
+                if ((last__x == x0) && (last__y == y0))
+                    ff[i] = 0;
+                else
+                    ff[i] = -1;
+            }
+            else
+            {
+                ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step);
+                // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
+                if (!was_near_end && (ff[i] != 0))
+                    ff[i] += Arr[x0, y0];
+                hh[i] = h(x0, y0);
+                // Алгоритм для решения проблемы параллельного хождения
+                if (was_near_end)
+                    foreach (var au in AnotherUnits)
+                        if ((au.x_Purpose == x0) && (au.y_Purpose == y0))
+                        {
                             ff[i] += 0.5f;
-                    }
+                            if (!au.IsEnd())
+                                ff[i] += 0.5f;
+                        }
+            }
 
             foreach (var au in AnotherUnits)
                 if ((au.x == x0) && (au.y == y0))

@@ -9,24 +9,24 @@ namespace MAPF_System
 {
     public class Tunell
     {
-        private List<Unit> units;
+        private Board board;
         private List<Unit> tunell_units;
 
-        public Tunell(List<Unit> units)
+        public Tunell(Board board)
         {
-            this.units = units;
+            this.board = board;
             tunell_units = new List<Unit>();
         }
         public void Add(int x, int y)
         {
-            foreach (var Unit in units)
+            foreach (var Unit in board.Units())
                 if ((Unit.X_Purpose() == x) && (Unit.Y_Purpose() == y))
                 {
                     tunell_units.Add(Unit);
                     break;
                 }
         }
-        public void MakeFlags()
+        public void MakeFlags(Board Board)
         {
             bool b = true;
             foreach (var Unit in tunell_units)
@@ -35,7 +35,11 @@ namespace MAPF_System
                     Unit.flag = false;
                 b = b && Unit.IsRealEnd();
                 if (Unit.IsRealEnd() && !b)
+                {
                     Unit.flag = true;
+                    if (!(Unit.Last_X() == -1 && Unit.Last_Y() == -1) && Board.TunellIsNotNull(Unit.X(), Unit.Y()) && !Board.TunellIsNotNull(Unit.Last_X(), Unit.Last_Y()))
+                        Unit.GoToLast();
+                }
             }
         }
         public int Id()
@@ -43,7 +47,7 @@ namespace MAPF_System
             if (tunell_units.Count <= 1)
                 return -1;
             foreach (var Unit in tunell_units)
-                if (!Unit.IsEnd())
+                if (!board.InTunell(Unit, this))
                     return Unit.Id();
             return -1;
         }
