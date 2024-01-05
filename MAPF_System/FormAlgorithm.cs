@@ -69,7 +69,7 @@ namespace MAPF_System
             }
             Board TimeBoard = Board.CopyWithoutBlocks();
             int i = 1;
-            FormAlgorithm F = new FormAlgorithm(TimeBoard, i, false, "" + kol_iter_a_star, true);
+            FormAlgorithm F = new FormAlgorithm(TimeBoard, 0, false, "" + kol_iter_a_star, true);
             F.Show();
             while (!TimeBoard.IsEnd()) 
             {
