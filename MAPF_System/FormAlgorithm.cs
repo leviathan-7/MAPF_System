@@ -69,7 +69,6 @@ namespace MAPF_System
             }
             Board TimeBoard = Board.CopyWithoutBlocks();
             int i = 1;
-            //FormAlgorithm FF = null;
             FormAlgorithm F = new FormAlgorithm(TimeBoard, i, false, "" + kol_iter_a_star, true);
             F.Show();
             while (!TimeBoard.IsEnd()) 
@@ -78,7 +77,10 @@ namespace MAPF_System
                 TimeBoard.Draw(F.CreateGraphics(), false);
                 F.label_kol_iterat.Text = "Количество шагов = " + i++;
                 if (MessageBox.Show("Далее?", "▶▶", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
+                {
+                    F.Close();
                     return;
+                }
             }
         }
 
