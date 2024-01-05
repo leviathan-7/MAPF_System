@@ -38,12 +38,12 @@ namespace MAPF_System
             this.label2 = new System.Windows.Forms.Label();
             this.textBox_kol_iter_a_star = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button_Start = new CustomControls.RJControls.RJButton();
-            this.button_Step = new CustomControls.RJControls.RJButton();
-            this.button_Save = new CustomControls.RJControls.RJButton();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.button_Start = new CustomControls.RJControls.RJButton();
+            this.button_Step = new CustomControls.RJControls.RJButton();
+            this.button_Save = new CustomControls.RJControls.RJButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -134,6 +134,37 @@ namespace MAPF_System
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Location = new System.Drawing.Point(32, 7);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(0, 18);
+            this.label5.TabIndex = 19;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.label4.Location = new System.Drawing.Point(709, 7);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(269, 18);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "F5 - Запуск; F10 - Пошаговый запуск;";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.label3.Location = new System.Drawing.Point(975, 7);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(294, 18);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Cntrl+S - Сохранить; Esc - Закрыть окно;";
+            // 
             // button_Start
             // 
             this.button_Start.BackColor = System.Drawing.Color.SkyBlue;
@@ -196,37 +227,6 @@ namespace MAPF_System
             this.button_Save.TextColor = System.Drawing.Color.Black;
             this.button_Save.UseVisualStyleBackColor = false;
             this.button_Save.Click += new System.EventHandler(this.button_Save_Click);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(32, 7);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(0, 18);
-            this.label5.TabIndex = 19;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.label4.Location = new System.Drawing.Point(709, 7);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(269, 18);
-            this.label4.TabIndex = 20;
-            this.label4.Text = "F5 - Запуск; F10 - Пошаговый запуск;";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.label3.Location = new System.Drawing.Point(975, 7);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(294, 18);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "Cntrl+S - Сохранить; Esc - Закрыть окно;";
             // 
             // FormAlgorithm
             // 

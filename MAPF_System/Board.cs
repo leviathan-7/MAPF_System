@@ -131,7 +131,7 @@ namespace MAPF_System
                     CopyArr[i, j] = Arr[i, j].CopyWithoutBlock();
             return new Board(X, Y, CopyArr, CopyUnits, KolBad, name, tunells);
         }
-        public void Draw(Graphics t)
+        public void Draw(Graphics t, bool b = true)
         {
             int height = 18;
             if (Math.Max(X, Y) < 30)
@@ -140,7 +140,8 @@ namespace MAPF_System
             int XX = 15;
             using (Graphics g = t)
             {
-                g.Clear(SystemColors.Control); // Clear the draw area
+                if (b)
+                    g.Clear(SystemColors.Control); // Clear the draw area
                 using (Pen pen = new Pen(Color.Blue, 1))
                 {
                     var Size = new Size(height, height);
@@ -148,13 +149,16 @@ namespace MAPF_System
                     var Font1 = new Font("Arial", 7, FontStyle.Bold);
                     for (int i = 0; i < X; i++)
                     {
-                        g.DrawString("" + i, Font1, Brushes.Coral, new Point(XX + 9 + height * i, YY - 7));
+                        if (b)
+                            g.DrawString("" + i, Font1, Brushes.Coral, new Point(XX + 9 + height * i, YY - 7));
                         for (int j = 0; j < Y; j++)
                         {
-                            g.DrawString("" + j, Font1, Brushes.Coral, new Point(XX - 7, YY + 9 + height * j));
-
                             Rectangle rect = new Rectangle(new Point(XX + 5 + height * i, YY + 5 + height * j), Size);
-                            g.DrawRectangle(pen, rect);
+                            if (b)
+                            {
+                                g.DrawString("" + j, Font1, Brushes.Coral, new Point(XX - 7, YY + 9 + height * j));
+                                g.DrawRectangle(pen, rect);
+                            }
                             // Отрисовка блоков
                             if (Arr[i, j].IsBlock())
                                 g.FillRectangle(Brushes.Black, rect);
