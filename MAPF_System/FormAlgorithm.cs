@@ -21,7 +21,7 @@ namespace MAPF_System
             this.Board = Board;
             InitializeComponent();
             textBox_kol_iter_a_star.Text = str_kol_iter_a_star;
-            label5.Text = Board.Name();
+            label6.Text = Board.Name();
             // Позиция данной формы
             StartPosition = FormStartPosition.Manual;
             Location = new Point(100, 100);
@@ -104,7 +104,7 @@ namespace MAPF_System
                 label_Error.Text = "Вы не ввели имя файла!";
                 return;
             }
-            label5.Text = Board.Save(textBox_Name.Text);
+            label6.Text = Board.Save(textBox_Name.Text);
             label_Error.Text = "Сохранено!";
         }
 
