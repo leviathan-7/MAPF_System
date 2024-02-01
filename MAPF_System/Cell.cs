@@ -53,6 +53,7 @@ namespace MAPF_System
         public bool IsBlock() { return isBlock; }
         public bool IsTunell() { return isTunell; }
         public bool WasVisit() { return wasvisited; }
+        public void ReversBlock() { isBlock = !isBlock; }
 
     }
 }

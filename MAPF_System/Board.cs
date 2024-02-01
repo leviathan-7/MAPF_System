@@ -475,6 +475,14 @@ namespace MAPF_System
                 return false;
             return Arr[x, y].IsBlock();
         }
-
+        public int GET_X() { return X; }
+        public int GET_Y() { return Y; }
+        public void ReversBlock(int x, int y)
+        {
+            // Проверка на выход за пределы поля
+            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
+                return;
+            Arr[x, y].ReversBlock();
+        }
     }
 }

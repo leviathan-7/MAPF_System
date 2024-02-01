@@ -108,5 +108,27 @@ namespace MAPF_System
             label_Error.Text = "Сохранено!";
         }
 
+        private void FormAlgorithm_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (was_game)
+                return;
+            Point point = e.Location;
+            int x = point.X;
+            int y = point.Y;
+
+            int height = 18;
+            int X = Board.GET_X();
+            int Y = Board.GET_Y();
+            if (Math.Max(X, Y) < 30)
+                height = 24;
+            int YY = 115;
+            int XX = 15;
+
+            int CELL_X = (x - XX - 5) / height;
+            int CELL_Y = (y - YY - 5) / height;
+
+            Board.ReversBlock(CELL_X, CELL_Y);
+            Board.Draw(CreateGraphics());
+        }
     }
 }
