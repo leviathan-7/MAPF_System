@@ -423,6 +423,41 @@ namespace MAPF_System
         public List<Unit> Units() { return units; }
         public int TunellId(int x, int y){ return Arr[x, y].Tunell.Id(); }
         public bool InTunell(Unit unit, Tunell tunell){ return Arr[unit.X(), unit.Y()].Tunell == tunell; }
+        public int GET_X() { return X; }
+        public int GET_Y() { return Y; }
+        public bool ReversBlock(int x, int y)
+        {
+            // Проверка на выход за пределы поля
+            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
+                return false;
+            foreach (var unit in units)
+                if (((unit.X() == x) && (unit.Y() == y)) || ((unit.X_Purpose() == x) && (unit.Y_Purpose() == y)))
+                    return false;
+            Arr[x, y].ReversBlock();
+            return true;
+        }
+        public bool Move(Tuple<int, int> C0, Tuple<int, int> C1)
+        {
+            if (!IsEmpthy(C1.Item1, C1.Item2))
+                return false;
+            foreach (var unit in units)
+                if (((unit.X() == C1.Item1) && (unit.Y() == C1.Item2)) || ((unit.X_Purpose() == C1.Item1) && (unit.Y_Purpose() == C1.Item2)))
+                    return false;
+            foreach (var unit in units)
+            {
+                if ((unit.X() == C0.Item1) && (unit.Y() == C0.Item2))
+                {
+                    unit.Move(C1, true);
+                    return true;
+                }
+                if ((unit.X_Purpose() == C0.Item1) && (unit.Y_Purpose() == C0.Item2))
+                {
+                    unit.Move(C1, false);
+                    return true;
+                }
+            }
+            return false;
+        }
 
         private void Constructor(string path)
         {
@@ -475,14 +510,6 @@ namespace MAPF_System
                 return false;
             return Arr[x, y].IsBlock();
         }
-        public int GET_X() { return X; }
-        public int GET_Y() { return Y; }
-        public void ReversBlock(int x, int y)
-        {
-            // Проверка на выход за пределы поля
-            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
-                return;
-            Arr[x, y].ReversBlock();
-        }
+        
     }
 }

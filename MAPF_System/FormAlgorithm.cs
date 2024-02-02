@@ -15,6 +15,8 @@ namespace MAPF_System
     {
         private Board Board;
         private bool was_game;
+        private bool move;
+        private Tuple<int, int> C;
 
         public FormAlgorithm(Board Board, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false)
         {
@@ -108,27 +110,34 @@ namespace MAPF_System
             label_Error.Text = "Сохранено!";
         }
 
+        private Tuple<int, int> CELL(MouseEventArgs e)
+        {
+            int height = 18;
+            if (Math.Max(Board.GET_X(), Board.GET_Y()) < 30)
+                height = 24;
+            return new Tuple<int, int>((e.Location.X - 20) / height, (e.Location.Y - 120) / height);
+        }
+        
         private void FormAlgorithm_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             if (was_game)
                 return;
-            Point point = e.Location;
-            int x = point.X;
-            int y = point.Y;
+            move = false;
+            var C = CELL(e);
+            if(Board.ReversBlock(C.Item1, C.Item2))
+                Board.Draw(CreateGraphics());
+        }
 
-            int height = 18;
-            int X = Board.GET_X();
-            int Y = Board.GET_Y();
-            if (Math.Max(X, Y) < 30)
-                height = 24;
-            int YY = 115;
-            int XX = 15;
-
-            int CELL_X = (x - XX - 5) / height;
-            int CELL_Y = (y - YY - 5) / height;
-
-            Board.ReversBlock(CELL_X, CELL_Y);
-            Board.Draw(CreateGraphics());
+        private void FormAlgorithm_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (was_game)
+                return;
+            var C1 = CELL(e);
+            if (move)
+                if(Board.Move(C, C1))
+                    Board.Draw(CreateGraphics());
+            C = C1;
+            move = !move;
         }
     }
 }

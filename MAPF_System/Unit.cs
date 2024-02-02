@@ -161,6 +161,19 @@ namespace MAPF_System
                     flag = flagflag;
             }
         }
+        public void Move(Tuple<int, int> C, bool b)
+        {
+            if (b)
+            {
+                x = C.Item1;
+                y = C.Item2;
+            }
+            else
+            {
+                x_Purpose = C.Item1;
+                y_Purpose = C.Item2;
+            }
+        }
 
         private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, Unit AU)
         {

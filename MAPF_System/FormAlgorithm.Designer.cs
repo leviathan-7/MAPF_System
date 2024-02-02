@@ -38,11 +38,11 @@ namespace MAPF_System
             this.label2 = new System.Windows.Forms.Label();
             this.textBox_kol_iter_a_star = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.button_Start = new CustomControls.RJControls.RJButton();
             this.button_Step = new CustomControls.RJControls.RJButton();
             this.button_Save = new CustomControls.RJControls.RJButton();
@@ -136,37 +136,6 @@ namespace MAPF_System
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label5.Location = new System.Drawing.Point(32, 296);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(0, 18);
-            this.label5.TabIndex = 19;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.label4.Location = new System.Drawing.Point(394, 8);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(565, 18);
-            this.label4.TabIndex = 20;
-            this.label4.Text = "F5 - Запуск; F10 - Пошаговый запуск; Двойной щелчок - добавить/убрать блок;";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.label3.Location = new System.Drawing.Point(956, 8);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(298, 18);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "Cntrl+S - Сохранить; Esc - Закрыть окно; ";
-            // 
             // groupBox2
             // 
             this.groupBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(231)))), ((int)(((byte)(231)))), ((int)(((byte)(255)))));
@@ -183,10 +152,42 @@ namespace MAPF_System
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label6.Location = new System.Drawing.Point(42, 7);
+            this.label6.Location = new System.Drawing.Point(14, 7);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(0, 18);
             this.label6.TabIndex = 19;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.label4.Location = new System.Drawing.Point(327, 8);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(831, 18);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "F5 - Запуск; F10 - Пошаговый запуск; Двойной щелчок - добавить/убрать блок; Нажат" +
+    "иями переносятся юниты/цели;";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.label3.Location = new System.Drawing.Point(1155, 8);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(298, 18);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Cntrl+S - Сохранить; Esc - Закрыть окно; ";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Location = new System.Drawing.Point(32, 296);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(0, 18);
+            this.label5.TabIndex = 19;
             // 
             // button_Start
             // 
@@ -255,13 +256,14 @@ namespace MAPF_System
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1261, 954);
+            this.ClientSize = new System.Drawing.Size(1439, 954);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Name = "FormAlgorithm";
             this.Text = "Запуск алгоритма MAPF";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormAlgorithm_KeyDown);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FormAlgorithm_MouseClick);
             this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.FormAlgorithm_MouseDoubleClick);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);
