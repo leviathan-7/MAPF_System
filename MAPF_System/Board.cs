@@ -131,7 +131,7 @@ namespace MAPF_System
                     CopyArr[i, j] = Arr[i, j].CopyWithoutBlock();
             return new Board(X, Y, CopyArr, CopyUnits, KolBad, name, tunells);
         }
-        public void Draw(Graphics t, bool b = true)
+        public void Draw(Graphics t, bool b = true, Tuple<int, int> C = null)
         {
             int height = 18;
             if (Math.Max(X, Y) < 30)
@@ -189,7 +189,10 @@ namespace MAPF_System
                         g.FillRectangle(Brushes.Red, new Rectangle(new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()), Size));
                         g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()));
                     }
+                    if (!(C is null))
+                        g.FillRectangle(Brushes.White, new Rectangle(new Point(XX + 8 + height * C.Item1, YY + 8 + height * C.Item2), Size));
                 }
+                
             }
         }
         public string Save(string name_)
@@ -425,16 +428,15 @@ namespace MAPF_System
         public bool InTunell(Unit unit, Tunell tunell){ return Arr[unit.X(), unit.Y()].Tunell == tunell; }
         public int GET_X() { return X; }
         public int GET_Y() { return Y; }
-        public bool ReversBlock(int x, int y)
+        public int ReversBlock(Tuple<int, int> c)
         {
             // Проверка на выход за пределы поля
-            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
-                return false;
+            if ((c.Item1 < 0) || (c.Item2 < 0) || (c.Item1 >= X) || (c.Item2 >= Y))
+                return 0;
             foreach (var unit in units)
-                if (((unit.X() == x) && (unit.Y() == y)) || ((unit.X_Purpose() == x) && (unit.Y_Purpose() == y)))
-                    return false;
-            Arr[x, y].ReversBlock();
-            return true;
+                if (((unit.X() == c.Item1) && (unit.Y() == c.Item2)) || ((unit.X_Purpose() == c.Item1) && (unit.Y_Purpose() == c.Item2)))
+                    return 0;
+            return Arr[c.Item1, c.Item2].ReversBlock();
         }
         public bool Move(Tuple<int, int> C0, Tuple<int, int> C1)
         {

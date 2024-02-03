@@ -123,9 +123,11 @@ namespace MAPF_System
             if (was_game)
                 return;
             move = false;
-            var C = CELL(e);
-            if(Board.ReversBlock(C.Item1, C.Item2))
-                Board.Draw(CreateGraphics());
+            int r = Board.ReversBlock(CELL(e));
+            if (r == 1)
+                Board.Draw(CreateGraphics(), false);
+            if (r == 2)
+                Board.Draw(CreateGraphics(), true);
         }
 
         private void FormAlgorithm_MouseClick(object sender, MouseEventArgs e)
@@ -135,7 +137,7 @@ namespace MAPF_System
             var C1 = CELL(e);
             if (move)
                 if(Board.Move(C, C1))
-                    Board.Draw(CreateGraphics());
+                    Board.Draw(CreateGraphics(), false, C);
             C = C1;
             move = !move;
         }
