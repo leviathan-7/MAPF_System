@@ -123,11 +123,12 @@ namespace MAPF_System
             if (was_game)
                 return;
             move = false;
-            int r = Board.ReversBlock(CELL(e));
+            var C = CELL(e);
+            int r = Board.ReversBlock(C);
             if (r == 1)
                 Board.Draw(CreateGraphics(), false);
             if (r == 2)
-                Board.Draw(CreateGraphics(), true);
+                Board.Draw(CreateGraphics(), false, C);
         }
 
         private void FormAlgorithm_MouseClick(object sender, MouseEventArgs e)

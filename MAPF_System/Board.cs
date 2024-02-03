@@ -190,9 +190,12 @@ namespace MAPF_System
                         g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()));
                     }
                     if (!(C is null))
-                        g.FillRectangle(Brushes.White, new Rectangle(new Point(XX + 8 + height * C.Item1, YY + 8 + height * C.Item2), Size));
+                    {
+                        Size = new Size(height, height);
+                        g.FillRectangle(Brushes.White, new Rectangle(new Point(XX + 5 + height * C.Item1, YY + 5 + height * C.Item2), Size));
+                        g.DrawRectangle(pen, new Rectangle(new Point(XX + 5 + height * C.Item1, YY + 5 + height * C.Item2), Size));
+                    }
                 }
-                
             }
         }
         public string Save(string name_)
