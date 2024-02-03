@@ -104,6 +104,7 @@ namespace MAPF_System
 
         private void button_Save_Click(object sender, EventArgs e)
         {
+            move = false;
             if (textBox_Name.Text.Length == 0)
             {
                 SystemSounds.Beep.Play();
