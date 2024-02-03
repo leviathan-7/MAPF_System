@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Security;
 using System.Windows.Forms;
+using System.Media;
 
 namespace MAPF_System
 {
@@ -137,7 +138,7 @@ namespace MAPF_System
             if (Math.Max(X, Y) < 30)
                 height = 24;
             int YY = 115;
-            int XX = 15;
+            int XX = 95;
             using (Graphics g = t)
             {
                 if (b)
@@ -462,6 +463,36 @@ namespace MAPF_System
                 }
             }
             return false;
+        }
+        public void PlusUnit()
+        {
+            int Blocks = 0;
+            for (int i = 0; i < X; i++)
+                for (int j = 0; j < Y; j++)
+                    if (Arr[i, j].IsBlock())
+                        Blocks++;
+            if ((Blocks + 2 * units.Count + 2) >= (X * Y))
+            {
+                SystemSounds.Beep.Play();
+                return;
+            }
+            rnd = new Random();
+            while (true)
+            {
+                int x = rnd.Next(X);
+                int y = rnd.Next(Y);
+                int x_Purpose = rnd.Next(X);
+                int y_Purpose = rnd.Next(Y);
+                bool b = !Arr[x, y].IsBlock() && !Arr[x_Purpose, y_Purpose].IsBlock() && (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
+                foreach (var Unit in units)
+                    b = b && !((Unit.X() == x) && (Unit.Y() == y)) && !((Unit.X_Purpose() == x_Purpose) && (Unit.Y_Purpose() == y_Purpose))
+                        && !((Unit.X() == x_Purpose) && (Unit.Y() == y_Purpose)) && !((Unit.X_Purpose() == x) && (Unit.Y_Purpose() == y));
+                if (b)
+                {
+                    units.Add(new Unit(x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y));
+                    return;
+                }
+            }
         }
 
         private void Constructor(string path)

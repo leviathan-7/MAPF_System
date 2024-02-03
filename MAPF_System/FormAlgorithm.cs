@@ -41,6 +41,10 @@ namespace MAPF_System
                 Controls.Remove(button_Step);
                 was_game = true;
                 label4.Text = "";
+                label10.Text = "";
+                label11.Text = "";
+                ButtonPlusUnit.Dispose();
+                Controls.Remove(ButtonPlusUnit);
             }
         }
 
@@ -115,7 +119,7 @@ namespace MAPF_System
             int height = 18;
             if (Math.Max(Board.GET_X(), Board.GET_Y()) < 30)
                 height = 24;
-            return new Tuple<int, int>((e.Location.X - 20) / height, (e.Location.Y - 120) / height);
+            return new Tuple<int, int>((e.Location.X - 100) / height, (e.Location.Y - 120) / height);
         }
         
         private void FormAlgorithm_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -148,10 +152,18 @@ namespace MAPF_System
             if (was_game)
                 return;
             var C = CELL(e);
-            if ((C.Item1 < Board.GET_X()) && (C.Item2 < Board.GET_Y()) && (e.Location.Y > 115) && (e.Location.X > 15))
+            if ((C.Item1 < Board.GET_X()) && (C.Item2 < Board.GET_Y()) && (e.Location.Y > 115) && (e.Location.X > 95))
                 Cursor = Cursors.Hand;
             else
                 Cursor = Cursors.Default;
         }
+
+        private void ButtonPlusUnit_Click(object sender, EventArgs e)
+        {
+            move = false;
+            Board.PlusUnit();
+            Board.Draw(CreateGraphics(), false);
+        }
+    
     }
 }
