@@ -132,7 +132,7 @@ namespace MAPF_System
                     CopyArr[i, j] = Arr[i, j].CopyWithoutBlock();
             return new Board(X, Y, CopyArr, CopyUnits, KolBad, name, tunells);
         }
-        public void Draw(Graphics t, bool b = true, Tuple<int, int> C = null)
+        public void Draw(Graphics t, bool b = true, Tuple<int, int> C = null, Tuple<int, int> C1 = null)
         {
             int height = 18;
             if (Math.Max(X, Y) < 30)
@@ -195,6 +195,11 @@ namespace MAPF_System
                         Size = new Size(height, height);
                         g.FillRectangle(Brushes.White, new Rectangle(new Point(XX + 5 + height * C.Item1, YY + 5 + height * C.Item2), Size));
                         g.DrawRectangle(pen, new Rectangle(new Point(XX + 5 + height * C.Item1, YY + 5 + height * C.Item2), Size));
+                        if (!(C1 is null))
+                        {
+                            g.FillRectangle(Brushes.White, new Rectangle(new Point(XX + 5 + height * C1.Item1, YY + 5 + height * C1.Item2), Size));
+                            g.DrawRectangle(pen, new Rectangle(new Point(XX + 5 + height * C1.Item1, YY + 5 + height * C1.Item2), Size));
+                        }
                     }
                 }
             }
@@ -493,6 +498,17 @@ namespace MAPF_System
                     return;
                 }
             }
+        }
+        public Tuple<Tuple<int, int>, Tuple<int, int>> MinusUnit()
+        {
+            if (units.Count() <= 1)
+            {
+                SystemSounds.Beep.Play();
+                return null;
+            }
+            var L = units.Last();
+            units.Remove(L);
+            return new Tuple<Tuple<int, int>, Tuple<int, int>>(new Tuple<int, int>(L.X(), L.Y()), new Tuple<int, int>(L.X_Purpose(), L.Y_Purpose()));
         }
 
         private void Constructor(string path)

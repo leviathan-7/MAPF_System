@@ -43,8 +43,12 @@ namespace MAPF_System
                 label4.Text = "";
                 label10.Text = "";
                 label11.Text = "";
+                label7.Text = "";
+                label8.Text = "";
                 ButtonPlusUnit.Dispose();
                 Controls.Remove(ButtonPlusUnit);
+                ButtonMinusUnit.Dispose();
+                Controls.Remove(ButtonMinusUnit);
             }
         }
 
@@ -165,6 +169,13 @@ namespace MAPF_System
             Board.PlusUnit();
             Board.Draw(CreateGraphics(), false);
         }
-    
+
+        private void ButtonMinusUnit_Click(object sender, EventArgs e)
+        {
+            move = false;
+            var U = Board.MinusUnit();
+            if (!(U is null))
+                Board.Draw(CreateGraphics(), false, U.Item1, U.Item2);
+        }
     }
 }

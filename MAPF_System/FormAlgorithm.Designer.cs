@@ -39,18 +39,21 @@ namespace MAPF_System
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.ButtonPlusUnit = new CustomControls.RJControls.RJButton();
             this.button_Start = new CustomControls.RJControls.RJButton();
             this.button_Step = new CustomControls.RJControls.RJButton();
             this.button_Save = new CustomControls.RJControls.RJButton();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.ButtonPlusUnit = new CustomControls.RJControls.RJButton();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.ButtonMinusUnit = new CustomControls.RJControls.RJButton();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -142,16 +145,14 @@ namespace MAPF_System
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
             // 
-            // label3
+            // label6
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.label3.Location = new System.Drawing.Point(1155, 8);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(298, 18);
-            this.label3.TabIndex = 19;
-            this.label3.Text = "Cntrl+S - Сохранить; Esc - Закрыть окно; ";
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label6.Location = new System.Drawing.Point(14, 7);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(0, 18);
+            this.label6.TabIndex = 19;
             // 
             // label4
             // 
@@ -165,14 +166,16 @@ namespace MAPF_System
             this.label4.Text = "F5 - Запуск; F10 - Пошаговый запуск; Двойной щелчок - добавить/убрать блок; Нажат" +
     "иями переносятся юниты/цели;";
             // 
-            // label6
+            // label3
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label6.Location = new System.Drawing.Point(14, 7);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(0, 18);
-            this.label6.TabIndex = 19;
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.label3.Location = new System.Drawing.Point(1155, 8);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(298, 18);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Cntrl+S - Сохранить; Esc - Закрыть окно; ";
             // 
             // groupBox1
             // 
@@ -194,69 +197,6 @@ namespace MAPF_System
             this.groupBox1.Size = new System.Drawing.Size(1995, 106);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(236)))), ((int)(((byte)(236)))));
-            this.groupBox4.Controls.Add(this.label9);
-            this.groupBox4.Controls.Add(this.ButtonPlusUnit);
-            this.groupBox4.Controls.Add(this.label10);
-            this.groupBox4.Controls.Add(this.label11);
-            this.groupBox4.Location = new System.Drawing.Point(-16, 93);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(102, 925);
-            this.groupBox4.TabIndex = 26;
-            this.groupBox4.TabStop = false;
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label9.Location = new System.Drawing.Point(32, 296);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(0, 18);
-            this.label9.TabIndex = 19;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label10.Location = new System.Drawing.Point(24, 39);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(50, 18);
-            this.label10.TabIndex = 20;
-            this.label10.Text = "юнит: ";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label11.Location = new System.Drawing.Point(24, 21);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(77, 18);
-            this.label11.TabIndex = 19;
-            this.label11.Text = "Добавить";
-            // 
-            // ButtonPlusUnit
-            // 
-            this.ButtonPlusUnit.BackColor = System.Drawing.Color.Orchid;
-            this.ButtonPlusUnit.BackgroundColor = System.Drawing.Color.Orchid;
-            this.ButtonPlusUnit.BorderColor = System.Drawing.Color.LightSlateGray;
-            this.ButtonPlusUnit.BorderRadius = 10;
-            this.ButtonPlusUnit.BorderSize = 1;
-            this.ButtonPlusUnit.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ButtonPlusUnit.FlatAppearance.BorderSize = 0;
-            this.ButtonPlusUnit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonPlusUnit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.ButtonPlusUnit.ForeColor = System.Drawing.Color.Black;
-            this.ButtonPlusUnit.Location = new System.Drawing.Point(22, 58);
-            this.ButtonPlusUnit.Name = "ButtonPlusUnit";
-            this.ButtonPlusUnit.Size = new System.Drawing.Size(52, 45);
-            this.ButtonPlusUnit.TabIndex = 22;
-            this.ButtonPlusUnit.Text = "➕";
-            this.ButtonPlusUnit.TextColor = System.Drawing.Color.Black;
-            this.ButtonPlusUnit.UseVisualStyleBackColor = false;
-            this.ButtonPlusUnit.Click += new System.EventHandler(this.ButtonPlusUnit_Click);
             // 
             // button_Start
             // 
@@ -321,6 +261,113 @@ namespace MAPF_System
             this.button_Save.UseVisualStyleBackColor = false;
             this.button_Save.Click += new System.EventHandler(this.button_Save_Click);
             // 
+            // groupBox4
+            // 
+            this.groupBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(236)))), ((int)(((byte)(236)))));
+            this.groupBox4.Controls.Add(this.ButtonMinusUnit);
+            this.groupBox4.Controls.Add(this.label7);
+            this.groupBox4.Controls.Add(this.label9);
+            this.groupBox4.Controls.Add(this.label8);
+            this.groupBox4.Controls.Add(this.ButtonPlusUnit);
+            this.groupBox4.Controls.Add(this.label10);
+            this.groupBox4.Controls.Add(this.label11);
+            this.groupBox4.Location = new System.Drawing.Point(-16, 93);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(102, 925);
+            this.groupBox4.TabIndex = 26;
+            this.groupBox4.TabStop = false;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label9.Location = new System.Drawing.Point(32, 296);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(0, 18);
+            this.label9.TabIndex = 19;
+            // 
+            // ButtonPlusUnit
+            // 
+            this.ButtonPlusUnit.BackColor = System.Drawing.Color.Orchid;
+            this.ButtonPlusUnit.BackgroundColor = System.Drawing.Color.Orchid;
+            this.ButtonPlusUnit.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.ButtonPlusUnit.BorderRadius = 10;
+            this.ButtonPlusUnit.BorderSize = 1;
+            this.ButtonPlusUnit.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ButtonPlusUnit.FlatAppearance.BorderSize = 0;
+            this.ButtonPlusUnit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonPlusUnit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.ButtonPlusUnit.ForeColor = System.Drawing.Color.Black;
+            this.ButtonPlusUnit.Location = new System.Drawing.Point(22, 58);
+            this.ButtonPlusUnit.Name = "ButtonPlusUnit";
+            this.ButtonPlusUnit.Size = new System.Drawing.Size(52, 45);
+            this.ButtonPlusUnit.TabIndex = 22;
+            this.ButtonPlusUnit.Text = "➕";
+            this.ButtonPlusUnit.TextColor = System.Drawing.Color.Black;
+            this.ButtonPlusUnit.UseVisualStyleBackColor = false;
+            this.ButtonPlusUnit.Click += new System.EventHandler(this.ButtonPlusUnit_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label10.Location = new System.Drawing.Point(24, 39);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(50, 18);
+            this.label10.TabIndex = 20;
+            this.label10.Text = "юнит: ";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label11.Location = new System.Drawing.Point(24, 21);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(77, 18);
+            this.label11.TabIndex = 19;
+            this.label11.Text = "Добавить";
+            // 
+            // ButtonMinusUnit
+            // 
+            this.ButtonMinusUnit.BackColor = System.Drawing.Color.Orchid;
+            this.ButtonMinusUnit.BackgroundColor = System.Drawing.Color.Orchid;
+            this.ButtonMinusUnit.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.ButtonMinusUnit.BorderRadius = 10;
+            this.ButtonMinusUnit.BorderSize = 1;
+            this.ButtonMinusUnit.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ButtonMinusUnit.FlatAppearance.BorderSize = 0;
+            this.ButtonMinusUnit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonMinusUnit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.ButtonMinusUnit.ForeColor = System.Drawing.Color.Black;
+            this.ButtonMinusUnit.Location = new System.Drawing.Point(22, 185);
+            this.ButtonMinusUnit.Name = "ButtonMinusUnit";
+            this.ButtonMinusUnit.Size = new System.Drawing.Size(52, 45);
+            this.ButtonMinusUnit.TabIndex = 29;
+            this.ButtonMinusUnit.Text = "➖";
+            this.ButtonMinusUnit.TextColor = System.Drawing.Color.Black;
+            this.ButtonMinusUnit.UseVisualStyleBackColor = false;
+            this.ButtonMinusUnit.Click += new System.EventHandler(this.ButtonMinusUnit_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label7.Location = new System.Drawing.Point(24, 166);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(50, 18);
+            this.label7.TabIndex = 28;
+            this.label7.Text = "юнит: ";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label8.Location = new System.Drawing.Point(24, 148);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(67, 18);
+            this.label8.TabIndex = 27;
+            this.label8.Text = "Удалить";
+            // 
             // FormAlgorithm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -370,5 +417,8 @@ namespace MAPF_System
         private CustomControls.RJControls.RJButton ButtonPlusUnit;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
+        private CustomControls.RJControls.RJButton ButtonMinusUnit;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
     }
 }
