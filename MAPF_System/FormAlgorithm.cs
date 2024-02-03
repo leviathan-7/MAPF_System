@@ -139,5 +139,16 @@ namespace MAPF_System
             C = C1;
             move = !move;
         }
+
+        private void FormAlgorithm_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (was_game)
+                return;
+            var C = CELL(e);
+            if ((C.Item1 < Board.GET_X()) && (C.Item2 < Board.GET_Y()) && (e.Location.Y > 115) && (e.Location.X > 15))
+                Cursor = Cursors.Hand;
+            else
+                Cursor = Cursors.Default;
+        }
     }
 }

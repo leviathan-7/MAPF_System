@@ -265,6 +265,7 @@ namespace MAPF_System
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormAlgorithm_KeyDown);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FormAlgorithm_MouseClick);
             this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.FormAlgorithm_MouseDoubleClick);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FormAlgorithm_MouseMove);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
