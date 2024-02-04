@@ -47,13 +47,19 @@ namespace MAPF_System
             this.button_Step = new CustomControls.RJControls.RJButton();
             this.button_Save = new CustomControls.RJControls.RJButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.ButtonMinusUnit = new CustomControls.RJControls.RJButton();
+            this.label7 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
             this.ButtonPlusUnit = new CustomControls.RJControls.RJButton();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            this.ButtonMinusUnit = new CustomControls.RJControls.RJButton();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
+            this.ButtonPlusRow = new CustomControls.RJControls.RJButton();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
+            this.ButtonPlusColumn = new CustomControls.RJControls.RJButton();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -264,8 +270,14 @@ namespace MAPF_System
             // groupBox4
             // 
             this.groupBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(236)))), ((int)(((byte)(236)))));
+            this.groupBox4.Controls.Add(this.ButtonPlusColumn);
+            this.groupBox4.Controls.Add(this.label14);
+            this.groupBox4.Controls.Add(this.label15);
+            this.groupBox4.Controls.Add(this.ButtonPlusRow);
             this.groupBox4.Controls.Add(this.ButtonMinusUnit);
+            this.groupBox4.Controls.Add(this.label12);
             this.groupBox4.Controls.Add(this.label7);
+            this.groupBox4.Controls.Add(this.label13);
             this.groupBox4.Controls.Add(this.label9);
             this.groupBox4.Controls.Add(this.label8);
             this.groupBox4.Controls.Add(this.ButtonPlusUnit);
@@ -277,6 +289,37 @@ namespace MAPF_System
             this.groupBox4.TabIndex = 26;
             this.groupBox4.TabStop = false;
             // 
+            // ButtonMinusUnit
+            // 
+            this.ButtonMinusUnit.BackColor = System.Drawing.Color.Orchid;
+            this.ButtonMinusUnit.BackgroundColor = System.Drawing.Color.Orchid;
+            this.ButtonMinusUnit.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.ButtonMinusUnit.BorderRadius = 10;
+            this.ButtonMinusUnit.BorderSize = 1;
+            this.ButtonMinusUnit.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ButtonMinusUnit.FlatAppearance.BorderSize = 0;
+            this.ButtonMinusUnit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonMinusUnit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.ButtonMinusUnit.ForeColor = System.Drawing.Color.Black;
+            this.ButtonMinusUnit.Location = new System.Drawing.Point(22, 185);
+            this.ButtonMinusUnit.Name = "ButtonMinusUnit";
+            this.ButtonMinusUnit.Size = new System.Drawing.Size(52, 45);
+            this.ButtonMinusUnit.TabIndex = 29;
+            this.ButtonMinusUnit.Text = "➖";
+            this.ButtonMinusUnit.TextColor = System.Drawing.Color.Black;
+            this.ButtonMinusUnit.UseVisualStyleBackColor = false;
+            this.ButtonMinusUnit.Click += new System.EventHandler(this.ButtonMinusUnit_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label7.Location = new System.Drawing.Point(24, 166);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(50, 18);
+            this.label7.TabIndex = 28;
+            this.label7.Text = "юнит: ";
+            // 
             // label9
             // 
             this.label9.AutoSize = true;
@@ -285,6 +328,16 @@ namespace MAPF_System
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(0, 18);
             this.label9.TabIndex = 19;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label8.Location = new System.Drawing.Point(24, 148);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(67, 18);
+            this.label8.TabIndex = 27;
+            this.label8.Text = "Удалить";
             // 
             // ButtonPlusUnit
             // 
@@ -327,46 +380,87 @@ namespace MAPF_System
             this.label11.TabIndex = 19;
             this.label11.Text = "Добавить";
             // 
-            // ButtonMinusUnit
+            // ButtonPlusRow
             // 
-            this.ButtonMinusUnit.BackColor = System.Drawing.Color.Orchid;
-            this.ButtonMinusUnit.BackgroundColor = System.Drawing.Color.Orchid;
-            this.ButtonMinusUnit.BorderColor = System.Drawing.Color.LightSlateGray;
-            this.ButtonMinusUnit.BorderRadius = 10;
-            this.ButtonMinusUnit.BorderSize = 1;
-            this.ButtonMinusUnit.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ButtonMinusUnit.FlatAppearance.BorderSize = 0;
-            this.ButtonMinusUnit.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonMinusUnit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.ButtonMinusUnit.ForeColor = System.Drawing.Color.Black;
-            this.ButtonMinusUnit.Location = new System.Drawing.Point(22, 185);
-            this.ButtonMinusUnit.Name = "ButtonMinusUnit";
-            this.ButtonMinusUnit.Size = new System.Drawing.Size(52, 45);
-            this.ButtonMinusUnit.TabIndex = 29;
-            this.ButtonMinusUnit.Text = "➖";
-            this.ButtonMinusUnit.TextColor = System.Drawing.Color.Black;
-            this.ButtonMinusUnit.UseVisualStyleBackColor = false;
-            this.ButtonMinusUnit.Click += new System.EventHandler(this.ButtonMinusUnit_Click);
+            this.ButtonPlusRow.BackColor = System.Drawing.Color.Orchid;
+            this.ButtonPlusRow.BackgroundColor = System.Drawing.Color.Orchid;
+            this.ButtonPlusRow.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.ButtonPlusRow.BorderRadius = 10;
+            this.ButtonPlusRow.BorderSize = 1;
+            this.ButtonPlusRow.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ButtonPlusRow.FlatAppearance.BorderSize = 0;
+            this.ButtonPlusRow.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonPlusRow.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.ButtonPlusRow.ForeColor = System.Drawing.Color.Black;
+            this.ButtonPlusRow.Location = new System.Drawing.Point(22, 317);
+            this.ButtonPlusRow.Name = "ButtonPlusRow";
+            this.ButtonPlusRow.Size = new System.Drawing.Size(52, 45);
+            this.ButtonPlusRow.TabIndex = 29;
+            this.ButtonPlusRow.Text = "➕";
+            this.ButtonPlusRow.TextColor = System.Drawing.Color.Black;
+            this.ButtonPlusRow.UseVisualStyleBackColor = false;
+            this.ButtonPlusRow.Click += new System.EventHandler(this.ButtonPlusRow_Click);
             // 
-            // label7
+            // label12
             // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label7.Location = new System.Drawing.Point(24, 166);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(50, 18);
-            this.label7.TabIndex = 28;
-            this.label7.Text = "юнит: ";
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label12.Location = new System.Drawing.Point(24, 298);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(63, 18);
+            this.label12.TabIndex = 28;
+            this.label12.Text = "строку: ";
             // 
-            // label8
+            // label13
             // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label8.Location = new System.Drawing.Point(24, 148);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(67, 18);
-            this.label8.TabIndex = 27;
-            this.label8.Text = "Удалить";
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label13.Location = new System.Drawing.Point(24, 280);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(77, 18);
+            this.label13.TabIndex = 27;
+            this.label13.Text = "Добавить";
+            // 
+            // ButtonPlusColumn
+            // 
+            this.ButtonPlusColumn.BackColor = System.Drawing.Color.Orchid;
+            this.ButtonPlusColumn.BackgroundColor = System.Drawing.Color.Orchid;
+            this.ButtonPlusColumn.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.ButtonPlusColumn.BorderRadius = 10;
+            this.ButtonPlusColumn.BorderSize = 1;
+            this.ButtonPlusColumn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ButtonPlusColumn.FlatAppearance.BorderSize = 0;
+            this.ButtonPlusColumn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonPlusColumn.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.ButtonPlusColumn.ForeColor = System.Drawing.Color.Black;
+            this.ButtonPlusColumn.Location = new System.Drawing.Point(22, 442);
+            this.ButtonPlusColumn.Name = "ButtonPlusColumn";
+            this.ButtonPlusColumn.Size = new System.Drawing.Size(52, 45);
+            this.ButtonPlusColumn.TabIndex = 32;
+            this.ButtonPlusColumn.Text = "➕";
+            this.ButtonPlusColumn.TextColor = System.Drawing.Color.Black;
+            this.ButtonPlusColumn.UseVisualStyleBackColor = false;
+            this.ButtonPlusColumn.Click += new System.EventHandler(this.ButtonPlusColumn_Click);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label14.Location = new System.Drawing.Point(24, 423);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(74, 18);
+            this.label14.TabIndex = 31;
+            this.label14.Text = "столбец: ";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label15.Location = new System.Drawing.Point(24, 405);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(77, 18);
+            this.label15.TabIndex = 30;
+            this.label15.Text = "Добавить";
             // 
             // FormAlgorithm
             // 
@@ -420,5 +514,11 @@ namespace MAPF_System
         private CustomControls.RJControls.RJButton ButtonMinusUnit;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
+        private CustomControls.RJControls.RJButton ButtonPlusRow;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
+        private CustomControls.RJControls.RJButton ButtonPlusColumn;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
     }
 }

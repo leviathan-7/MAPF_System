@@ -80,6 +80,25 @@ namespace MAPF_System
         public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
         public bool IsEnd(){ return IsRealEnd() && !flag; }
         public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
+        public void Move(Tuple<int, int> C, bool b)
+        {
+            if (b)
+            {
+                x = C.Item1;
+                y = C.Item2;
+            }
+            else
+            {
+                x_Purpose = C.Item1;
+                y_Purpose = C.Item2;
+            }
+        }
+        public void NewArr(int X, int Y)
+        {
+            X_Board = X;
+            Y_Board = Y;
+            Arr = new int[X, Y];
+        }
         public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star)
         {
             bool flagflag = flag;
@@ -167,19 +186,6 @@ namespace MAPF_System
                     t++;
                 if (t != 1)
                     flag = flagflag;
-            }
-        }
-        public void Move(Tuple<int, int> C, bool b)
-        {
-            if (b)
-            {
-                x = C.Item1;
-                y = C.Item2;
-            }
-            else
-            {
-                x_Purpose = C.Item1;
-                y_Purpose = C.Item2;
             }
         }
 

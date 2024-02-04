@@ -510,6 +510,32 @@ namespace MAPF_System
             units.Remove(L);
             return new Tuple<Tuple<int, int>, Tuple<int, int>>(new Tuple<int, int>(L.X(), L.Y()), new Tuple<int, int>(L.X_Purpose(), L.Y_Purpose()));
         }
+        public void PlusColumn()
+        {
+            X++;
+            var arr = new Cell[X, Y];
+            for (int i = 0; i < X - 1; i++)
+                for (int j = 0; j < Y; j++)
+                    arr[i, j] = Arr[i, j];
+            for (int j = 0; j < Y; j++)
+                arr[X - 1, j] = new Cell(false);
+            Arr = arr;
+            foreach (var unit in units)
+                unit.NewArr(X, Y);
+        }
+        public void PlusRow()
+        {
+            Y++;
+            var arr = new Cell[X, Y];
+            for (int i = 0; i < X; i++)
+                for (int j = 0; j < Y - 1; j++)
+                    arr[i, j] = Arr[i, j];
+            for (int i = 0; i < X; i++)
+                arr[i, Y - 1] = new Cell(false);
+            Arr = arr;
+            foreach (var unit in units)
+                unit.NewArr(X, Y);
+        }
 
         private void Constructor(string path)
         {

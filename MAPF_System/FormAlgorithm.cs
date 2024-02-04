@@ -35,20 +35,28 @@ namespace MAPF_System
                 label_Error.Text = "Ошибка! Алгоритм зациклен";
             if (block_elem)
             {
+                was_game = true;
                 button_Start.Dispose();
                 Controls.Remove(button_Start);
                 button_Step.Dispose();
                 Controls.Remove(button_Step);
-                was_game = true;
+                ButtonPlusUnit.Dispose();
+                Controls.Remove(ButtonPlusUnit);
+                ButtonMinusUnit.Dispose();
+                Controls.Remove(ButtonMinusUnit);
+                ButtonPlusRow.Dispose();
+                Controls.Remove(ButtonPlusRow);
+                ButtonPlusColumn.Dispose();
+                Controls.Remove(ButtonPlusColumn);
                 label4.Text = "";
                 label10.Text = "";
                 label11.Text = "";
                 label7.Text = "";
                 label8.Text = "";
-                ButtonPlusUnit.Dispose();
-                Controls.Remove(ButtonPlusUnit);
-                ButtonMinusUnit.Dispose();
-                Controls.Remove(ButtonMinusUnit);
+                label12.Text = "";
+                label13.Text = "";
+                label14.Text = "";
+                label15.Text = "";
             }
         }
 
@@ -176,6 +184,18 @@ namespace MAPF_System
             var U = Board.MinusUnit();
             if (!(U is null))
                 Board.Draw(CreateGraphics(), false, U.Item1, U.Item2);
+        }
+
+        private void ButtonPlusRow_Click(object sender, EventArgs e)
+        {
+            Board.PlusRow();
+            Board.Draw(CreateGraphics());
+        }
+
+        private void ButtonPlusColumn_Click(object sender, EventArgs e)
+        {
+            Board.PlusColumn();
+            Board.Draw(CreateGraphics());
         }
     }
 }

@@ -304,8 +304,8 @@ namespace MAPF_System
             // 
             // button_Generation
             // 
-            this.button_Generation.BackColor = System.Drawing.Color.SkyBlue;
-            this.button_Generation.BackgroundColor = System.Drawing.Color.SkyBlue;
+            this.button_Generation.BackColor = System.Drawing.Color.Orchid;
+            this.button_Generation.BackgroundColor = System.Drawing.Color.Orchid;
             this.button_Generation.BorderColor = System.Drawing.Color.LightSlateGray;
             this.button_Generation.BorderRadius = 10;
             this.button_Generation.BorderSize = 1;
