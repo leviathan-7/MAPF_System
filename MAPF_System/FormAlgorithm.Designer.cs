@@ -36,7 +36,6 @@ namespace MAPF_System
             this.textBox_Name = new System.Windows.Forms.TextBox();
             this.textBox_kol_iter_a_star = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -44,6 +43,8 @@ namespace MAPF_System
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
@@ -53,6 +54,8 @@ namespace MAPF_System
             this.label8 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.ButtonDelBlock = new CustomControls.RJControls.RJButton();
             this.ButtonPlusColumn = new CustomControls.RJControls.RJButton();
             this.ButtonPlusRow = new CustomControls.RJControls.RJButton();
             this.ButtonMinusUnit = new CustomControls.RJControls.RJButton();
@@ -60,10 +63,6 @@ namespace MAPF_System
             this.button_Start = new CustomControls.RJControls.RJButton();
             this.button_Step = new CustomControls.RJControls.RJButton();
             this.button_Save = new CustomControls.RJControls.RJButton();
-            this.ButtonDelBlock = new CustomControls.RJControls.RJButton();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label17 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -124,14 +123,6 @@ namespace MAPF_System
             this.label2.Size = new System.Drawing.Size(238, 18);
             this.label2.TabIndex = 17;
             this.label2.Text = "Глубина просмотра (от 7 до 15): ";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Location = new System.Drawing.Point(349, 87);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(10, 10);
-            this.pictureBox1.TabIndex = 13;
-            this.pictureBox1.TabStop = false;
             // 
             // label5
             // 
@@ -194,7 +185,6 @@ namespace MAPF_System
             this.groupBox1.Controls.Add(this.button_Step);
             this.groupBox1.Controls.Add(this.button_Save);
             this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Controls.Add(this.pictureBox1);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textBox_kol_iter_a_star);
             this.groupBox1.Controls.Add(this.textBox_Name);
@@ -210,6 +200,7 @@ namespace MAPF_System
             // groupBox4
             // 
             this.groupBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(236)))), ((int)(((byte)(236)))));
+            this.groupBox4.Controls.Add(this.label18);
             this.groupBox4.Controls.Add(this.ButtonDelBlock);
             this.groupBox4.Controls.Add(this.label16);
             this.groupBox4.Controls.Add(this.ButtonPlusColumn);
@@ -231,6 +222,26 @@ namespace MAPF_System
             this.groupBox4.Size = new System.Drawing.Size(102, 925);
             this.groupBox4.TabIndex = 26;
             this.groupBox4.TabStop = false;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label16.Location = new System.Drawing.Point(24, 554);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(59, 18);
+            this.label16.TabIndex = 34;
+            this.label16.Text = "блоки: ";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label17.Location = new System.Drawing.Point(24, 536);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(67, 18);
+            this.label17.TabIndex = 33;
+            this.label17.Text = "Удалить";
             // 
             // label14
             // 
@@ -320,6 +331,37 @@ namespace MAPF_System
             this.label11.Size = new System.Drawing.Size(77, 18);
             this.label11.TabIndex = 19;
             this.label11.Text = "Добавить";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label18.Location = new System.Drawing.Point(-11, 3);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(112, 18);
+            this.label18.TabIndex = 27;
+            this.label18.Text = "                          ";
+            // 
+            // ButtonDelBlock
+            // 
+            this.ButtonDelBlock.BackColor = System.Drawing.Color.Orchid;
+            this.ButtonDelBlock.BackgroundColor = System.Drawing.Color.Orchid;
+            this.ButtonDelBlock.BorderColor = System.Drawing.Color.LightSlateGray;
+            this.ButtonDelBlock.BorderRadius = 10;
+            this.ButtonDelBlock.BorderSize = 1;
+            this.ButtonDelBlock.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.ButtonDelBlock.FlatAppearance.BorderSize = 0;
+            this.ButtonDelBlock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.ButtonDelBlock.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.ButtonDelBlock.ForeColor = System.Drawing.Color.Black;
+            this.ButtonDelBlock.Location = new System.Drawing.Point(22, 573);
+            this.ButtonDelBlock.Name = "ButtonDelBlock";
+            this.ButtonDelBlock.Size = new System.Drawing.Size(52, 45);
+            this.ButtonDelBlock.TabIndex = 35;
+            this.ButtonDelBlock.Text = "❌";
+            this.ButtonDelBlock.TextColor = System.Drawing.Color.Black;
+            this.ButtonDelBlock.UseVisualStyleBackColor = false;
+            this.ButtonDelBlock.Click += new System.EventHandler(this.ButtonDelBlock_Click);
             // 
             // ButtonPlusColumn
             // 
@@ -468,47 +510,6 @@ namespace MAPF_System
             this.button_Save.UseVisualStyleBackColor = false;
             this.button_Save.Click += new System.EventHandler(this.button_Save_Click);
             // 
-            // ButtonDelBlock
-            // 
-            this.ButtonDelBlock.BackColor = System.Drawing.Color.Orchid;
-            this.ButtonDelBlock.BackgroundColor = System.Drawing.Color.Orchid;
-            this.ButtonDelBlock.BorderColor = System.Drawing.Color.LightSlateGray;
-            this.ButtonDelBlock.BorderRadius = 10;
-            this.ButtonDelBlock.BorderSize = 1;
-            this.ButtonDelBlock.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ButtonDelBlock.FlatAppearance.BorderSize = 0;
-            this.ButtonDelBlock.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonDelBlock.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.ButtonDelBlock.ForeColor = System.Drawing.Color.Black;
-            this.ButtonDelBlock.Location = new System.Drawing.Point(22, 573);
-            this.ButtonDelBlock.Name = "ButtonDelBlock";
-            this.ButtonDelBlock.Size = new System.Drawing.Size(52, 45);
-            this.ButtonDelBlock.TabIndex = 35;
-            this.ButtonDelBlock.Text = "❌";
-            this.ButtonDelBlock.TextColor = System.Drawing.Color.Black;
-            this.ButtonDelBlock.UseVisualStyleBackColor = false;
-            this.ButtonDelBlock.Click += new System.EventHandler(this.ButtonDelBlock_Click);
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label16.Location = new System.Drawing.Point(24, 554);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(59, 18);
-            this.label16.TabIndex = 34;
-            this.label16.Text = "блоки: ";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label17.Location = new System.Drawing.Point(24, 536);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(67, 18);
-            this.label17.TabIndex = 33;
-            this.label17.Text = "Удалить";
-            // 
             // FormAlgorithm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -524,7 +525,6 @@ namespace MAPF_System
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FormAlgorithm_MouseClick);
             this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.FormAlgorithm_MouseDoubleClick);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.FormAlgorithm_MouseMove);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -543,7 +543,6 @@ namespace MAPF_System
         private System.Windows.Forms.TextBox textBox_Name;
         private System.Windows.Forms.TextBox textBox_kol_iter_a_star;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label5;
         private CustomControls.RJControls.RJButton button_Save;
         private CustomControls.RJControls.RJButton button_Step;
@@ -570,5 +569,6 @@ namespace MAPF_System
         private CustomControls.RJControls.RJButton ButtonDelBlock;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label18;
     }
 }

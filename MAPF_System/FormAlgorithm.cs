@@ -29,7 +29,7 @@ namespace MAPF_System
             StartPosition = FormStartPosition.Manual;
             Location = new Point(100, 100);
             // Отрисовка поля
-            pictureBox1.Paint += delegate { Board.Draw(CreateGraphics()); };
+            Paint += delegate { Board.Draw(CreateGraphics()); };
             if (kol_iterat != 0)
                 label_kol_iterat.Text = "Количество шагов = " + kol_iterat;
             if (error)
