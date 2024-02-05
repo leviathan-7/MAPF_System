@@ -140,7 +140,7 @@ namespace MAPF_System
             using (Graphics g = t)
             {
                 if (b)
-                    g.Clear(SystemColors.Control); // Clear the draw area
+                    g.Clear(SystemColors.Control); // Очистка области рисования
                 using (Pen pen = new Pen(Color.Blue, 1))
                 {
                     var Size = new Size(height, height);
