@@ -108,12 +108,7 @@ namespace MAPF_System
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
                 return;
-            if (spec > 0)
-            {
-                spec--;
-                if (spec == 0)
-                    was_near_end = false;
-            }
+            StartSpec();
             // Алгоритм для решения проблемы перпендикулярного хождения юнитов
             if (!gotolast && !(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
             {
@@ -159,7 +154,10 @@ namespace MAPF_System
                         last_AU = null;
                     }
                     if (IsRealEnd())
+                    {
                         was_near_end = true;
+                        spec = X_Board * Y_Board;
+                    }
                     // Помечаем клетку как посещенную
                     Board.MakeVisit(x, y, id);
                     if (!was_near_end)
@@ -194,12 +192,7 @@ namespace MAPF_System
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
                 return false;
-            if (spec > 0)
-            {
-                spec--;
-                if (spec == 0)
-                    was_near_end = false;
-            }
+            StartSpec();
             // Проверяем, надо ли ставить флаг того, что 2 юнита оказались в тупике и им надо на места друг-друга
             int t = 0;
             if (!Board.IsEmpthyAndNoTunel(x, y - 1))
@@ -216,17 +209,13 @@ namespace MAPF_System
             {
                 AU.flag = true;
                 was_near_end = true;
-                spec = 9;
             }
             else // Случай, когда юнит не даёт проехать в тунеле другому и ему надо выехать из тунеля, но при этом случай не соответсвует случаю, когда двум юнитам надо на место друг-друга
             {
                 if (t >= 3)
                     flag = signal;
                 if (flag)
-                {
                     was_near_end = true;
-                    spec = 1;
-                }
             }
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
@@ -283,6 +272,16 @@ namespace MAPF_System
             }
 
             return was_step;
+        }
+        private void StartSpec()
+        {
+            if (was_near_end)
+                was_near_end = false;
+            if (spec > 0)
+            {
+                spec--;
+                was_near_end = true;
+            }
         }
         private Tuple<int, float> MIN_I(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
         {
