@@ -19,8 +19,8 @@ namespace MAPF_System
         private int X;
         private int Y;
         private Random rnd;
-        private int KolBad;
         private string name;
+        private bool WasGame;
 
         public Board(int X, int Y, int Blocks, int N_Units)
         {
@@ -29,7 +29,6 @@ namespace MAPF_System
             this.Y = Y;
             Arr = new Cell[X, Y];
             rnd = new Random();
-            KolBad = 0;
             tunells = new List<Tunell>();
             // Генерация пустых узлов
             int N = X * Y - Blocks - 1;
@@ -98,14 +97,13 @@ namespace MAPF_System
                     if (Arr[i, j] is null)
                         Arr[i, j] = new Cell(true);
         }
-        public Board(int X, int Y, Cell[,] Arr, List<Unit> units, int KolBad, string name, List<Tunell> tunells)
+        public Board(int X, int Y, Cell[,] Arr, List<Unit> units, string name, List<Tunell> tunells)
         {
             this.name = name;
             this.X = X;
             this.Y = Y;
             this.Arr = Arr;
             this.units = units;
-            this.KolBad = KolBad;
             this.tunells = tunells;
         }
         public Board()
@@ -130,7 +128,7 @@ namespace MAPF_System
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y; j++)
                     CopyArr[i, j] = Arr[i, j].CopyWithoutBlock();
-            return new Board(X, Y, CopyArr, CopyUnits, KolBad, name, tunells);
+            return new Board(X, Y, CopyArr, CopyUnits, name, tunells);
         }
         public void Draw(Graphics t, bool b = true, Tuple<int, int> C = null, Tuple<int, int> C1 = null)
         {
@@ -204,12 +202,12 @@ namespace MAPF_System
                 }
             }
         }
-        public string Save(string name_)
+        public string Save(string name_, bool b = false)
         {
             try
             {
                 StreamWriter sw = (new FileInfo(name_ + ".board")).CreateText();
-                sw.WriteLine(X + " " + Y + " " + units.Count + " " + KolBad);
+                sw.WriteLine(X + " " + Y + " " + units.Count + " " + b);
                 // Записать в файл доску с блоками и пройденным путем
                 for (int i = 0; i < X; i++)
                     for (int j = 0; j < Y; j++)
@@ -275,7 +273,6 @@ namespace MAPF_System
 
                 if (k == 0)
                     break;
-                KolBad += k;
             }
             // Добавить узлы -- части туннелей
             while (true)
@@ -437,6 +434,7 @@ namespace MAPF_System
         public bool InTunell(Unit unit, Tunell tunell){ return Arr[unit.X(), unit.Y()].Tunell == tunell; }
         public int GET_X() { return X; }
         public int GET_Y() { return Y; }
+        public bool GetWasGame() { return WasGame; }
         public int ReversBlock(Tuple<int, int> c)
         {
             // Проверка на выход за пределы поля
@@ -536,6 +534,12 @@ namespace MAPF_System
             foreach (var unit in units)
                 unit.NewArr(X, Y);
         }
+        public void DelBlokcs()
+        {
+            for (int i = 0; i < X; i++)
+                for (int j = 0; j < Y; j++)
+                    Arr[i, j].DelBlokcs();
+        }
 
         private void Constructor(string path)
         {
@@ -549,8 +553,8 @@ namespace MAPF_System
                 Y = int.Parse(arr[1]);
                 // Количество юнитов
                 int N_Units = int.Parse(arr[2]);
-                // Количество плохих узлов
-                KolBad = int.Parse(arr[3]);
+                // Была ли игра
+                WasGame = (arr[3] == "True");
                 // Создать доску по данным файла
                 Arr = new Cell[X, Y];
                 int t = 1;

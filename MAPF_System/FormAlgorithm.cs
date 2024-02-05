@@ -21,6 +21,7 @@ namespace MAPF_System
         public FormAlgorithm(Board Board, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false)
         {
             this.Board = Board;
+            was_game = Board.GetWasGame();
             InitializeComponent();
             textBox_kol_iter_a_star.Text = str_kol_iter_a_star;
             label6.Text = Board.Name();
@@ -33,7 +34,7 @@ namespace MAPF_System
                 label_kol_iterat.Text = "Количество шагов = " + kol_iterat;
             if (error)
                 label_Error.Text = "Ошибка! Алгоритм зациклен";
-            if (block_elem)
+            if (block_elem || was_game)
             {
                 was_game = true;
                 button_Start.Dispose();
@@ -48,15 +49,19 @@ namespace MAPF_System
                 Controls.Remove(ButtonPlusRow);
                 ButtonPlusColumn.Dispose();
                 Controls.Remove(ButtonPlusColumn);
+                ButtonDelBlock.Dispose();
+                Controls.Remove(ButtonDelBlock);
                 label4.Text = "";
-                label10.Text = "";
-                label11.Text = "";
                 label7.Text = "";
                 label8.Text = "";
+                label10.Text = "";
+                label11.Text = "";
                 label12.Text = "";
                 label13.Text = "";
                 label14.Text = "";
                 label15.Text = "";
+                label16.Text = "";
+                label17.Text = "";
             }
         }
 
@@ -123,7 +128,7 @@ namespace MAPF_System
                 label_Error.Text = "Вы не ввели имя файла!";
                 return;
             }
-            label6.Text = Board.Save(textBox_Name.Text);
+            label6.Text = Board.Save(textBox_Name.Text, was_game);
             label_Error.Text = "Сохранено!";
         }
 
@@ -195,6 +200,12 @@ namespace MAPF_System
         private void ButtonPlusColumn_Click(object sender, EventArgs e)
         {
             Board.PlusColumn();
+            Board.Draw(CreateGraphics());
+        }
+
+        private void ButtonDelBlock_Click(object sender, EventArgs e)
+        {
+            Board.DelBlokcs();
             Board.Draw(CreateGraphics());
         }
     }
