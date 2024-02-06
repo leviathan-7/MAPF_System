@@ -252,7 +252,6 @@ namespace MAPF_System
                 int k = 0;
                 for (int i = 0; i < X; i++)
                     for (int j = 0; j < Y; j++)
-                    {
                         if (!(IsBad(i, j) || Arr[i, j].IsBlock()))
                         {
                             // Проверка на отсутсвие целей
@@ -277,7 +276,6 @@ namespace MAPF_System
                                 }
                             }
                         }
-                    }
 
                 if (k == 0)
                     break;
@@ -288,7 +286,6 @@ namespace MAPF_System
                 int k = 0;
                 for (int i = 0; i < X; i++)
                     for (int j = 0; j < Y; j++)
-                    {
                         if (!(IsTunell(i, j) || Arr[i, j].IsBlock()))
                         {
                             int kk = 0;
@@ -365,7 +362,7 @@ namespace MAPF_System
                                 }
                             }
                         }
-                    }
+                
                 if (k == 0)
                     break;
             }

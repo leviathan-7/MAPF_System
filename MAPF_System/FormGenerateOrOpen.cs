@@ -18,7 +18,7 @@ namespace MAPF_System
         { 
             InitializeComponent();
             if (args.Length != 0)
-                (new FormAlgorithm(new Board(args[0]), 0, false, "7")).ShowDialog();
+                (new FormAlgorithm(new Board(args[0]), 0, false, "7", false, false)).ShowDialog();
         }
         
         private void button_Generation_Click(object sender, EventArgs e)
