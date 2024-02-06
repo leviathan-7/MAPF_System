@@ -18,7 +18,7 @@ namespace MAPF_System
         private bool move;
         private Tuple<int, int> C;
 
-        public FormAlgorithm(Board Board, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false)
+        public FormAlgorithm(Board Board, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false, bool viewtunnel = true)
         {
             this.Board = Board;
             was_game = Board.GetWasGame();
@@ -29,7 +29,7 @@ namespace MAPF_System
             StartPosition = FormStartPosition.Manual;
             Location = new Point(100, 100);
             // Отрисовка поля
-            Paint += delegate { Board.Draw(CreateGraphics()); };
+            Paint += delegate { Board.Draw(CreateGraphics(), true, null, null, viewtunnel); };
             if (kol_iterat != 0)
                 label_kol_iterat.Text = "Количество шагов = " + kol_iterat;
             if (error)

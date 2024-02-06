@@ -130,7 +130,7 @@ namespace MAPF_System
                     CopyArr[i, j] = Arr[i, j].CopyWithoutBlock();
             return new Board(X, Y, CopyArr, CopyUnits, name, tunells);
         }
-        public void Draw(Graphics t, bool b = true, Tuple<int, int> C = null, Tuple<int, int> C1 = null)
+        public void Draw(Graphics t, bool b = true, Tuple<int, int> C = null, Tuple<int, int> C1 = null, bool viewtunnel = true)
         {
             int height = 18;
             if (Math.Max(X, Y) < 30)
@@ -170,6 +170,14 @@ namespace MAPF_System
                             // Отрисовка плохих узлов
                             if (Arr[i, j].IsBad())
                                 g.DrawString("X", Font1, Brushes.Red, new Point(XX + 9 + height * i, YY + 9 + height * j));
+                            // Отрисовка туннеля
+                            if (viewtunnel && Arr[i, j].IsTunell())
+                            {
+                                if (Arr[i, j].Tunell is null)
+                                    g.DrawRectangle(new Pen(Color.Yellow, 1), new Rectangle(new Point(XX + 6 + height * i, YY + 6 + height * j), new Size(height - 2, height - 2)));
+                                else
+                                    g.DrawRectangle(new Pen(Color.Red, 1), new Rectangle(new Point(XX + 6 + height * i, YY + 6 + height * j), new Size(height - 2, height - 2)));
+                            }
                         }
                     }
                     Size = new Size(height - 5, height - 5);

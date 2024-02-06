@@ -77,7 +77,7 @@ namespace MAPF_System
             label12.Text = "⏳";
             Board Board = new Board();
             if(!(Board.Units() is null))
-                (new FormAlgorithm(Board, 0, false, "7")).Show();
+                (new FormAlgorithm(Board, 0, false, "7", false, false)).Show();
             label12.Text = "";
         }
         
