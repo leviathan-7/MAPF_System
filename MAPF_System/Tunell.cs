@@ -35,11 +35,7 @@ namespace MAPF_System
                     Unit.flag = false;
                 b = b && Unit.IsRealEnd();
                 if (Unit.IsRealEnd() && !b)
-                {
                     Unit.flag = true;
-                    if (!(Unit.Last_X() == -1 && Unit.Last_Y() == -1) && Board.TunellIsNotNull(Unit.X(), Unit.Y()) && !Board.TunellIsNotNull(Unit.Last_X(), Unit.Last_Y()))
-                        Unit.GoToLast();
-                }
             }
         }
         public int Id()

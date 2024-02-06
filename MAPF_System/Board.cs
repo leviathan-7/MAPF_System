@@ -305,34 +305,35 @@ namespace MAPF_System
                                 Arr[i, j].MakeTunell();
                                 k++;
                                 int kkk = 0;
-                                if (!IsEmpthy(i - 1, j) || TunellIsNotNull(i - 1, j))
+                                if (!IsEmpthy(i - 1, j) || TunellIsNotNull(i - 1, j) || IsBad(i - 1, j))
                                     kkk++;
-                                if (!IsEmpthy(i + 1, j) || TunellIsNotNull(i + 1, j))
+                                if (!IsEmpthy(i + 1, j) || TunellIsNotNull(i + 1, j) || IsBad(i + 1, j))
                                     kkk++;
-                                if (!IsEmpthy(i, j - 1) || TunellIsNotNull(i, j - 1))
+                                if (!IsEmpthy(i, j - 1) || TunellIsNotNull(i, j - 1) || IsBad(i, j - 1))
                                     kkk++;
-                                if (!IsEmpthy(i, j + 1) || TunellIsNotNull(i, j + 1))
+                                if (!IsEmpthy(i, j + 1) || TunellIsNotNull(i, j + 1) || IsBad(i, j + 1))
                                     kkk++;
+                                
                                 if (kkk == 3)
                                 {
                                     int e = 0;
                                     Tunell T = null;
-                                    if (TunellIsNotNull(i - 1, j))
+                                    if (TunellIsNotNull(i - 1, j) && !IsBad(i - 1, j))
                                     {
                                         e++;
                                         T = Arr[i - 1, j].Tunell;
                                     }
-                                    if (TunellIsNotNull(i + 1, j))
+                                    if (TunellIsNotNull(i + 1, j) && !IsBad(i + 1, j))
                                     {
                                         e++;
                                         T = Arr[i + 1, j].Tunell;
                                     }
-                                    if (TunellIsNotNull(i, j - 1))
+                                    if (TunellIsNotNull(i, j - 1) && !IsBad(i, j - 1))
                                     {
                                         e++;
                                         T = Arr[i, j - 1].Tunell;
                                     }
-                                    if (TunellIsNotNull(i, j + 1))
+                                    if (TunellIsNotNull(i, j + 1) && !IsBad(i, j + 1))
                                     {
                                         e++;
                                         T = Arr[i, j + 1].Tunell;
@@ -345,13 +346,13 @@ namespace MAPF_System
                                     if (e == 0)
                                     {
                                         kkk = 0;
-                                        if (!IsEmpthy(i - 1, j))
+                                        if (!IsEmpthy(i - 1, j) || IsBad(i - 1, j))
                                             kkk++;
-                                        if (!IsEmpthy(i + 1, j))
+                                        if (!IsEmpthy(i + 1, j) || IsBad(i + 1, j))
                                             kkk++;
-                                        if (!IsEmpthy(i, j - 1))
+                                        if (!IsEmpthy(i, j - 1) || IsBad(i, j - 1))
                                             kkk++;
-                                        if (!IsEmpthy(i, j + 1))
+                                        if (!IsEmpthy(i, j + 1) || IsBad(i, j + 1))
                                             kkk++;
                                         if (kkk == 3)
                                         {
