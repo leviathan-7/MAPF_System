@@ -282,6 +282,7 @@ namespace MAPF_System
             float minh = ff[4];
             int min_i = 4;
             for (int i = 0; i < 4; i++)
+            {
                 if (((min > ff[i]) || ((min == ff[i]) && (minh > hh[i])) || ((minh == hh[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && !((xx == a[i]) && (yy == b[i])))
                 {
                     if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
@@ -291,6 +292,8 @@ namespace MAPF_System
                         min_i = i;
                     }
                 }
+            }
+                
             bool bb = min_i != 4;
             was_step = true;
             if (!(UsUnits[min_i] is null))
@@ -408,7 +411,7 @@ namespace MAPF_System
                 // В случае "выталкивания", плохой случай наоборот считается хорошим
                 if (is_bool_step && !Board.IsTunell(last_x, last_y))
                     return 1;
-                return int.MaxValue - 100;
+                return int.MaxValue / 2;
             }
             // Случай, когда простой туннель
             if (Board.IsTunell(x, y) && Board.TunellIsNotNull(x, y))
@@ -416,7 +419,7 @@ namespace MAPF_System
                 if (Board.TunellId(x, y) == id)
                     return 1;
                 if (!(Board.TunellId(x, y) == -1))
-                    return int.MaxValue - 100;
+                    return int.MaxValue / 2;
             }
             // Если глубина не достигнута, тогда рассматриваем клетки, в которые можем попасть
             if (kol_iter_a_star != 0)
@@ -432,7 +435,7 @@ namespace MAPF_System
                     ff[2] = f(x - 1, y, Board, kol_iter_a_star, x, y);
                 if (Board.IsEmpthy(x + 1, y) && !((last_x == x + 1) && (last_y == y)))
                     ff[3] = f(x + 1, y, Board, kol_iter_a_star, x, y);
-                ff[4] = int.MaxValue - 100;
+                ff[4] = int.MaxValue / 2;
                 // Находим клетку с минимальным значением эвристической функции
                 float min = ff[4];
                 for (int i = 0; i < 4; i++)
