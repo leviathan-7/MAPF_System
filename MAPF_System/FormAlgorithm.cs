@@ -51,6 +51,8 @@ namespace MAPF_System
                 Controls.Remove(ButtonPlusColumn);
                 ButtonDelBlock.Dispose();
                 Controls.Remove(ButtonDelBlock);
+                ButtonDelUnits.Dispose();
+                Controls.Remove(ButtonDelUnits);
                 label4.Text = "";
                 label7.Text = "";
                 label8.Text = "";
@@ -62,6 +64,8 @@ namespace MAPF_System
                 label15.Text = "";
                 label16.Text = "";
                 label17.Text = "";
+                label21.Text = "";
+                label22.Text = "";
             }
         }
 
@@ -193,20 +197,48 @@ namespace MAPF_System
 
         private void ButtonPlusRow_Click(object sender, EventArgs e)
         {
+            move = false;
             Board.PlusRow();
             Board.Draw(CreateGraphics());
         }
 
         private void ButtonPlusColumn_Click(object sender, EventArgs e)
         {
+            move = false;
             Board.PlusColumn();
             Board.Draw(CreateGraphics());
         }
 
         private void ButtonDelBlock_Click(object sender, EventArgs e)
         {
+            move = false;
             Board.DelBlokcs();
             Board.Draw(CreateGraphics());
         }
+
+        private void ButtonDelUnits_Click(object sender, EventArgs e)
+        {
+            move = false;
+            if(Board.DelUnits())
+                Board.Draw(CreateGraphics());
+        }
+
+        private void ButtonCopy_Click(object sender, EventArgs e)
+        {
+            move = false;
+            int height = 18;
+            if (Math.Max(Board.GET_X(), Board.GET_Y()) < 30)
+                height = 24;
+            using (Bitmap screenshot = new Bitmap(height * Board.GET_X() + 15, height * Board.GET_Y() + 15))
+            {
+                using (Graphics graphics = Graphics.FromImage(screenshot))
+                {
+                    graphics.CopyFromScreen(PointToScreen(new Point(88, 108)), Point.Empty, Bounds.Size);
+                }
+                Clipboard.SetImage(screenshot);
+            }
+            label20.Text = "Скопировано!";
+        }
+
     }
 }

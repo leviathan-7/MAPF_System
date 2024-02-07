@@ -546,6 +546,16 @@ namespace MAPF_System
                 for (int j = 0; j < Y; j++)
                     Arr[i, j].DelBlokcs();
         }
+        public bool DelUnits()
+        {
+            if (units.Count() <= 1)
+            {
+                SystemSounds.Beep.Play();
+                return false;
+            }
+            units = new List<Unit> { units[0] };
+            return true;
+        }
 
         private void Constructor(string path)
         {
