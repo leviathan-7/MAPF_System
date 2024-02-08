@@ -17,6 +17,7 @@ namespace MAPF_System
         private bool was_game;
         private bool move;
         private Tuple<int, int> C;
+        private Tuple<int, int> CC;
 
         public FormAlgorithm(Board Board, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false, bool viewtunnel = true)
         {
@@ -171,13 +172,35 @@ namespace MAPF_System
 
         private void FormAlgorithm_MouseMove(object sender, MouseEventArgs e)
         {
-            if (was_game)
-                return;
-            var C = CELL(e);
-            if ((C.Item1 < Board.GET_X()) && (C.Item2 < Board.GET_Y()) && (e.Location.Y > 115) && (e.Location.X > 95))
-                Cursor = Cursors.Hand;
-            else
-                Cursor = Cursors.Default;
+            using (Graphics g = CreateGraphics())
+            {
+                var C = CELL(e);
+                int height = 18;
+                if (Math.Max(Board.GET_X(), Board.GET_Y()) < 30)
+                    height = 24;
+                var Font = new Font("Arial", 7, FontStyle.Bold);
+                var Font1 = new Font("Arial", 7, FontStyle.Bold | FontStyle.Underline);
+                if (!(CC is null) && (CC.Item1 < Board.GET_X()) && (CC.Item2 < Board.GET_Y()))
+                {
+                    g.DrawString("" + CC.Item2, Font1, Brushes.White, new Point(88, 124 + height * CC.Item2));
+                    g.DrawString("" + CC.Item1, Font1, Brushes.White, new Point(104 + height * CC.Item1, 108));
+                    g.DrawString("" + CC.Item2, Font, Brushes.Coral, new Point(88, 124 + height * CC.Item2));
+                    g.DrawString("" + CC.Item1, Font, Brushes.Coral, new Point(104 + height * CC.Item1, 108));
+                }
+                if ((C.Item1 < Board.GET_X()) && (C.Item2 < Board.GET_Y()) && (e.Location.Y > 115) && (e.Location.X > 95))
+                {
+                    if (!was_game)
+                        Cursor = Cursors.Hand;
+                    g.DrawString("" + C.Item2, Font1, Brushes.Blue, new Point(88, 124 + height * C.Item2));
+                    g.DrawString("" + C.Item1, Font1, Brushes.Blue, new Point(104 + height * C.Item1, 108));
+                }
+                else
+                {
+                    if (!was_game)
+                        Cursor = Cursors.Default;
+                }
+                CC = C;
+            }
         }
 
         private void ButtonPlusUnit_Click(object sender, EventArgs e)
