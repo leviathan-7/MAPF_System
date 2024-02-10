@@ -67,8 +67,6 @@ namespace MAPF_System
         public void NotWasStep() { was_step = false; }
         public int X() { return x; }
         public int Y() { return y; }
-        public int Last_X() { return last__x; }
-        public int Last_Y() { return last__y; }
         public int X_Purpose() { return x_Purpose; }
         public int Y_Purpose() { return y_Purpose; }
         public int Id() { return id; }

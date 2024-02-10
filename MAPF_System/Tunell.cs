@@ -11,11 +11,13 @@ namespace MAPF_System
     {
         private Board board;
         private List<Unit> tunell_units;
+        private List<Tunell> tunells;
 
         public Tunell(Board board)
         {
             this.board = board;
             tunell_units = new List<Unit>();
+            tunells = new List<Tunell>();
         }
         public void Add(int x, int y)
         {
@@ -25,6 +27,17 @@ namespace MAPF_System
                     tunell_units.Add(Unit);
                     break;
                 }
+        }
+        public void Add(List<Tunell> LT)
+        {
+            foreach (var t in LT)
+            {
+                tunells.Add(t);
+                foreach (var u in t.tunell_units)
+                    tunell_units.Add(u);
+                foreach (var tt in t.tunells)
+                    tunells.Add(tt);
+            }
         }
         public void MakeFlags(Board Board)
         {
@@ -41,8 +54,13 @@ namespace MAPF_System
         public int Id()
         {
             foreach (var Unit in tunell_units)
-                if (!board.InTunell(Unit, this))
+            {
+                bool b = board.InTunell(Unit, this);
+                foreach (var tunell in tunells)
+                    b = b || board.InTunell(Unit, tunell);
+                if (!b)
                     return Unit.Id();
+            }
             return -1;
         }
     }
