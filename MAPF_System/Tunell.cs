@@ -46,7 +46,10 @@ namespace MAPF_System
             {
                 if (Unit.IsRealEnd())
                     Unit.flag = false;
-                b = b && Unit.IsRealEnd();
+                bool t = Board.InTunell(Unit, this);
+                foreach (var tunell in tunells)
+                    t = t || Board.InTunell(Unit, tunell);
+                b = b && t;
                 if (Unit.IsRealEnd() && !b)
                     Unit.flag = true;
             }

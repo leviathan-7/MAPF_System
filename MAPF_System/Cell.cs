@@ -16,17 +16,14 @@ namespace MAPF_System
         private bool wasvisited;
         private int idVisit;
         private bool isBad;
-        private bool isTunell;
+        private Tunell tunell;
 
-        public Tunell Tunell;
-
-        public Cell(bool isBlock, bool wasvisited = false, int idVisit = -1, bool isBad = false, bool isTunell = false)
+        public Cell(bool isBlock, bool wasvisited = false, int idVisit = -1, bool isBad = false)
         {
             this.isBlock = isBlock;
             this.wasvisited = wasvisited;
             this.idVisit = idVisit;
             this.isBad = isBad;
-            this.isTunell = isTunell;
         }
         public Cell(string str)
         {
@@ -36,22 +33,22 @@ namespace MAPF_System
             wasvisited = arr[1] == "True";
             idVisit = int.Parse(arr[2]);
             isBad = arr[3] == "True";
-            isTunell = isBad;
         }
-        public Cell CopyWithoutBlock() { return new Cell(false, wasvisited, idVisit, isBad, isTunell); }
+        public Cell CopyWithoutBlock() { return new Cell(false, wasvisited, idVisit, isBad); }
         public int IdVisit() { return idVisit; }
         public string ToStr() { return isBlock + " " + wasvisited + " " + idVisit + " " + isBad; }
+        public Tunell Tunell() { return tunell; }
+        public Tunell MakeTunell(Tunell tunell) { return this.tunell = tunell; }
         public void MakeVisit(int n)
         {
             wasvisited = true;
             idVisit = n;
         }
         public void MakeBad() { isBad = true; }
-        public void MakeTunell() { isTunell = true; }
         public void MakeBlock() { isBlock = true; }
         public bool IsBad() { return isBad; }
         public bool IsBlock() { return isBlock; }
-        public bool IsTunell() { return isTunell; }
+        public bool IsTunell() { return !(tunell is null); }
         public bool WasVisit() { return wasvisited; }
         public void DelBlokcs() { isBlock = false; }
         public int ReversBlock() 

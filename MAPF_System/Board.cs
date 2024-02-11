@@ -232,14 +232,10 @@ namespace MAPF_System
             // Добавить блоки в пределах видимости юнитов
             foreach (var Unit in units)
             {
-                if (Board.IsBlock(Unit.X(), Unit.Y() - 1))
-                    Arr[Unit.X(), Unit.Y() - 1].MakeBlock();
-                if (Board.IsBlock(Unit.X(), Unit.Y() + 1))
-                    Arr[Unit.X(), Unit.Y() + 1].MakeBlock();
-                if (Board.IsBlock(Unit.X() - 1, Unit.Y()))
-                    Arr[Unit.X() - 1, Unit.Y()].MakeBlock();
-                if (Board.IsBlock(Unit.X() + 1, Unit.Y()))
-                    Arr[Unit.X() + 1, Unit.Y()].MakeBlock();
+                MakeBlock(Board, Unit.X(), Unit.Y() - 1);
+                MakeBlock(Board, Unit.X(), Unit.Y() + 1);
+                MakeBlock(Board, Unit.X() - 1, Unit.Y());
+                MakeBlock(Board, Unit.X() + 1, Unit.Y());
             }
             // Добавить плохие узлы
             while (true)
@@ -256,14 +252,11 @@ namespace MAPF_System
                             if (b)
                             {
                                 int kk = 0;
-                                if (!IsEmpthy(i - 1, j) || IsBad(i - 1, j))
-                                    kk++;
-                                if (!IsEmpthy(i + 1, j) || IsBad(i + 1, j))
-                                    kk++;
-                                if (!IsEmpthy(i, j - 1) || IsBad(i, j - 1))
-                                    kk++;
-                                if (!IsEmpthy(i, j + 1) || IsBad(i, j + 1))
-                                    kk++;
+                                kk += BadAndNoEmpthy(i - 1, j);
+                                kk += BadAndNoEmpthy(i + 1, j);
+                                kk += BadAndNoEmpthy(i, j - 1);
+                                kk += BadAndNoEmpthy(i, j + 1);
+
                                 if (kk == 3)
                                 {
                                     Arr[i, j].MakeBad();
@@ -284,67 +277,24 @@ namespace MAPF_System
                         if (!(IsTunell(i, j) || Arr[i, j].IsBlock()))
                         {
                             int kk = 0;
-                            if (!IsEmpthy(i - 1, j) || IsTunell(i - 1, j))
-                                kk++;
-                            if (!IsEmpthy(i + 1, j) || IsTunell(i + 1, j))
-                                kk++;
-                            if (!IsEmpthy(i, j - 1) || IsTunell(i, j - 1))
-                                kk++;
-                            if (!IsEmpthy(i, j + 1) || IsTunell(i, j + 1))
-                                kk++;
+                            kk += TunellAndNoEmpthy(i - 1, j);
+                            kk += TunellAndNoEmpthy(i + 1, j);
+                            kk += TunellAndNoEmpthy(i, j - 1);
+                            kk += TunellAndNoEmpthy(i, j + 1);
 
                             if (kk == 3)
                             {
-                                Arr[i, j].MakeTunell();
-                                int e = 0;
                                 List<Tunell> LT = new List<Tunell>();
-                                if (TunellIsNotNull(i - 1, j) && !IsBad(i - 1, j))
-                                {
-                                    e++;
-                                    LT.Add(Arr[i - 1, j].Tunell);
-                                }
-                                if (TunellIsNotNull(i + 1, j) && !IsBad(i + 1, j))
-                                {
-                                    e++;
-                                    LT.Add(Arr[i + 1, j].Tunell);
-                                }
-                                if (TunellIsNotNull(i, j - 1) && !IsBad(i, j - 1))
-                                {
-                                    e++;
-                                    LT.Add(Arr[i, j - 1].Tunell);
-                                }
-                                if (TunellIsNotNull(i, j + 1) && !IsBad(i, j + 1))
-                                {
-                                    e++;
-                                    LT.Add(Arr[i, j + 1].Tunell);
-                                }
-                                if (e == 0)
-                                {
-                                    int kkk = 0;
-                                    if (!IsEmpthy(i - 1, j) || IsBad(i - 1, j))
-                                        kkk++;
-                                    if (!IsEmpthy(i + 1, j) || IsBad(i + 1, j))
-                                        kkk++;
-                                    if (!IsEmpthy(i, j - 1) || IsBad(i, j - 1))
-                                        kkk++;
-                                    if (!IsEmpthy(i, j + 1) || IsBad(i, j + 1))
-                                        kkk++;
-                                    if (kkk == 3)
-                                    {
-                                        var T = new Tunell(this);
-                                        Arr[i, j].Tunell = T;
-                                        tunells.Add(T);
-                                        T.Add(i, j);
-                                    }
-                                }
-                                else
-                                {
-                                    var T = new Tunell(this);
-                                    T.Add(LT);
-                                    Arr[i, j].Tunell = T;
-                                    tunells.Add(T);
-                                    T.Add(i, j);
-                                }
+                                LT_ADD(LT, i - 1, j);
+                                LT_ADD(LT, i + 1, j);
+                                LT_ADD(LT, i, j - 1);
+                                LT_ADD(LT, i, j + 1);
+
+                                var T = new Tunell(this);
+                                T.Add(LT);
+                                Arr[i, j].MakeTunell(T);
+                                tunells.Add(T);
+                                T.Add(i, j);
                             }
                         }
 
@@ -422,19 +372,12 @@ namespace MAPF_System
                 return false;
             return Arr[x, y].IsTunell();
         }
-        public bool TunellIsNotNull(int x, int y)
-        {
-            // Проверка на выход за пределы поля
-            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
-                return false;
-            return !(Arr[x, y].Tunell is null);
-        }
         public bool IsBadCell(int x, int y) { return Arr[x, y].IsBad(); }
         public void MakeVisit(int x, int y, int id) { Arr[x, y].MakeVisit(id); }
         public string Name() { return name; }
         public List<Unit> Units() { return units; }
-        public int TunellId(int x, int y) { return Arr[x, y].Tunell.Id(); }
-        public bool InTunell(Unit unit, Tunell tunell) { return Arr[unit.X(), unit.Y()].Tunell == tunell; }
+        public int TunellId(int x, int y) { return Arr[x, y].Tunell().Id(); }
+        public bool InTunell(Unit unit, Tunell tunell) { return Arr[unit.X(), unit.Y()].Tunell() == tunell; }
         public int GET_X() { return X; }
         public int GET_Y() { return Y; }
         public bool GetWasGame() { return WasGame; }
@@ -458,15 +401,9 @@ namespace MAPF_System
             foreach (var unit in units)
             {
                 if ((unit.X() == C0.Item1) && (unit.Y() == C0.Item2))
-                {
-                    unit.Move(C1, true);
-                    return true;
-                }
+                    return unit.Move(C1, true);
                 if ((unit.X_Purpose() == C0.Item1) && (unit.Y_Purpose() == C0.Item2))
-                {
-                    unit.Move(C1, false);
-                    return true;
-                }
+                    return unit.Move(C1, false);
             }
             return false;
         }
@@ -604,6 +541,28 @@ namespace MAPF_System
             if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
                 return false;
             return Arr[x, y].IsBlock();
+        }
+        private void LT_ADD(List<Tunell> LT, int i, int j)
+        {
+            if (IsTunell(i, j) && !IsBad(i, j))
+                LT.Add(Arr[i, j].Tunell());
+        }
+        private int TunellAndNoEmpthy(int i, int j)
+        {
+            if (!IsEmpthy(i, j) || IsTunell(i, j))
+                return 1;
+            return 0;
+        }
+        private int BadAndNoEmpthy(int i, int j)
+        {
+            if (!IsEmpthy(i, j) || IsBad(i, j))
+                return 1;
+            return 0;
+        }
+        private void MakeBlock(Board Board, int x, int y)
+        {
+            if (Board.IsBlock(x, y))
+                Arr[x, y].MakeBlock();
         }
 
     }

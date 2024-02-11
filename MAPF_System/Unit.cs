@@ -76,7 +76,7 @@ namespace MAPF_System
         public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
         public bool IsEnd(){ return IsRealEnd() && !flag; }
         public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
-        public void Move(Tuple<int, int> C, bool b)
+        public bool Move(Tuple<int, int> C, bool b)
         {
             if (b)
             {
@@ -88,6 +88,7 @@ namespace MAPF_System
                 x_Purpose = C.Item1;
                 y_Purpose = C.Item2;
             }
+            return true;
         }
         public void NewArr(int X, int Y)
         {
@@ -412,7 +413,7 @@ namespace MAPF_System
                 return int.MaxValue / 2;
             }
             // Случай, когда простой туннель
-            if (Board.IsTunell(x, y) && Board.TunellIsNotNull(x, y))
+            if (Board.IsTunell(x, y))
             {
                 if (Board.TunellId(x, y) == id)
                     return 1;
