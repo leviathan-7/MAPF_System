@@ -25,6 +25,7 @@ namespace MAPF_System
         private Unit last_AU;
         private float F_;
         private int spec;
+        private float[,,,] ArrG;
 
         public bool flag;
 
@@ -116,15 +117,15 @@ namespace MAPF_System
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
             // Список значений расстояний для каждой клетки
-            List<float> hh = new List<float> { -1, -1, -1, -1, -1 };
+            List<float> rr = new List<float> { -1, -1, -1, -1, -1 };
             // Список юнитов для каждой клетки
             List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
             // Заполняем значения ff и UsUnits
-            IfBoardIsEmpthy(hh, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star);
+            IfBoardIsEmpthy(rr, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star);
             // Помечаем старую клетку как посещенную
             Board.MakeVisit(x, y, id);
             // Находим подходящую нам клетку
-            var T = MIN_I(hh, ff, Board, UsUnits, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 }, -1, -1, kol_iter_a_star);
+            var T = MIN_I(rr, ff, Board, UsUnits, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 }, -1, -1, kol_iter_a_star);
             F_ = T.Item2;
             was_step = (T.Item1 != -10);
             if (was_step)
@@ -214,13 +215,13 @@ namespace MAPF_System
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
             // Список значений расстояний для каждой клетки
-            List<float> hh = new List<float> { -1, -1, -1, -1, -1 };
+            List<float> rr = new List<float> { -1, -1, -1, -1, -1 };
             // Список юнитов для каждой клетки
             List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
             // Заполняем значения ff и UsUnits
-            IfBoardIsEmpthy(hh, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star, true);
+            IfBoardIsEmpthy(rr, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star, true);
             // Находим подходящую нам клетку
-            var T = MIN_I(hh, ff, Board, UsUnits, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, kol_iter_a_star);
+            var T = MIN_I(rr, ff, Board, UsUnits, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, kol_iter_a_star);
             F_ = T.Item2;
             was_step = (T.Item1 != -10);
             if (was_step)
@@ -365,24 +366,25 @@ namespace MAPF_System
             // Возвращаем подходящую нам клетку
             return new Tuple<int, float>(min_i, min);
         }
-        private void IfBoardIsEmpthy(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool is_bool_step = false)
+        private void IfBoardIsEmpthy(List<float> rr, List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool is_bool_step = false)
         {
             if (Board.IsEmpthy(x, y - 1) && (!((last__x == x) && (last__y == y - 1)) || is_bool_step))
-                GetUnitAndF(0, hh, ff, UsUnits, x, y - 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+                GetUnitAndF(0, rr, ff, UsUnits, x, y - 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
             if (Board.IsEmpthy(x, y + 1) && (!((last__x == x) && (last__y == y + 1)) || is_bool_step))
-                GetUnitAndF(1, hh, ff, UsUnits, x, y + 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+                GetUnitAndF(1, rr, ff, UsUnits, x, y + 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
             if (Board.IsEmpthy(x - 1, y) && (!((last__x == x - 1) && (last__y == y)) || is_bool_step))
-                GetUnitAndF(2, hh, ff, UsUnits, x - 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+                GetUnitAndF(2, rr, ff, UsUnits, x - 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
             if (Board.IsEmpthy(x + 1, y) && (!((last__x == x + 1) && (last__y == y)) || is_bool_step))
-                GetUnitAndF(3, hh, ff, UsUnits, x + 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+                GetUnitAndF(3, rr, ff, UsUnits, x + 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
         }
-        private void GetUnitAndF(int i, List<float> hh, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits, bool is_bool_step)
+        private void GetUnitAndF(int i, List<float> rr, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits, bool is_bool_step)
         {
+            ArrG = new float[X_Board, Y_Board, X_Board, Y_Board];
             ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step);
             // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
             if (!was_near_end && (ff[i] != 0))
                 ff[i] += Arr[x0, y0];
-            hh[i] = h(x0, y0);
+            rr[i] = r(x0, y0);
             // Алгоритм для решения проблемы параллельного хождения
             if (was_near_end)
                 foreach (var au in AnotherUnits)
@@ -399,7 +401,7 @@ namespace MAPF_System
                     return;
                 }
         }
-        private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step = false)
+        private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step = false, int g = 1)
         {
             // Стоимость нулевая, если юнит достиг цели
             if ((x == x_Purpose) && (y == y_Purpose))
@@ -420,6 +422,11 @@ namespace MAPF_System
                 if (!(Board.TunellId(x, y) == -1))
                     return int.MaxValue / 2;
             }
+
+            if ((ArrG[x, y, last_x, last_y] != 0) && (g > ArrG[x, y, last_x, last_y]))
+                return int.MaxValue / 2;
+            ArrG[x, y, last_x, last_y] = g;
+
             // Если глубина не достигнута, тогда рассматриваем клетки, в которые можем попасть
             if (kol_iter_a_star != 0)
             {
@@ -428,19 +435,19 @@ namespace MAPF_System
                 List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
 
                 if (Board.IsEmpthy(x, y - 1) && !((last_x == x) && (last_y == y - 1)))
-                    ff[0] = f(x, y - 1, Board, kol_iter_a_star, x, y);
+                    ff[0] = f(x, y - 1, Board, kol_iter_a_star, x, y, false, g + 1);
                 if (ff[0] == 0)
                     return 1;
                 if (Board.IsEmpthy(x, y + 1) && !((last_x == x) && (last_y == y + 1)))
-                    ff[1] = f(x, y + 1, Board, kol_iter_a_star, x, y);
+                    ff[1] = f(x, y + 1, Board, kol_iter_a_star, x, y, false, g + 1);
                 if (ff[1] == 0)
                     return 1;
                 if (Board.IsEmpthy(x - 1, y) && !((last_x == x - 1) && (last_y == y)))
-                    ff[2] = f(x - 1, y, Board, kol_iter_a_star, x, y);
+                    ff[2] = f(x - 1, y, Board, kol_iter_a_star, x, y, false, g + 1);
                 if (ff[2] == 0)
                     return 1;
                 if (Board.IsEmpthy(x + 1, y) && !((last_x == x + 1) && (last_y == y)))
-                    ff[3] = f(x + 1, y, Board, kol_iter_a_star, x, y);
+                    ff[3] = f(x + 1, y, Board, kol_iter_a_star, x, y, false, g + 1);
                 if (ff[3] == 0)
                     return 1;
                 ff[4] = int.MaxValue / 2;
@@ -454,7 +461,7 @@ namespace MAPF_System
             // Считаем эвристическую оценку, если максимальная глубина достигнута
             return h(x, y);
         }
-        private float h(int x, int y){ return (float)Math.Sqrt( Math.Pow(x_Purpose - x, 2) + Math.Pow(y_Purpose - y, 2)); }
-    
+        private float r(int x, int y){ return (float)Math.Sqrt( Math.Pow(x_Purpose - x, 2) + Math.Pow(y_Purpose - y, 2)); }
+        private int h(int x, int y) { return Math.Abs(x_Purpose - x) + Math.Abs(y_Purpose - y); }
     }
 }
