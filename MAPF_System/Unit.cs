@@ -426,14 +426,23 @@ namespace MAPF_System
                 kol_iter_a_star--;
                 // Список значений эвристической функции для каждой клетки
                 List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
+
                 if (Board.IsEmpthy(x, y - 1) && !((last_x == x) && (last_y == y - 1)))
                     ff[0] = f(x, y - 1, Board, kol_iter_a_star, x, y);
+                if (ff[0] == 0)
+                    return 1;
                 if (Board.IsEmpthy(x, y + 1) && !((last_x == x) && (last_y == y + 1)))
                     ff[1] = f(x, y + 1, Board, kol_iter_a_star, x, y);
+                if (ff[1] == 0)
+                    return 1;
                 if (Board.IsEmpthy(x - 1, y) && !((last_x == x - 1) && (last_y == y)))
                     ff[2] = f(x - 1, y, Board, kol_iter_a_star, x, y);
+                if (ff[2] == 0)
+                    return 1;
                 if (Board.IsEmpthy(x + 1, y) && !((last_x == x + 1) && (last_y == y)))
                     ff[3] = f(x + 1, y, Board, kol_iter_a_star, x, y);
+                if (ff[3] == 0)
+                    return 1;
                 ff[4] = int.MaxValue / 2;
                 // Находим клетку с минимальным значением эвристической функции
                 float min = ff[4];
@@ -444,6 +453,18 @@ namespace MAPF_System
             }
             // Считаем эвристическую оценку, если максимальная глубина достигнута
             return h(x, y);
+        }
+        private float newf(int x, int y, int last_x, int last_y, Board Board, int kol_iter_a_star, int i)
+        {
+            if ((i == 0) && Board.IsEmpthy(x, y - 1) && !((last_x == x) && (last_y == y - 1)))
+                return f(x, y - 1, Board, kol_iter_a_star, x, y, false);
+            if ((i == 1) && Board.IsEmpthy(x, y + 1) && !((last_x == x) && (last_y == y + 1)))
+                return f(x, y + 1, Board, kol_iter_a_star, x, y, false);
+            if ((i == 2) && Board.IsEmpthy(x - 1, y) && !((last_x == x - 1) && (last_y == y)))
+                return f(x - 1, y, Board, kol_iter_a_star, x, y, false);
+            if ((i == 3) && Board.IsEmpthy(x + 1, y) && !((last_x == x + 1) && (last_y == y)))
+                return f(x + 1, y, Board, kol_iter_a_star, x, y, false);
+            return -1;
         }
         private float h(int x, int y){ return (float)Math.Sqrt( Math.Pow(x_Purpose - x, 2) + Math.Pow(y_Purpose - y, 2)); }
     
