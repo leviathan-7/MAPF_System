@@ -424,14 +424,21 @@ namespace MAPF_System
             {
                 // В случае "выталкивания", плохой случай наоборот считается хорошим
                 if (is_bool_step && !Board.IsTunell(last_x, last_y))
+                {
+                    GreatFlag = true;
                     return 1;
+                }
                 return int.MaxValue / 2;
             }
             // Случай, когда простой туннель
             if (Board.IsTunell(x, y))
             {
                 if (Board.TunellId(x, y) == id)
+                {
+                    if (g == Math.Abs(x - this.x) + Math.Abs(y - this.y))
+                        GreatFlag = true;
                     return 1;
+                }
                 if (!(Board.TunellId(x, y) == -1))
                     return int.MaxValue / 2;
             }
