@@ -27,6 +27,7 @@ namespace MAPF_System
         private int spec;
         private float[,,,] ArrG;
         private int MaxG;
+        private bool GreatFlag;
 
         public bool flag;
 
@@ -382,6 +383,7 @@ namespace MAPF_System
         {
             ArrG = new float[X_Board, Y_Board, X_Board, Y_Board];
             MaxG = int.MaxValue;
+            GreatFlag = false;
             ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step);
             // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
             if (!was_near_end && (ff[i] != 0))
@@ -405,7 +407,7 @@ namespace MAPF_System
         }
         private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step = false, int g = 1)
         {
-            if (g > MaxG)
+            if ((g > MaxG) || GreatFlag)
                 return -1;
             // Стоимость нулевая, если юнит достиг цели
             if ((x == x_Purpose) && (y == y_Purpose))
@@ -413,6 +415,10 @@ namespace MAPF_System
                 MaxG = g;
                 return 0;
             }
+            if ((ArrG[x, y, last_x, last_y] != 0) && (g > ArrG[x, y, last_x, last_y]))
+                return int.MaxValue / 2;
+            ArrG[x, y, last_x, last_y] = g;
+
             // Случай, когда узел плохой
             if (Board.IsBadCell(x, y))
             {
@@ -429,11 +435,6 @@ namespace MAPF_System
                 if (!(Board.TunellId(x, y) == -1))
                     return int.MaxValue / 2;
             }
-
-            if ((ArrG[x, y, last_x, last_y] != 0) && (g > ArrG[x, y, last_x, last_y]))
-                return int.MaxValue / 2;
-            ArrG[x, y, last_x, last_y] = g;
-
             // Если глубина не достигнута, тогда рассматриваем клетки, в которые можем попасть
             if (kol_iter_a_star != 0)
             {
@@ -465,6 +466,8 @@ namespace MAPF_System
                         min = ff[i];
                 return 1 + min;
             }
+            if (h(x, y) + g == Math.Abs(x_Purpose - this.x) + Math.Abs(y_Purpose - this.y))
+                GreatFlag = true;
             // Считаем эвристическую оценку, если максимальная глубина достигнута
             return h(x, y);
         }
