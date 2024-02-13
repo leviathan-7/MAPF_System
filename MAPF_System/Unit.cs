@@ -26,6 +26,7 @@ namespace MAPF_System
         private float F_;
         private int spec;
         private float[,,,] ArrG;
+        private int MaxG;
 
         public bool flag;
 
@@ -380,6 +381,7 @@ namespace MAPF_System
         private void GetUnitAndF(int i, List<float> rr, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits, bool is_bool_step)
         {
             ArrG = new float[X_Board, Y_Board, X_Board, Y_Board];
+            MaxG = int.MaxValue;
             ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step);
             // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
             if (!was_near_end && (ff[i] != 0))
@@ -403,9 +405,14 @@ namespace MAPF_System
         }
         private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step = false, int g = 1)
         {
+            if (g > MaxG)
+                return -1;
             // Стоимость нулевая, если юнит достиг цели
             if ((x == x_Purpose) && (y == y_Purpose))
+            {
+                MaxG = g + 1;
                 return 0;
+            }
             // Случай, когда узел плохой
             if (Board.IsBadCell(x, y))
             {
