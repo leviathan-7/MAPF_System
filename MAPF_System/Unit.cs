@@ -410,7 +410,7 @@ namespace MAPF_System
             // Стоимость нулевая, если юнит достиг цели
             if ((x == x_Purpose) && (y == y_Purpose))
             {
-                MaxG = g + 1;
+                MaxG = g;
                 return 0;
             }
             // Случай, когда узел плохой
