@@ -101,7 +101,7 @@ namespace MAPF_System
         }
         public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star)
         {
-            bool flagflag = flag;
+            bool lasttrue = IsEnd();
             // Обнуление флага, когда юнит прошел через свою цель
             if (flag && (x == x_Purpose) && (y == y_Purpose))
                 flag = false;
@@ -133,17 +133,7 @@ namespace MAPF_System
             if (was_step)
             {
                 was_bool_step = false;
-                // Сохраняем прошлое местоположение юнита 
-                last__x = x;
-                last__y = y;
-                if (T.Item1 == 0)
-                    y = y - 1;
-                if (T.Item1 == 1)
-                    y = y + 1;
-                if (T.Item1 == 2)
-                    x = x - 1;
-                if (T.Item1 == 3)
-                    x = x + 1;
+                InWasStep(T, lasttrue);
                 if (T.Item1 != 4)
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
@@ -169,23 +159,12 @@ namespace MAPF_System
             {
                 last__x = -1;
                 last__y = -1;
-                // Добавление дополнительного флага, в случае, когда юнит с флагом не вышел из туннеля
-                int t = 0;
-                if (Board.IsEmpthy(x - 1, y))
-                    t++;
-                if (Board.IsEmpthy(x + 1, y))
-                    t++;
-                if (Board.IsEmpthy(x, y - 1))
-                    t++;
-                if (Board.IsEmpthy(x, y + 1))
-                    t++;
-                if (t != 1)
-                    flag = flagflag;
             }
         }
 
         private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, Unit AU)
         {
+            bool lasttrue = IsEnd();
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
                 return false;
@@ -229,17 +208,7 @@ namespace MAPF_System
             if (was_step)
             {
                 was_bool_step = true;
-                // Сохраняем прошлое местоположение юнита 
-                last__x = x;
-                last__y = y;
-                if (T.Item1 == 0)
-                    y = y - 1;
-                if (T.Item1 == 1)
-                    y = y + 1;
-                if (T.Item1 == 2)
-                    x = x - 1;
-                if (T.Item1 == 3)
-                    x = x + 1;
+                InWasStep(T, lasttrue);
                 if (T.Item1 != 4)
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
@@ -257,14 +226,13 @@ namespace MAPF_System
                         Arr[x, y] += 4;
                     return true;
                 }
-                
             }
             else
             {
                 last__x = -1;
                 last__y = -1;
             }
-
+            
             return was_step;
         }
         private void StartSpec()
@@ -277,20 +245,20 @@ namespace MAPF_System
                 was_near_end = true;
             }
         }
-        private Tuple<int, float> MIN_I(List<float> hh, List<float> ff, Board Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
+        private Tuple<int, float> MIN_I(List<float> rr, List<float> ff, Board Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
         {
-            ff[4] = int.MaxValue - 100;
+            ff[4] = int.MaxValue;
             float min = ff[4];
-            float minh = ff[4];
+            float minr = ff[4];
             int min_i = 4;
             for (int i = 0; i < 4; i++)
             {
-                if (((min > ff[i]) || ((min == ff[i]) && (minh > hh[i])) || ((minh == hh[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && !((xx == a[i]) && (yy == b[i])))
+                if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && !((xx == a[i]) && (yy == b[i])))
                 {
                     if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
                     {
                         min = ff[i];
-                        minh = hh[i];
+                        minr = rr[i];
                         min_i = i;
                     }
                 }
@@ -304,15 +272,15 @@ namespace MAPF_System
             if (!bb)
             {
                 min = ff[4];
-                minh = ff[4];
+                minr = ff[4];
                 min_i = 4;
                 for (int i = 0; i < 4; i++)
-                    if (((min > ff[i]) || ((min == ff[i]) && (minh > hh[i])) || ((minh == hh[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && !((xx == a[i]) && (yy == b[i])))
+                    if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && !((xx == a[i]) && (yy == b[i])))
                     {
                         if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
                         {
                             min = ff[i];
-                            minh = hh[i];
+                            minr = rr[i];
                             min_i = i;
                         }
                     }
@@ -324,15 +292,15 @@ namespace MAPF_System
             if (!bb)
             {
                 min = ff[4];
-                minh = ff[4];
+                minr = ff[4];
                 min_i = 4;
                 for (int i = 0; i < 4; i++)
-                    if (((min > ff[i]) || ((min == ff[i]) && (minh > hh[i])) || ((minh == hh[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && !((xx == a[i]) && (yy == b[i])))
+                    if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && !((xx == a[i]) && (yy == b[i])))
                     {
                         if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
                         {
                             min = ff[i];
-                            minh = hh[i];
+                            minr = rr[i];
                             min_i = i;
                         }
                     }
@@ -344,15 +312,15 @@ namespace MAPF_System
             if (!bb)
             {
                 min = ff[4];
-                minh = ff[4];
+                minr = ff[4];
                 min_i = 4;
                 for (int i = 0; i < 4; i++)
-                    if (((min > ff[i]) || ((min == ff[i]) && (minh > hh[i])) || ((minh == hh[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && (min_i_3 != i) && !((xx == a[i]) && (yy == b[i])))
+                    if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && (min_i_3 != i) && !((xx == a[i]) && (yy == b[i])))
                     {
                         if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
                         {
                             min = ff[i];
-                            minh = hh[i];
+                            minr = rr[i];
                             min_i = i;
                         }
                     }
@@ -405,10 +373,28 @@ namespace MAPF_System
                     return;
                 }
         }
+        private void InWasStep(Tuple<int, float> T, bool lasttrue)
+        {
+            last__x = x;
+            last__y = y;
+            if (T.Item1 == 0)
+                y = y - 1;
+            if (T.Item1 == 1)
+                y = y + 1;
+            if (T.Item1 == 2)
+                x = x - 1;
+            if (T.Item1 == 3)
+                x = x + 1;
+            if (lasttrue)
+            {
+                last__x = -1;
+                last__y = -1;
+            }
+        }
         private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step = false, int g = 1)
         {
             if ((g > MaxG) || GreatFlag)
-                return -1;
+                return int.MaxValue / 2;
             // Стоимость нулевая, если юнит достиг цели
             if ((x == x_Purpose) && (y == y_Purpose))
             {
@@ -480,5 +466,6 @@ namespace MAPF_System
         }
         private float r(int x, int y){ return (float)Math.Sqrt( Math.Pow(x_Purpose - x, 2) + Math.Pow(y_Purpose - y, 2)); }
         private int h(int x, int y) { return Math.Abs(x_Purpose - x) + Math.Abs(y_Purpose - y); }
+
     }
 }
