@@ -72,7 +72,7 @@ namespace MAPF_System
 
         private void button_Start_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star) || (kol_iter_a_star < 7) || (kol_iter_a_star > 15))
+            if (!int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star) || (kol_iter_a_star < 7) || (kol_iter_a_star > 20))
             {
                 SystemSounds.Beep.Play();
                 label_Error.Text = "Глубина не верна!";
@@ -89,7 +89,7 @@ namespace MAPF_System
 
         private void button_Step_Click(object sender, EventArgs e)
         {
-            if (!int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star) || (kol_iter_a_star < 7) || (kol_iter_a_star > 15))
+            if (!int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star) || (kol_iter_a_star < 7) || (kol_iter_a_star > 20))
             {
                 SystemSounds.Beep.Play();
                 label_Error.Text = "Глубина не верна!";

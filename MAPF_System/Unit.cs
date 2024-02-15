@@ -25,9 +25,6 @@ namespace MAPF_System
         private Unit last_AU;
         private float F_;
         private int spec;
-        private float[,,,] ArrG;
-        private int MaxG;
-        private bool GreatFlag;
 
         public bool flag;
 
@@ -338,21 +335,25 @@ namespace MAPF_System
         }
         private void IfBoardIsEmpthy(List<float> rr, List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool is_bool_step = false)
         {
-            if (Board.IsEmpthy(x, y - 1) && (!((last__x == x) && (last__y == y - 1)) || is_bool_step))
-                GetUnitAndF(0, rr, ff, UsUnits, x, y - 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
-            if (Board.IsEmpthy(x, y + 1) && (!((last__x == x) && (last__y == y + 1)) || is_bool_step))
-                GetUnitAndF(1, rr, ff, UsUnits, x, y + 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
-            if (Board.IsEmpthy(x - 1, y) && (!((last__x == x - 1) && (last__y == y)) || is_bool_step))
-                GetUnitAndF(2, rr, ff, UsUnits, x - 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
-            if (Board.IsEmpthy(x + 1, y) && (!((last__x == x + 1) && (last__y == y)) || is_bool_step))
-                GetUnitAndF(3, rr, ff, UsUnits, x + 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+            Parallel.For(0, 4, (i) => 
+            {
+                if ((i == 0) && Board.IsEmpthy(x, y - 1) && (!((last__x == x) && (last__y == y - 1)) || is_bool_step))
+                    GetUnitAndF(0, rr, ff, UsUnits, x, y - 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+                if ((i == 1) && Board.IsEmpthy(x, y + 1) && (!((last__x == x) && (last__y == y + 1)) || is_bool_step))
+                    GetUnitAndF(1, rr, ff, UsUnits, x, y + 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+                if ((i == 2) && Board.IsEmpthy(x - 1, y) && (!((last__x == x - 1) && (last__y == y)) || is_bool_step))
+                    GetUnitAndF(2, rr, ff, UsUnits, x - 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+                if ((i == 3) && Board.IsEmpthy(x + 1, y) && (!((last__x == x + 1) && (last__y == y)) || is_bool_step))
+                    GetUnitAndF(3, rr, ff, UsUnits, x + 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
+            });
+            
         }
         private void GetUnitAndF(int i, List<float> rr, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits, bool is_bool_step)
         {
-            ArrG = new float[X_Board, Y_Board, X_Board, Y_Board];
-            MaxG = int.MaxValue;
-            GreatFlag = false;
-            ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step);
+            float[,,,] ArrG = new float[X_Board, Y_Board, X_Board, Y_Board];
+            int MaxG = int.MaxValue;
+            bool GreatFlag = false;
+            ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step, 1, ref ArrG, ref MaxG, ref GreatFlag);
             // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
             if (!was_near_end && (ff[i] != 0))
                 ff[i] += Arr[x0, y0];
@@ -391,7 +392,7 @@ namespace MAPF_System
                 last__y = -1;
             }
         }
-        private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step = false, int g = 1)
+        private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step, int g, ref float[,,,] ArrG, ref int MaxG, ref bool GreatFlag)
         {
             if ((g > MaxG) || GreatFlag)
                 return int.MaxValue / 2;
@@ -436,19 +437,19 @@ namespace MAPF_System
                 List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
 
                 if (Board.IsEmpthy(x, y - 1) && !((last_x == x) && (last_y == y - 1)))
-                    ff[0] = f(x, y - 1, Board, kol_iter_a_star, x, y, false, g + 1);
+                    ff[0] = f(x, y - 1, Board, kol_iter_a_star, x, y, false, g + 1, ref ArrG, ref MaxG, ref GreatFlag);
                 if (ff[0] == 0)
                     return 1;
                 if (Board.IsEmpthy(x, y + 1) && !((last_x == x) && (last_y == y + 1)))
-                    ff[1] = f(x, y + 1, Board, kol_iter_a_star, x, y, false, g + 1);
+                    ff[1] = f(x, y + 1, Board, kol_iter_a_star, x, y, false, g + 1, ref ArrG, ref MaxG, ref GreatFlag);
                 if (ff[1] == 0)
                     return 1;
                 if (Board.IsEmpthy(x - 1, y) && !((last_x == x - 1) && (last_y == y)))
-                    ff[2] = f(x - 1, y, Board, kol_iter_a_star, x, y, false, g + 1);
+                    ff[2] = f(x - 1, y, Board, kol_iter_a_star, x, y, false, g + 1, ref ArrG, ref MaxG, ref GreatFlag);
                 if (ff[2] == 0)
                     return 1;
                 if (Board.IsEmpthy(x + 1, y) && !((last_x == x + 1) && (last_y == y)))
-                    ff[3] = f(x + 1, y, Board, kol_iter_a_star, x, y, false, g + 1);
+                    ff[3] = f(x + 1, y, Board, kol_iter_a_star, x, y, false, g + 1, ref ArrG, ref MaxG, ref GreatFlag);
                 if (ff[3] == 0)
                     return 1;
                 ff[4] = int.MaxValue / 2;
