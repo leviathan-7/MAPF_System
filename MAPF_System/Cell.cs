@@ -39,6 +39,7 @@ namespace MAPF_System
         public string ToStr() { return isBlock + " " + wasvisited + " " + idVisit + " " + isBad; }
         public Tunell Tunell() { return tunell; }
         public Tunell MakeTunell(Tunell tunell) { return this.tunell = tunell; }
+        public void ClearTunell() { tunell = null; }
         public void MakeVisit(int n)
         {
             wasvisited = true;
@@ -51,8 +52,8 @@ namespace MAPF_System
         public bool IsTunell() { return !(tunell is null); }
         public bool WasVisit() { return wasvisited; }
         public void DelBlokcs() { isBlock = false; }
-        public int ReversBlock() 
-        { 
+        public int ReversBlock()
+        {
             if (isBlock = !isBlock)
                 return 1;
             return 2;

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public class Unit
+    public class UnitDec
     {
         private int X_Board;
         private int Y_Board;
@@ -22,13 +22,13 @@ namespace MAPF_System
         private bool was_near_end;
         private bool was_bool_step;
         private int[,] Arr;
-        private Unit last_AU;
+        private UnitDec last_AU;
         private float F_;
         private int spec;
 
         public bool flag;
 
-        public Unit(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) {
+        public UnitDec(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) {
             this.id = id;
             this.was_step = was_step;
             this.flag = flag;
@@ -45,7 +45,7 @@ namespace MAPF_System
             // Массив с количеством посещений узлов
             Arr = new int[X, Y];
         }
-        public Unit(string str, int i, int X, int Y)
+        public UnitDec(string str, int i, int X, int Y)
         {
             flag = false;
             was_step = false;
@@ -63,7 +63,7 @@ namespace MAPF_System
             // Массив с количеством посещений узлов
             Arr = new int[X, Y];
         }
-        public Unit Copy() { return new Unit(x, y, x_Purpose, y_Purpose, id, last__x, last__y, X_Board, Y_Board, was_step, flag); }
+        public UnitDec Copy() { return new UnitDec(x, y, x_Purpose, y_Purpose, id, last__x, last__y, X_Board, Y_Board, was_step, flag); }
         public void NotWasStep() { was_step = false; }
         public int X() { return x; }
         public int Y() { return y; }
@@ -96,7 +96,7 @@ namespace MAPF_System
             Y_Board = Y;
             Arr = new int[X, Y];
         }
-        public void MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star)
+        public void MakeStep(BoardDec Board, IEnumerable<UnitDec> AnotherUnits, int kol_iter_a_star)
         {
             bool lasttrue = IsEnd();
             // Обнуление флага, когда юнит прошел через свою цель
@@ -118,7 +118,7 @@ namespace MAPF_System
             // Список значений расстояний для каждой клетки
             List<float> rr = new List<float> { -1, -1, -1, -1, -1 };
             // Список юнитов для каждой клетки
-            List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
+            List<UnitDec> UsUnits = new List<UnitDec> { null, null, null, null, null };
             // Заполняем значения ff и UsUnits
             IfBoardIsEmpthy(rr, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star);
             // Помечаем старую клетку как посещенную
@@ -159,7 +159,7 @@ namespace MAPF_System
             }
         }
 
-        private bool MakeStep(Board Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, Unit AU)
+        private bool MakeStep(BoardDec Board, IEnumerable<UnitDec> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, UnitDec AU)
         {
             bool lasttrue = IsEnd();
             // Проверяем, что юнит еще не работал на данной итерации
@@ -195,7 +195,7 @@ namespace MAPF_System
             // Список значений расстояний для каждой клетки
             List<float> rr = new List<float> { -1, -1, -1, -1, -1 };
             // Список юнитов для каждой клетки
-            List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
+            List<UnitDec> UsUnits = new List<UnitDec> { null, null, null, null, null };
             // Заполняем значения ff и UsUnits
             IfBoardIsEmpthy(rr, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star, true);
             // Находим подходящую нам клетку
@@ -242,7 +242,7 @@ namespace MAPF_System
                 was_near_end = true;
             }
         }
-        private Tuple<int, float> MIN_I(List<float> rr, List<float> ff, Board Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
+        private Tuple<int, float> MIN_I(List<float> rr, List<float> ff, BoardDec Board, List<UnitDec> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
         {
             ff[4] = int.MaxValue;
             float min = ff[4];
@@ -333,7 +333,7 @@ namespace MAPF_System
             // Возвращаем подходящую нам клетку
             return new Tuple<int, float>(min_i, min);
         }
-        private void IfBoardIsEmpthy(List<float> rr, List<float> ff, Board Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool is_bool_step = false)
+        private void IfBoardIsEmpthy(List<float> rr, List<float> ff, BoardDec Board, List<UnitDec> UsUnits, IEnumerable<UnitDec> AnotherUnits, int kol_iter_a_star, bool is_bool_step = false)
         {
             Parallel.For(0, 4, (i) => 
             {
@@ -348,7 +348,7 @@ namespace MAPF_System
             });
             
         }
-        private void GetUnitAndF(int i, List<float> rr, List<float> ff, List<Unit> UsUnits, int x0, int y0, int x, int y, Board Board, int kol_iter_a_star, IEnumerable<Unit> AnotherUnits, bool is_bool_step)
+        private void GetUnitAndF(int i, List<float> rr, List<float> ff, List<UnitDec> UsUnits, int x0, int y0, int x, int y, BoardDec Board, int kol_iter_a_star, IEnumerable<UnitDec> AnotherUnits, bool is_bool_step)
         {
             float[,,,] ArrG = new float[X_Board, Y_Board, X_Board, Y_Board];
             int MaxG = int.MaxValue;
@@ -392,7 +392,7 @@ namespace MAPF_System
                 last__y = -1;
             }
         }
-        private float f(int x, int y, Board Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step, int g, ref float[,,,] ArrG, ref int MaxG, ref bool GreatFlag)
+        private float f(int x, int y, BoardDec Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step, int g, ref float[,,,] ArrG, ref int MaxG, ref bool GreatFlag)
         {
             if ((g > MaxG) || GreatFlag)
                 return int.MaxValue / 2;

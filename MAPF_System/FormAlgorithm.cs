@@ -16,14 +16,28 @@ namespace MAPF_System
         private Board Board;
         private bool was_game;
         private bool move;
+        private bool isCentr;
         private Tuple<int, int> C;
         private Tuple<int, int> CC;
 
-        public FormAlgorithm(Board Board, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false, bool viewtunnel = true)
+        public FormAlgorithm(BoardDec BoardDec, BoardCentr BoardCentr, bool isCentr, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false, bool viewtunnel = true)
         {
-            this.Board = Board;
-            was_game = Board.GetWasGame();
             InitializeComponent();
+            this.isCentr = isCentr;
+            if (isCentr) 
+            {
+                label2.Visible = false;
+                textBox_kol_iter_a_star.Visible = false;
+                Board = BoardCentr;
+                Text = "Запуск MAPF - Централизованный";
+            }
+            else
+            {
+                Board = BoardDec;
+                Text = "Запуск MAPF - Децентрализованный";
+            }
+
+            was_game = Board.GetWasGame();
             textBox_kol_iter_a_star.Text = str_kol_iter_a_star;
             label6.Text = Board.Name();
             // Позиция данной формы
@@ -84,7 +98,10 @@ namespace MAPF_System
             int i = 0;
             while (!TimeBoard.IsEnd() && (i++) < (N-1))
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
-            (new FormAlgorithm(TimeBoard, i, i == N, "" + kol_iter_a_star, true)).Show();
+            if (isCentr)
+                (new FormAlgorithm(null, (BoardCentr)TimeBoard, true, i, i == N, "" + kol_iter_a_star, true)).Show();
+            else
+                (new FormAlgorithm((BoardDec)TimeBoard, null, false, i, i == N, "" + kol_iter_a_star, true)).Show();
         }
 
         private void button_Step_Click(object sender, EventArgs e)
@@ -97,7 +114,11 @@ namespace MAPF_System
             }
             Board TimeBoard = Board.CopyWithoutBlocks();
             int i = 1;
-            FormAlgorithm F = new FormAlgorithm(TimeBoard, 0, false, "" + kol_iter_a_star, true);
+            FormAlgorithm F;
+            if (isCentr)
+                F = new FormAlgorithm(null, (BoardCentr)TimeBoard, true, 0, false, "" + kol_iter_a_star, true);
+            else
+                F = new FormAlgorithm((BoardDec)TimeBoard, null, false, 0, false, "" + kol_iter_a_star, true);
             F.Show();
             while (!TimeBoard.IsEnd()) 
             {

@@ -16,12 +16,23 @@ namespace MAPF_System
     {
         public FormGenerateOrOpen(string[] args) 
         { 
+            // Запущенный по двойному щелчку по файлу .Board запускается как централизованный
             InitializeComponent();
             if (args.Length != 0)
-                (new FormAlgorithm(new Board(args[0]), 0, false, "7", false, false)).ShowDialog();
+                (new FormAlgorithm(null, new BoardCentr(args[0]), true, 0, true, "7", false, false)).ShowDialog();
         }
         
-        private void button_Generation_Click(object sender, EventArgs e)
+        private void button_Generation_Click_Dec(object sender, EventArgs e)
+        {
+            generation(false);
+        }
+
+        private void button_Generation_Click_Centr(object sender, EventArgs e)
+        {
+            generation(true);
+        }
+
+        private void generation(bool isCentr)
         {
             label_Error.Text = "";
             // Считывание введенных данных
@@ -66,22 +77,29 @@ namespace MAPF_System
                 label_Error.Text = "Количество препятствий и юнитов слишком большое!";
                 return;
             }
-
-            // Если все данные введены правильно
-            (new FormAlgorithm(new Board(X, Y, Blocks, Units), 0, false, "7")).Show();
+            if (isCentr)
+                (new FormAlgorithm(null, new BoardCentr(X, Y, Blocks, Units), true, 0, false, "7")).Show();
+            else
+                (new FormAlgorithm(new BoardDec(X, Y, Blocks, Units), null, false, 0, false, "7")).Show();
         }
-        
-        private void button_Load_Click(object sender, EventArgs e) 
+
+        private void button_Load_Click_Dec(object sender, EventArgs e) 
         {
             label_Error.Text = "";
             label12.Text = "⏳";
-            Board Board = new Board();
-            if(!(Board.Units() is null))
-                (new FormAlgorithm(Board, 0, false, "7", false, false)).Show();
+            (new FormAlgorithm(new BoardDec(), null, false, 0, false, "7", false, false)).Show();
             label12.Text = "";
         }
-        
-        private void button_BigStart_Click(object sender, EventArgs e)
+
+        private void button_Load_Click_Centr(object sender, EventArgs e)
+        {
+            label_Error.Text = "";
+            label12.Text = "⏳";
+            (new FormAlgorithm(null, new BoardCentr(), true, 0, false, "7", false, false)).Show();
+            label12.Text = "";
+        }
+
+        private void button_BigStart_Click_Dec(object sender, EventArgs e)
         {
             label_Error.Text = "";
             label11.Text = "⏳";
@@ -89,17 +107,22 @@ namespace MAPF_System
             {
                 if (fbd.ShowDialog() == DialogResult.OK)
                 {
-                    DataTable table = new DataTable("results");
+                    DataTable table = new DataTable("resultsDec");
                     table.Columns.Add("Имя файла", typeof(string));
                     table.Columns.Add("Колличество шагов", typeof(string));
+                    table.Columns.Add("Площадь", typeof(string));
+                    table.Columns.Add("Колличество агентов", typeof(string));
+                    table.Columns.Add("Плотность", typeof(string));
                     int a = 0, b = 0;
                     foreach (var f in (from f in Directory.GetFiles(fbd.SelectedPath) where Path.GetExtension(f).ToLower() == ".board" select f))
                     {
-                        Board Board = new Board(f);
+                        BoardDec Board = new BoardDec(f);
+                        // Плотность
+                        double density = 1.0 * Board.Units().Count / (Board.GET_X() * Board.GET_Y());
                         int kol_iter_a_star = 7;
                         // Максимальное колличество итераций
                         int N = 5000;
-                        Board TimeBoard = Board.CopyWithoutBlocks();
+                        BoardDec TimeBoard = (BoardDec)Board.CopyWithoutBlocks();
                         int i = 0;
                         while (!TimeBoard.IsEnd() && (i++) < (N - 1))
                             TimeBoard.MakeStep(Board, kol_iter_a_star);
@@ -110,14 +133,118 @@ namespace MAPF_System
                         }
                         else
                         {
-                            table.Rows.Add(f.Split('\\').Last(), "" + i);
+                            table.Rows.Add(f.Split('\\').Last(), "" + i , "" + (Board.GET_X() * Board.GET_Y()) , "" + Board.Units().Count , "" + density);
                             b++;
                         }
                     }
-                    table.WriteXml(fbd.SelectedPath + "\\results.xml");
+                    table.WriteXml(fbd.SelectedPath + "\\resultsDec.xml");
                     label11.Text = "";
-                    if(MessageBox.Show("Пройденно "+b+" из "+(a+b)+ "\nРезультаты сохранены в файл results.xml\nОткрыть файл?", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk) == DialogResult.OK)
-                        System.Diagnostics.Process.Start("results.xml");
+                    MessageBox.Show("Пройденно " + b + " из " + (a + b) + "\nРезультаты сохранены в файл resultsDec.xml", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk);
+                }
+                label11.Text = "";
+            }
+        }
+
+        private void button_BigStart_Click_Centr(object sender, EventArgs e)
+        {
+            label_Error.Text = "";
+            label11.Text = "⏳";
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            {
+                if (fbd.ShowDialog() == DialogResult.OK)
+                {
+                    DataTable table = new DataTable("resultsCentr");
+                    table.Columns.Add("Имя файла", typeof(string));
+                    table.Columns.Add("Колличество шагов", typeof(string));
+                    table.Columns.Add("Площадь", typeof(string));
+                    table.Columns.Add("Колличество агентов", typeof(string));
+                    table.Columns.Add("Плотность", typeof(string));
+                    int a = 0, b = 0;
+                    foreach (var f in (from f in Directory.GetFiles(fbd.SelectedPath) where Path.GetExtension(f).ToLower() == ".board" select f))
+                    {
+                        BoardCentr Board = new BoardCentr(f);
+                        // Плотность
+                        double density = 1.0 * Board.Units().Count / (Board.GET_X() * Board.GET_Y());
+                        int kol_iter_a_star = 7;
+                        // Максимальное колличество итераций
+                        int N = 5000;
+                        BoardCentr TimeBoard = (BoardCentr)Board.CopyWithoutBlocks();
+                        int i = 0;
+                        while (!TimeBoard.IsEnd() && (i++) < (N - 1))
+                            TimeBoard.MakeStep(Board, kol_iter_a_star);
+                        if (i == N)
+                        {
+                            table.Rows.Add(f.Split('\\').Last(), "Ошибка");
+                            a++;
+                        }
+                        else
+                        {
+                            table.Rows.Add(f.Split('\\').Last(), "" + i, "" + (Board.GET_X() * Board.GET_Y()), "" + Board.Units().Count, "" + density);
+                            b++;
+                        }
+                    }
+                    table.WriteXml(fbd.SelectedPath + "\\resultsCentr.xml");
+                    label11.Text = "";
+                    MessageBox.Show("Пройденно " + b + " из " + (a + b) + "\nРезультаты сохранены в файл resultsCentr.xml", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk);
+                }
+                label11.Text = "";
+            }
+        }
+
+        private void button_BigStart_Click_Unite(object sender, EventArgs e)
+        {
+            label_Error.Text = "";
+            label11.Text = "⏳";
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            {
+                if (fbd.ShowDialog() == DialogResult.OK)
+                {
+                    DataTable table = new DataTable("resultsUnite");
+                    table.Columns.Add("Имя файла", typeof(string));
+                    table.Columns.Add("Колличество шагов", typeof(string));
+                    table.Columns.Add("Площадь", typeof(string));
+                    table.Columns.Add("Колличество агентов", typeof(string));
+                    table.Columns.Add("Плотность", typeof(string));
+                    int a = 0, b = 0;
+                    foreach (var f in (from f in Directory.GetFiles(fbd.SelectedPath) where Path.GetExtension(f).ToLower() == ".board" select f))
+                    {
+                        BoardCentr Board = new BoardCentr(f);
+                        // Плотность
+                        double density = 1.0 * Board.Units().Count / (Board.GET_X() * Board.GET_Y());
+                        int kol_iter_a_star = 7;
+                        // Максимальное колличество итераций
+                        int N = 5000;
+                        int i = 0;
+
+                        if (density >= 0.01)
+                        {
+                            BoardCentr TimeBoard = (BoardCentr)Board.CopyWithoutBlocks();
+                            while (!TimeBoard.IsEnd() && (i++) < (N - 1))
+                                TimeBoard.MakeStep(Board, kol_iter_a_star);
+                        }
+                        else
+                        {
+                            BoardDec BoardDec = new BoardDec(f);
+                            BoardDec TimeBoard = (BoardDec)BoardDec.CopyWithoutBlocks();
+                            while (!TimeBoard.IsEnd() && (i++) < (N - 1))
+                                TimeBoard.MakeStep(BoardDec, kol_iter_a_star);
+                        }
+                        
+
+                        if (i == N)
+                        {
+                            table.Rows.Add(f.Split('\\').Last(), "Ошибка");
+                            a++;
+                        }
+                        else
+                        {
+                            table.Rows.Add(f.Split('\\').Last(), "" + i, "" + (Board.GET_X() * Board.GET_Y()), "" + Board.Units().Count, "" + density);
+                            b++;
+                        }
+                    }
+                    table.WriteXml(fbd.SelectedPath + "\\resultsUnite.xml");
+                    label11.Text = "";
+                    MessageBox.Show("Пройденно " + b + " из " + (a + b) + "\nРезультаты сохранены в файл resultsUnite.xml", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Asterisk);
                 }
                 label11.Text = "";
             }
@@ -134,5 +261,6 @@ namespace MAPF_System
             if (e.KeyCode == Keys.F1)
                 (new FormAbout()).Show();
         }
+
     }
 }
