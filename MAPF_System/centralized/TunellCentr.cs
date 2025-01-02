@@ -7,43 +7,31 @@ using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public class TunellCentr : Tunell
+    public class TunellCentr : Tunell<int>
     {
-        private BoardCentr board;
-        private List<int> tunell_units_id;
-        private List<TunellCentr> tunells;
-
-        public TunellCentr(BoardCentr board)
+        public TunellCentr(BoardInterface board)
         {
-            this.board = board;
-            tunell_units_id = new List<int>();
-            tunells = new List<TunellCentr>();
+            Constructor(board);
         }
         public void Add(int x, int y)
         {
-            foreach (var Unit in board.Units())
+            foreach (var Unit in ((BoardCentr)board).Units())
                 if ((Unit.X_Purpose() == x) && (Unit.Y_Purpose() == y))
                 {
-                    tunell_units_id.Add(Unit.Id());
+                    tunell_units.Add(Unit.Id());
                     break;
                 }
         }
         public void Add(List<TunellCentr> LT)
         {
-            foreach (var t in LT)
-            {
-                tunells.Add(t);
-                foreach (var u in t.tunell_units_id)
-                    tunell_units_id.Add(u);
-                foreach (var tt in t.tunells)
-                    tunells.Add(tt);
-            }
+            foreach (var tunell in LT)
+                Add(tunell);
         }
 
         public List<int> Ids()
         {
-            foreach (var Unit_id in (from unit in board.Units() select unit.Id()).Except(tunell_units_id))
-                if (board.InTunell(Unit_id, this))
+            foreach (var Unit_id in (from unit in ((BoardCentr)board).Units() select unit.Id()).Except(tunell_units))
+                if (((BoardCentr)board).InTunell(Unit_id, this))
                     return new List<int>();
             return RealIds();
         }
@@ -51,12 +39,12 @@ namespace MAPF_System
         public List<int> RealIds()
         {
             List<int> lst = new List<int>();
-            foreach (var Unit_id in tunell_units_id)
+            foreach (var Unit_id in tunell_units)
             {
                 lst.Add(Unit_id);
-                bool b = board.InTunell(Unit_id, this);
+                bool b = ((BoardCentr)board).InTunell(Unit_id, this);
                 foreach (var tunell in tunells)
-                    b = b || board.InTunell(Unit_id, tunell);
+                    b = b || ((BoardCentr)board).InTunell(Unit_id, tunell);
                 if (!b)
                     return lst;
             }

@@ -44,29 +44,28 @@ namespace MAPF_System
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label20 = new System.Windows.Forms.Label();
-            this.ButtonCopy = new CustomControls.RJControls.RJButton();
-            this.button_Start = new CustomControls.RJControls.RJButton();
-            this.button_Step = new CustomControls.RJControls.RJButton();
-            this.button_Save = new CustomControls.RJControls.RJButton();
+            this.button_Start = new CustomControls.Style.RJButton();
+            this.button_Step = new CustomControls.Style.RJButton();
+            this.button_Save = new CustomControls.Style.RJButton();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.ButtonDelUnits = new CustomControls.RJControls.RJButton();
+            this.ButtonDelUnits = new CustomControls.Style.RJButton();
             this.label21 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
-            this.ButtonDelBlock = new CustomControls.RJControls.RJButton();
+            this.ButtonDelBlock = new CustomControls.Style.RJButton();
             this.label16 = new System.Windows.Forms.Label();
-            this.ButtonPlusColumn = new CustomControls.RJControls.RJButton();
+            this.ButtonPlusColumn = new CustomControls.Style.RJButton();
             this.label17 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
-            this.ButtonPlusRow = new CustomControls.RJControls.RJButton();
-            this.ButtonMinusUnit = new CustomControls.RJControls.RJButton();
+            this.ButtonPlusRow = new CustomControls.Style.RJButton();
+            this.ButtonMinusUnit = new CustomControls.Style.RJButton();
             this.label12 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
-            this.ButtonPlusUnit = new CustomControls.RJControls.RJButton();
+            this.ButtonPlusUnit = new CustomControls.Style.RJButton();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.groupBox2.SuspendLayout();
@@ -111,7 +110,7 @@ namespace MAPF_System
             // 
             this.textBox_Name.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.textBox_Name.Location = new System.Drawing.Point(813, 76);
-            this.textBox_Name.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox_Name.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_Name.Name = "textBox_Name";
             this.textBox_Name.Size = new System.Drawing.Size(175, 29);
             this.textBox_Name.TabIndex = 9;
@@ -120,7 +119,7 @@ namespace MAPF_System
             // 
             this.textBox_kol_iter_a_star.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.textBox_kol_iter_a_star.Location = new System.Drawing.Point(257, 76);
-            this.textBox_kol_iter_a_star.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.textBox_kol_iter_a_star.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_kol_iter_a_star.Name = "textBox_kol_iter_a_star";
             this.textBox_kol_iter_a_star.Size = new System.Drawing.Size(175, 29);
             this.textBox_kol_iter_a_star.TabIndex = 16;
@@ -154,9 +153,9 @@ namespace MAPF_System
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Location = new System.Drawing.Point(-4, 0);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox2.Size = new System.Drawing.Size(2660, 36);
             this.groupBox2.TabIndex = 19;
             this.groupBox2.TabStop = false;
@@ -212,7 +211,6 @@ namespace MAPF_System
             // 
             this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(236)))), ((int)(((byte)(236)))));
             this.groupBox1.Controls.Add(this.label20);
-            this.groupBox1.Controls.Add(this.ButtonCopy);
             this.groupBox1.Controls.Add(this.groupBox2);
             this.groupBox1.Controls.Add(this.button_Start);
             this.groupBox1.Controls.Add(this.button_Step);
@@ -225,9 +223,9 @@ namespace MAPF_System
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label_Error);
             this.groupBox1.Location = new System.Drawing.Point(-5, -6);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(2660, 130);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
@@ -243,28 +241,6 @@ namespace MAPF_System
             this.label20.Size = new System.Drawing.Size(0, 24);
             this.label20.TabIndex = 28;
             // 
-            // ButtonCopy
-            // 
-            this.ButtonCopy.BackColor = System.Drawing.Color.LightCyan;
-            this.ButtonCopy.BackgroundColor = System.Drawing.Color.LightCyan;
-            this.ButtonCopy.BorderColor = System.Drawing.Color.LightSlateGray;
-            this.ButtonCopy.BorderRadius = 10;
-            this.ButtonCopy.BorderSize = 1;
-            this.ButtonCopy.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.ButtonCopy.FlatAppearance.BorderSize = 0;
-            this.ButtonCopy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ButtonCopy.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.ButtonCopy.ForeColor = System.Drawing.Color.Black;
-            this.ButtonCopy.Location = new System.Drawing.Point(1699, 50);
-            this.ButtonCopy.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.ButtonCopy.Name = "ButtonCopy";
-            this.ButtonCopy.Size = new System.Drawing.Size(193, 55);
-            this.ButtonCopy.TabIndex = 27;
-            this.ButtonCopy.Text = "Скопировать скриншот поля";
-            this.ButtonCopy.TextColor = System.Drawing.Color.Black;
-            this.ButtonCopy.UseVisualStyleBackColor = false;
-            this.ButtonCopy.Click += new System.EventHandler(this.ButtonCopy_Click);
-            // 
             // button_Start
             // 
             this.button_Start.BackColor = System.Drawing.Color.SkyBlue;
@@ -278,7 +254,7 @@ namespace MAPF_System
             this.button_Start.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.button_Start.ForeColor = System.Drawing.Color.Black;
             this.button_Start.Location = new System.Drawing.Point(35, 50);
-            this.button_Start.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button_Start.Margin = new System.Windows.Forms.Padding(4);
             this.button_Start.Name = "button_Start";
             this.button_Start.Size = new System.Drawing.Size(193, 55);
             this.button_Start.TabIndex = 19;
@@ -300,7 +276,7 @@ namespace MAPF_System
             this.button_Step.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.button_Step.ForeColor = System.Drawing.Color.Black;
             this.button_Step.Location = new System.Drawing.Point(581, 50);
-            this.button_Step.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button_Step.Margin = new System.Windows.Forms.Padding(4);
             this.button_Step.Name = "button_Step";
             this.button_Step.Size = new System.Drawing.Size(193, 55);
             this.button_Step.TabIndex = 20;
@@ -322,7 +298,7 @@ namespace MAPF_System
             this.button_Save.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.button_Save.ForeColor = System.Drawing.Color.Black;
             this.button_Save.Location = new System.Drawing.Point(1031, 50);
-            this.button_Save.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button_Save.Margin = new System.Windows.Forms.Padding(4);
             this.button_Save.Name = "button_Save";
             this.button_Save.Size = new System.Drawing.Size(193, 55);
             this.button_Save.TabIndex = 21;
@@ -355,9 +331,9 @@ namespace MAPF_System
             this.groupBox4.Controls.Add(this.label10);
             this.groupBox4.Controls.Add(this.label11);
             this.groupBox4.Location = new System.Drawing.Point(-21, 114);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox4.Size = new System.Drawing.Size(136, 1138);
             this.groupBox4.TabIndex = 26;
             this.groupBox4.TabStop = false;
@@ -375,7 +351,7 @@ namespace MAPF_System
             this.ButtonDelUnits.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.ButtonDelUnits.ForeColor = System.Drawing.Color.Black;
             this.ButtonDelUnits.Location = new System.Drawing.Point(29, 805);
-            this.ButtonDelUnits.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ButtonDelUnits.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonDelUnits.Name = "ButtonDelUnits";
             this.ButtonDelUnits.Size = new System.Drawing.Size(69, 55);
             this.ButtonDelUnits.TabIndex = 32;
@@ -430,7 +406,7 @@ namespace MAPF_System
             this.ButtonDelBlock.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.ButtonDelBlock.ForeColor = System.Drawing.Color.Black;
             this.ButtonDelBlock.Location = new System.Drawing.Point(29, 662);
-            this.ButtonDelBlock.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ButtonDelBlock.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonDelBlock.Name = "ButtonDelBlock";
             this.ButtonDelBlock.Size = new System.Drawing.Size(69, 55);
             this.ButtonDelBlock.TabIndex = 35;
@@ -463,7 +439,7 @@ namespace MAPF_System
             this.ButtonPlusColumn.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.ButtonPlusColumn.ForeColor = System.Drawing.Color.Black;
             this.ButtonPlusColumn.Location = new System.Drawing.Point(29, 510);
-            this.ButtonPlusColumn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ButtonPlusColumn.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonPlusColumn.Name = "ButtonPlusColumn";
             this.ButtonPlusColumn.Size = new System.Drawing.Size(69, 55);
             this.ButtonPlusColumn.TabIndex = 32;
@@ -518,7 +494,7 @@ namespace MAPF_System
             this.ButtonPlusRow.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.ButtonPlusRow.ForeColor = System.Drawing.Color.Black;
             this.ButtonPlusRow.Location = new System.Drawing.Point(29, 359);
-            this.ButtonPlusRow.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ButtonPlusRow.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonPlusRow.Name = "ButtonPlusRow";
             this.ButtonPlusRow.Size = new System.Drawing.Size(69, 55);
             this.ButtonPlusRow.TabIndex = 29;
@@ -540,7 +516,7 @@ namespace MAPF_System
             this.ButtonMinusUnit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.ButtonMinusUnit.ForeColor = System.Drawing.Color.Black;
             this.ButtonMinusUnit.Location = new System.Drawing.Point(29, 213);
-            this.ButtonMinusUnit.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ButtonMinusUnit.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonMinusUnit.Name = "ButtonMinusUnit";
             this.ButtonMinusUnit.Size = new System.Drawing.Size(69, 55);
             this.ButtonMinusUnit.TabIndex = 29;
@@ -616,7 +592,7 @@ namespace MAPF_System
             this.ButtonPlusUnit.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.ButtonPlusUnit.ForeColor = System.Drawing.Color.Black;
             this.ButtonPlusUnit.Location = new System.Drawing.Point(29, 71);
-            this.ButtonPlusUnit.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.ButtonPlusUnit.Margin = new System.Windows.Forms.Padding(4);
             this.ButtonPlusUnit.Name = "ButtonPlusUnit";
             this.ButtonPlusUnit.Size = new System.Drawing.Size(69, 55);
             this.ButtonPlusUnit.TabIndex = 22;
@@ -656,7 +632,7 @@ namespace MAPF_System
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FormAlgorithm";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FormAlgorithm_KeyDown);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.FormAlgorithm_MouseClick);
@@ -681,36 +657,35 @@ namespace MAPF_System
         private System.Windows.Forms.TextBox textBox_kol_iter_a_star;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label5;
-        private CustomControls.RJControls.RJButton button_Save;
-        private CustomControls.RJControls.RJButton button_Step;
-        private CustomControls.RJControls.RJButton button_Start;
+        private CustomControls.Style.RJButton button_Save;
+        private CustomControls.Style.RJButton button_Step;
+        private CustomControls.Style.RJButton button_Start;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label9;
-        private CustomControls.RJControls.RJButton ButtonPlusUnit;
+        private CustomControls.Style.RJButton ButtonPlusUnit;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
-        private CustomControls.RJControls.RJButton ButtonMinusUnit;
+        private CustomControls.Style.RJButton ButtonMinusUnit;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
-        private CustomControls.RJControls.RJButton ButtonPlusRow;
+        private CustomControls.Style.RJButton ButtonPlusRow;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
-        private CustomControls.RJControls.RJButton ButtonPlusColumn;
+        private CustomControls.Style.RJButton ButtonPlusColumn;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
-        private CustomControls.RJControls.RJButton ButtonDelBlock;
+        private CustomControls.Style.RJButton ButtonDelBlock;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label19;
-        private CustomControls.RJControls.RJButton ButtonCopy;
         private System.Windows.Forms.Label label20;
-        private CustomControls.RJControls.RJButton ButtonDelUnits;
+        private CustomControls.Style.RJButton ButtonDelUnits;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.Label label22;
     }

@@ -7,95 +7,32 @@ using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public class UnitDec
+    public class UnitDec : Unit
     {
-        private int X_Board;
-        private int Y_Board;
-        private int id;
-        private int x;
-        private int y;
         private int last__x;
         private int last__y;
-        private int x_Purpose;
-        private int y_Purpose;
         private bool was_step;
         private bool was_near_end;
         private bool was_bool_step;
-        private int[,] Arr;
-        private UnitDec last_AU;
         private float F_;
         private int spec;
 
-        public bool flag;
-
         public UnitDec(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) {
-            this.id = id;
             this.was_step = was_step;
-            this.flag = flag;
-            X_Board = X;
-            Y_Board = Y;
-            // Задание местоположения юнита
-            this.x = x;
-            this.y = y;
-            // Задание местоположения цели юнити
-            this.x_Purpose = x_Purpose;
-            this.y_Purpose = y_Purpose;
-            this.last__x = last__x;
-            this.last__y = last__y;
-            // Массив с количеством посещений узлов
+            MakeLast(last__x, last__y);
             Arr = new int[X, Y];
+            Constructor(x, y, X, Y, id, flag, x_Purpose, y_Purpose);
         }
         public UnitDec(string str, int i, int X, int Y)
         {
-            flag = false;
-            was_step = false;
-            string[] arr = str.Split(' ');
-            X_Board = X;
-            Y_Board = Y;
-            // Задание параметров юнита на основе строки из файла
-            x = int.Parse(arr[0]);
-            y = int.Parse(arr[1]);
-            x_Purpose = int.Parse(arr[2]);
-            y_Purpose = int.Parse(arr[3]);
-            id = i;
-            last__x = -1;
-            last__y = -1;
-            // Массив с количеством посещений узлов
-            Arr = new int[X, Y];
+            MakeLast(-1, -1);
+            ConstructorStr(str, X, Y, i);
         }
         public UnitDec Copy() { return new UnitDec(x, y, x_Purpose, y_Purpose, id, last__x, last__y, X_Board, Y_Board, was_step, flag); }
         public void NotWasStep() { was_step = false; }
-        public int X() { return x; }
-        public int Y() { return y; }
-        public int X_Purpose() { return x_Purpose; }
-        public int Y_Purpose() { return y_Purpose; }
-        public int Id() { return id; }
         public float F() { return F_; }
         public bool Was_near_end() { return was_near_end; }
         public bool Was_bool_step() { return was_bool_step; }
-        public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
-        public bool IsEnd(){ return IsRealEnd() && !flag; }
-        public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
-        public bool Move(Tuple<int, int> C, bool b)
-        {
-            if (b)
-            {
-                x = C.Item1;
-                y = C.Item2;
-            }
-            else
-            {
-                x_Purpose = C.Item1;
-                y_Purpose = C.Item2;
-            }
-            return true;
-        }
-        public void NewArr(int X, int Y)
-        {
-            X_Board = X;
-            Y_Board = Y;
-            Arr = new int[X, Y];
-        }
         public void MakeStep(BoardDec Board, IEnumerable<UnitDec> AnotherUnits, int kol_iter_a_star)
         {
             bool lasttrue = IsEnd();
@@ -107,12 +44,9 @@ namespace MAPF_System
                 return;
             StartSpec();
             // Алгоритм для решения проблемы перпендикулярного хождения юнитов
-            if (!(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
-            {
-                last__x = -1;
-                last__y = -1;
-            }
-            last_AU = null;
+            if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).IsEnd())
+                MakeLast(-1, -1);
+            last_Unit = null;
             // Список значений эвристической функции для каждой клетки
             List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
             // Список значений расстояний для каждой клетки
@@ -134,11 +68,11 @@ namespace MAPF_System
                 if (T.Item1 != 4)
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
-                    if (!(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
+                    if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).IsEnd())
                     {
                         last__x = -1;
                         last__y = -1;
-                        last_AU = null;
+                        last_Unit = null;
                     }
                     if (IsRealEnd())
                     {
@@ -153,10 +87,7 @@ namespace MAPF_System
                 }
             }
             else
-            {
-                last__x = -1;
-                last__y = -1;
-            }
+                MakeLast(-1, -1);
         }
 
         private bool MakeStep(BoardDec Board, IEnumerable<UnitDec> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, UnitDec AU)
@@ -176,7 +107,7 @@ namespace MAPF_System
                 t++;
             if (!Board.IsEmpthyAndNoTunel(x + 1, y))
                 t++;
-            if ((h(x, y) == 1) && (t >= 2))
+            if ((RealManheton(x, y) == 1) && (t >= 2))
                 flag = signal;
             if (flag)
             {
@@ -210,13 +141,12 @@ namespace MAPF_System
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
                     var q = AU;
-                    if (!(last_AU is null) && was_near_end && !flag && last_AU.IsEnd())
+                    if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).IsEnd())
                     {
-                        last__x = -1;
-                        last__y = -1;
+                        MakeLast(-1, -1);
                         q = null;
                     }
-                    last_AU = q;
+                    last_Unit = q;
                     // Помечаем клетку как посещенную
                     Board.MakeVisit(x, y, id);
                     if (!was_near_end)
@@ -225,11 +155,8 @@ namespace MAPF_System
                 }
             }
             else
-            {
-                last__x = -1;
-                last__y = -1;
-            }
-            
+                MakeLast(-1, -1);
+
             return was_step;
         }
         private void StartSpec()
@@ -357,7 +284,7 @@ namespace MAPF_System
             // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
             if (!was_near_end && (ff[i] != 0))
                 ff[i] += Arr[x0, y0];
-            rr[i] = r(x0, y0);
+            rr[i] = (float)Math.Sqrt(Math.Pow(x_Purpose - x0, 2) + Math.Pow(y_Purpose - y0, 2));
             // Алгоритм для решения проблемы параллельного хождения
             if (was_near_end)
                 foreach (var au in AnotherUnits)
@@ -376,8 +303,7 @@ namespace MAPF_System
         }
         private void InWasStep(Tuple<int, float> T, bool lasttrue)
         {
-            last__x = x;
-            last__y = y;
+            MakeLast(x, y);
             if (T.Item1 == 0)
                 y = y - 1;
             if (T.Item1 == 1)
@@ -387,10 +313,7 @@ namespace MAPF_System
             if (T.Item1 == 3)
                 x = x + 1;
             if (lasttrue)
-            {
-                last__x = -1;
-                last__y = -1;
-            }
+                MakeLast(-1, -1);
         }
         private float f(int x, int y, BoardDec Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step, int g, ref float[,,,] ArrG, ref int MaxG, ref bool GreatFlag)
         {
@@ -460,13 +383,16 @@ namespace MAPF_System
                         min = ff[i];
                 return 1 + min;
             }
-            if (h(x, y) + g == Math.Abs(x_Purpose - this.x) + Math.Abs(y_Purpose - this.y))
+            if (RealManheton(x, y) + g == Math.Abs(x_Purpose - this.x) + Math.Abs(y_Purpose - this.y))
                 GreatFlag = true;
             // Считаем эвристическую оценку, если максимальная глубина достигнута
-            return h(x, y);
+            return RealManheton(x, y);
         }
-        private float r(int x, int y){ return (float)Math.Sqrt( Math.Pow(x_Purpose - x, 2) + Math.Pow(y_Purpose - y, 2)); }
-        private int h(int x, int y) { return Math.Abs(x_Purpose - x) + Math.Abs(y_Purpose - y); }
 
+        private void MakeLast(int x, int y)
+        {
+            last__x = x;
+            last__y = y;
+        }
     }
 }

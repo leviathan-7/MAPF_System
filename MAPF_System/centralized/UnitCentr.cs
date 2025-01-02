@@ -2,56 +2,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public class UnitCentr
+    public class UnitCentr : Unit
     {
-        private int X_Board;
-        private int Y_Board;
-        private int id;
-        private int x;
-        private int y;
-        private int x_Purpose;
-        private int y_Purpose;
-        private int[,] Arr;
-
-        private UnitCentr last_Unit;
-
-        public bool flag;
-
-
-        public UnitCentr(int [,] Arr, int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) {
-            this.id = id;
-            this.flag = flag;
-            X_Board = X;
-            Y_Board = Y;
-            // Задание местоположения юнита
-            this.x = x;
-            this.y = y;
-            // Задание местоположения цели юнити
-            this.x_Purpose = x_Purpose;
-            this.y_Purpose = y_Purpose;
-            // Массив с количеством посещений узлов
+        public UnitCentr(int [,] Arr, int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) 
+        {
             this.Arr = Arr;
+            Constructor(x, y, X, Y, id, flag, x_Purpose, y_Purpose);
         }
         public UnitCentr(string str, int i, int X, int Y)
         {
-            flag = false;
-            string[] arr = str.Split(' ');
-            X_Board = X;
-            Y_Board = Y;
-            // Задание параметров юнита на основе строки из файла
-            x = int.Parse(arr[0]);
-            y = int.Parse(arr[1]);
-            x_Purpose = int.Parse(arr[2]);
-            y_Purpose = int.Parse(arr[3]);
-            id = i;
-            // Массив с количеством посещений узлов
-            Arr = new int[X, Y];
+            ConstructorStr(str, X, Y, i);
         }
         public UnitCentr Copy(bool b = false) 
         {
@@ -59,36 +26,6 @@ namespace MAPF_System
                 Arr = new int[X_Board, Y_Board];
             return new UnitCentr(Arr, x, y, x_Purpose, y_Purpose, id, -1, -1, X_Board, Y_Board, false, flag); 
         }
-        public int X() { return x; }
-        public int Y() { return y; }
-        public int X_Purpose() { return x_Purpose; }
-        public int Y_Purpose() { return y_Purpose; }
-        public int Id() { return id; }
-        public string ToStr() { return x + " " + y + " " + x_Purpose + " " + y_Purpose; }
-        public bool IsRealEnd() { return (x == x_Purpose) && (y == y_Purpose); }
-        public bool Move(Tuple<int, int> C, bool b)
-        {
-            if (b)
-            {
-                x = C.Item1;
-                y = C.Item2;
-            }
-            else
-            {
-                x_Purpose = C.Item1;
-                y_Purpose = C.Item2;
-            }
-            return true;
-        }
-        public void NewArr(int X, int Y)
-        {
-            X_Board = X;
-            Y_Board = Y;
-            Arr = new int[X, Y];
-        }
-        
-        
-        //
 
         public List<UnitCentr> MakeStep(BoardCentr Board, IEnumerable<UnitCentr> was_step, IEnumerable<UnitCentr> units, bool b)
         {
@@ -104,7 +41,7 @@ namespace MAPF_System
                     U.last_Unit = this;
                     if (b)
                     {
-                        if (last_Unit is null || !(U.x == last_Unit.x && U.y == last_Unit.y) || !(Board.Units().Find(unit => unit.x == U.x && unit.y == U.y) == null))
+                        if (last_Unit is null || !(U.x == last_Unit.X() && U.y == last_Unit.Y()) || !(Board.Units().Find(unit => unit.x == U.x && unit.y == U.y) == null))
                             lstUnits.Add(U);
                     }
                     else
@@ -133,11 +70,6 @@ namespace MAPF_System
             return true;
         }
 
-        public void PlusArr()
-        {
-            Arr[x, y]++;
-        }
-
         public int Manheton(BoardCentr board)
         {
             int s = FindMin(x, y, board, true);
@@ -147,7 +79,7 @@ namespace MAPF_System
             if (!(T is null) && !T.Ids().Contains(id))
                 return 1000 + s + 2 * a;
 
-            if (!(T is null) && !(last_Unit is null) && board.Tunell(last_Unit.x, last_Unit.y) is null)
+            if (!(T is null) && !(last_Unit is null) && board.Tunell(last_Unit.X(), last_Unit.Y()) is null)
                 a = 0;
 
             return s != 0 ? s + 2 * a : 0;
@@ -184,16 +116,6 @@ namespace MAPF_System
             return 1 + list.Min();
         }
 
-        public int RealManheton()
-        {
-            return RealManheton(x, y);
-        }
-
-        private int RealManheton(int x, int y)
-        {
-            return Math.Abs(x_Purpose - x) + Math.Abs(y_Purpose - y);
-        }
-
         public HashSet<UnitCentr> FindClaster(List<UnitCentr> units)
         {
             HashSet<UnitCentr> claster = new HashSet<UnitCentr>() { this };
@@ -216,9 +138,5 @@ namespace MAPF_System
             return claster;
         }
 
-        public void ClearArr()
-        {
-            Arr = new int[X_Board, Y_Board];
-        }
     }
 }

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace MAPF_System
 {
-    public interface Tunell
+    public interface TunellInterface
     {
-        
+
     }
 }

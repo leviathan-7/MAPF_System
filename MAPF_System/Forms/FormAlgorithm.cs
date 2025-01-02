@@ -13,7 +13,7 @@ namespace MAPF_System
 {
     public partial class FormAlgorithm : Form
     {
-        private Board Board;
+        private BoardInterface Board;
         private bool was_game;
         private bool move;
         private bool isCentr;
@@ -94,7 +94,7 @@ namespace MAPF_System
             }
             // Максимальное колличество итераций
             int N = 5000;
-            Board TimeBoard = Board.CopyWithoutBlocks();
+            BoardInterface TimeBoard = Board.CopyWithoutBlocks();
             int i = 0;
             while (!TimeBoard.IsEnd() && (i++) < (N-1))
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
@@ -112,7 +112,7 @@ namespace MAPF_System
                 label_Error.Text = "Глубина не верна!";
                 return;
             }
-            Board TimeBoard = Board.CopyWithoutBlocks();
+            BoardInterface TimeBoard = Board.CopyWithoutBlocks();
             int i = 1;
             FormAlgorithm F;
             if (isCentr)
@@ -265,23 +265,6 @@ namespace MAPF_System
             move = false;
             if(Board.DelUnits())
                 Board.Draw(CreateGraphics());
-        }
-
-        private void ButtonCopy_Click(object sender, EventArgs e)
-        {
-            move = false;
-            int height = 18;
-            if (Math.Max(Board.GET_X(), Board.GET_Y()) < 30)
-                height = 24;
-            using (Bitmap screenshot = new Bitmap(height * Board.GET_X() + 15, height * Board.GET_Y() + 15))
-            {
-                using (Graphics graphics = Graphics.FromImage(screenshot))
-                {
-                    graphics.CopyFromScreen(PointToScreen(new Point(88, 108)), Point.Empty, Bounds.Size);
-                }
-                Clipboard.SetImage(screenshot);
-            }
-            label20.Text = "Скопировано!";
         }
 
     }

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
-using System.IO;
-using System.Security;
-using System.Windows.Forms;
 
 namespace MAPF_System
 {
@@ -16,7 +13,7 @@ namespace MAPF_System
         private bool wasvisited;
         private int idVisit;
         private bool isBad;
-        private Tunell tunell;
+        private TunellInterface tunell;
 
         public Cell(bool isBlock, bool wasvisited = false, int idVisit = -1, bool isBad = false)
         {
@@ -37,8 +34,8 @@ namespace MAPF_System
         public Cell CopyWithoutBlock() { return new Cell(false, wasvisited, idVisit, isBad); }
         public int IdVisit() { return idVisit; }
         public string ToStr() { return isBlock + " " + wasvisited + " " + idVisit + " " + isBad; }
-        public Tunell Tunell() { return tunell; }
-        public Tunell MakeTunell(Tunell tunell) { return this.tunell = tunell; }
+        public TunellInterface Tunell() { return tunell; }
+        public TunellInterface MakeTunell(TunellInterface tunell) { return this.tunell = tunell; }
         public void ClearTunell() { tunell = null; }
         public void MakeVisit(int n)
         {

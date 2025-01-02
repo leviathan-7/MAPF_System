@@ -34,7 +34,7 @@ namespace MAPF_System
             this.label2 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button_Close = new CustomControls.RJControls.RJButton();
+            this.button_Close = new CustomControls.Style.RJButton();
             this.SuspendLayout();
             // 
             // label1
@@ -129,6 +129,6 @@ namespace MAPF_System
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.GroupBox groupBox1;
-        private CustomControls.RJControls.RJButton button_Close;
+        private CustomControls.Style.RJButton button_Close;
     }
 }

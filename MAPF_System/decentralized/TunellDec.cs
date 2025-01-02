@@ -7,21 +7,15 @@ using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public class TunellDec : Tunell
+    public class TunellDec : Tunell<Unit>
     {
-        private BoardDec board;
-        private List<UnitDec> tunell_units;
-        private List<TunellDec> tunells;
-
-        public TunellDec(BoardDec board)
+        public TunellDec(BoardInterface board)
         {
-            this.board = board;
-            tunell_units = new List<UnitDec>();
-            tunells = new List<TunellDec>();
+            Constructor(board);
         }
         public void Add(int x, int y)
         {
-            foreach (var Unit in board.Units())
+            foreach (var Unit in ((BoardDec)board).Units())
                 if ((Unit.X_Purpose() == x) && (Unit.Y_Purpose() == y))
                 {
                     tunell_units.Add(Unit);
@@ -30,14 +24,8 @@ namespace MAPF_System
         }
         public void Add(List<TunellDec> LT)
         {
-            foreach (var t in LT)
-            {
-                tunells.Add(t);
-                foreach (var u in t.tunell_units)
-                    tunell_units.Add(u);
-                foreach (var tt in t.tunells)
-                    tunells.Add(tt);
-            }
+            foreach (var tunell in LT)
+                Add(tunell);
         }
         public void MakeFlags(BoardDec Board)
         {
@@ -48,7 +36,7 @@ namespace MAPF_System
                     Unit.flag = false;
                 bool t = Board.InTunell(Unit, this);
                 foreach (var tunell in tunells)
-                    t = t || Board.InTunell(Unit, tunell);
+                    t = t || Board.InTunell(Unit, (TunellDec)tunell);
                 b = b && t;
                 if (Unit.IsRealEnd() && !b)
                     Unit.flag = true;
@@ -58,9 +46,9 @@ namespace MAPF_System
         {
             foreach (var Unit in tunell_units)
             {
-                bool b = board.InTunell(Unit, this);
+                bool b = ((BoardDec)board).InTunell(Unit, this);
                 foreach (var tunell in tunells)
-                    b = b || board.InTunell(Unit, tunell);
+                    b = b || ((BoardDec)board).InTunell(Unit, tunell);
                 if (!b)
                     return Unit.Id();
             }

@@ -47,16 +47,16 @@ namespace MAPF_System
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.button_Generation_Centr = new CustomControls.RJControls.RJButton();
-            this.button_Generation_Dec = new CustomControls.RJControls.RJButton();
+            this.button_Generation_Centr = new CustomControls.Style.RJButton();
+            this.button_Generation_Dec = new CustomControls.Style.RJButton();
             this.label_Error = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.button_BigStart_Dec = new CustomControls.RJControls.RJButton();
-            this.button_Load_Dec = new CustomControls.RJControls.RJButton();
-            this.button_Load_Centr = new CustomControls.RJControls.RJButton();
-            this.button_BigStart_Centr = new CustomControls.RJControls.RJButton();
-            this.button_BigStart_Unite = new CustomControls.RJControls.RJButton();
+            this.button_BigStart_Dec = new CustomControls.Style.RJButton();
+            this.button_Load_Dec = new CustomControls.Style.RJButton();
+            this.button_Load_Centr = new CustomControls.Style.RJButton();
+            this.button_BigStart_Centr = new CustomControls.Style.RJButton();
+            this.button_BigStart_Unite = new CustomControls.Style.RJButton();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
@@ -496,15 +496,15 @@ namespace MAPF_System
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label_Error;
-        private CustomControls.RJControls.RJButton button_Load_Dec;
-        private CustomControls.RJControls.RJButton button_Generation_Dec;
-        private CustomControls.RJControls.RJButton button_BigStart_Dec;
+        private CustomControls.Style.RJButton button_Load_Dec;
+        private CustomControls.Style.RJButton button_Generation_Dec;
+        private CustomControls.Style.RJButton button_BigStart_Dec;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label label12;
-        private CustomControls.RJControls.RJButton button_Generation_Centr;
-        private CustomControls.RJControls.RJButton button_Load_Centr;
-        private CustomControls.RJControls.RJButton button_BigStart_Centr;
-        private CustomControls.RJControls.RJButton button_BigStart_Unite;
+        private CustomControls.Style.RJButton button_Generation_Centr;
+        private CustomControls.Style.RJButton button_Load_Centr;
+        private CustomControls.Style.RJButton button_BigStart_Centr;
+        private CustomControls.Style.RJButton button_BigStart_Unite;
     }
 }
 

@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace MAPF_System
 {
-    public interface Board
+    public interface BoardInterface
     {
         void Draw(Graphics t, bool b = true, Tuple<int, int> C = null, Tuple<int, int> C1 = null, bool viewtunnel = true);
         string Name();
         bool GetWasGame();
-        Board CopyWithoutBlocks();
+        BoardInterface CopyWithoutBlocks();
         bool IsEnd();
-        void MakeStep(Board Board, int kol_iter_a_star);
+        void MakeStep(BoardInterface Board, int kol_iter_a_star);
         string Save(string name_, bool b = false);
         int GET_X();
         int GET_Y();
@@ -26,5 +26,6 @@ namespace MAPF_System
         void PlusRow();
         void DelBlokcs();
         bool DelUnits();
+        bool IsBlock(int x, int y);
     }
 }
