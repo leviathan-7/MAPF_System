@@ -10,22 +10,25 @@ namespace MAPF_System
     public class Tunell<T>: TunellInterface
     {
         protected BoardInterface board;
-        protected List<Tunell<T>> tunells;
+        protected List<TunellInterface> tunells;
         protected List<T> tunell_units;
 
-        protected void Add(Tunell<T> tunell) 
+        public void Add(List<TunellInterface> LT)
         {
-            tunells.Add(tunell);
-            foreach (var u in tunell.tunell_units)
-                tunell_units.Add(u);
-            foreach (var tt in tunell.tunells)
-                tunells.Add(tt);
+            foreach (var tunell in LT)
+            {
+                tunells.Add(tunell);
+                foreach (var u in ((Tunell<T>)tunell).tunell_units)
+                    tunell_units.Add(u);
+                foreach (var tt in ((Tunell<T>)tunell).tunells)
+                    tunells.Add(tt);
+            }
         }
 
-        protected void Constructor(BoardInterface board) 
+        public Tunell(BoardInterface board)
         {
             this.board = board;
-            tunells = new List<Tunell<T>>();
+            tunells = new List<TunellInterface>();
             tunell_units = new List<T>();
         }
     }

@@ -12,21 +12,17 @@ namespace MAPF_System
     public class UnitCentr : Unit
     {
         public UnitCentr(int [,] Arr, int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) 
+            : base(x, y, X, Y, id, flag, x_Purpose, y_Purpose)
         {
             this.Arr = Arr;
-            Constructor(x, y, X, Y, id, flag, x_Purpose, y_Purpose);
         }
-        public UnitCentr(string str, int i, int X, int Y)
-        {
-            ConstructorStr(str, X, Y, i);
-        }
+        public UnitCentr(string str, int i, int X, int Y) : base(str, X, Y, i) { }
         public UnitCentr Copy(bool b = false) 
         {
             if (b)
                 Arr = new int[X_Board, Y_Board];
             return new UnitCentr(Arr, x, y, x_Purpose, y_Purpose, id, -1, -1, X_Board, Y_Board, false, flag); 
         }
-
         public List<UnitCentr> MakeStep(BoardCentr Board, IEnumerable<UnitCentr> was_step, IEnumerable<UnitCentr> units, bool b)
         {
             List <UnitCentr> lstUnits = new List<UnitCentr>();
@@ -41,7 +37,7 @@ namespace MAPF_System
                     U.last_Unit = this;
                     if (b)
                     {
-                        if (last_Unit is null || !(U.x == last_Unit.X() && U.y == last_Unit.Y()) || !(Board.Units().Find(unit => unit.x == U.x && unit.y == U.y) == null))
+                        if (last_Unit is null || !(U.x == last_Unit.x && U.y == last_Unit.y) || !(Board.units.Find(unit => unit.x == U.x && unit.y == U.y) == null))
                             lstUnits.Add(U);
                     }
                     else
@@ -54,37 +50,42 @@ namespace MAPF_System
 
             return lstUnits;
         }
-
-        private bool NoOneCell(int _x, int _y, IEnumerable<UnitCentr> was_step, IEnumerable<UnitCentr> units)
+        public HashSet<UnitCentr> FindClaster(List<UnitCentr> units)
         {
-            foreach (var unit in was_step)
-                if ((unit.x == _x) && (unit.y == _y))
-                    return false;
+            HashSet<UnitCentr> claster = new HashSet<UnitCentr>() { this };
+            Stack<UnitCentr> stack = new Stack<UnitCentr>();
+            stack.Push(this);
+            while (stack.Count() != 0)
+            {
+                UnitCentr u = stack.Pop();
+                foreach (var unit in units)
+                    if ((!claster.Contains(unit)) &&
+                        ((((u.x + 1 == unit.x) || (u.x - 1 == unit.x)) && ((u.y == unit.y) || (u.y - 1 == unit.y) || (u.y + 1 == unit.y))) ||
+                        (((u.x + 2 == unit.x) || (u.x - 2 == unit.x)) && (u.y == unit.y)) ||
+                        ((u.x == unit.x) && ((u.y - 1 == unit.y) || (u.y + 1 == unit.y) || (u.y - 2 == unit.y) || (u.y + 2 == unit.y)))))
+                    {
+                        claster.Add(unit);
+                        stack.Push(unit);
+                    }
+            }
 
-            foreach (var unit in units)
-                if ((unit.x == _x) && (unit.y == _y))
-                    foreach (var u in was_step)
-                        if((u.id == unit.id) && (u.x == x) && (u.y == y))
-                            return false;
-
-            return true;
+            return claster;
         }
-
         public int Manheton(BoardCentr board)
         {
             int s = FindMin(x, y, board, true);
 
             TunellCentr T = board.Tunell(x, y);
             int a = Arr[x, y];
-            if (!(T is null) && !T.Ids().Contains(id))
+            if (!(T is null) && !T.Contains(false, id))
                 return 1000 + s + 2 * a;
 
-            if (!(T is null) && !(last_Unit is null) && board.Tunell(last_Unit.X(), last_Unit.Y()) is null)
+            if (!(T is null) && !(last_Unit is null) && board.Tunell(last_Unit.x, last_Unit.y) is null)
                 a = 0;
 
             return s != 0 ? s + 2 * a : 0;
         }
-
+        
         private int FindMin(int x, int y, BoardCentr board, bool iter)
         {
             int s = RealManheton(x, y);
@@ -102,7 +103,7 @@ namespace MAPF_System
                 if (board.IsEmpthy(x, y - 1))
                     list.Add(FindMin(x, y - 1, board, !iter));
             }
-            else 
+            else
             {
                 if (board.IsEmpthy(x + 1, y))
                     list.Add(RealManheton(x + 1, y));
@@ -115,27 +116,19 @@ namespace MAPF_System
             }
             return 1 + list.Min();
         }
-
-        public HashSet<UnitCentr> FindClaster(List<UnitCentr> units)
+        private bool NoOneCell(int _x, int _y, IEnumerable<UnitCentr> was_step, IEnumerable<UnitCentr> units)
         {
-            HashSet<UnitCentr> claster = new HashSet<UnitCentr>() { this };
-            Stack<UnitCentr> stack = new Stack<UnitCentr>();
-            stack.Push(this);
-            while (stack.Count() != 0)
-            {
-                UnitCentr u = stack.Pop();
-                foreach (var unit in units)
-                    if((!claster.Contains(unit)) && 
-                        ((((u.x+1 == unit.x) || (u.x -1 == unit.x)) && ((u.y == unit.y) || (u.y - 1 == unit.y) || (u.y + 1 == unit.y))) ||
-                        (((u.x + 2 == unit.x) || (u.x - 2 == unit.x)) && (u.y == unit.y)) ||
-                        ((u.x == unit.x) && ((u.y - 1 == unit.y) || (u.y + 1 == unit.y) || (u.y - 2 == unit.y) || (u.y + 2 == unit.y)))))
-                    {
-                        claster.Add(unit);
-                        stack.Push(unit);
-                    }
-            }
+            foreach (var unit in was_step)
+                if ((unit.x == _x) && (unit.y == _y))
+                    return false;
 
-            return claster;
+            foreach (var unit in units)
+                if ((unit.x == _x) && (unit.y == _y))
+                    foreach (var u in was_step)
+                        if((u.id == unit.id) && (u.x == x) && (u.y == y))
+                            return false;
+
+            return true;
         }
 
     }

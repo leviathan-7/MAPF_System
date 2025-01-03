@@ -9,46 +9,46 @@ namespace MAPF_System
 {
     public class Cell
     {
-        private bool isBlock;
-        private bool wasvisited;
-        private int idVisit;
-        private bool isBad;
-        private TunellInterface tunell;
+        public TunellInterface tunell;
+        public bool isBlock;
+        public bool wasvisited { get; private set; }
+        public int idVisit { get; private set; }
+        public bool isBad { get; private set; }
+        public bool isTunell
+        {
+            get { return !(tunell is null); }
+        }
+        public String str 
+        { 
+            get { return isBlock + " " + wasvisited + " " + idVisit + " " + isBad; } 
+        }
+        public Cell copyWithoutBlock
+        { 
+            get { return new Cell(false, wasvisited, idVisit, isBad); }
+        } 
 
         public Cell(bool isBlock, bool wasvisited = false, int idVisit = -1, bool isBad = false)
+        {
+            MakeCell(isBlock, wasvisited, idVisit, isBad);
+        }
+        public Cell(string str)
+        {
+            string[] arr = str.Split(' ');
+            MakeCell(arr[0] == "True", arr[1] == "True", int.Parse(arr[2]), arr[3] == "True");
+        }
+        private void MakeCell(bool isBlock, bool wasvisited, int idVisit, bool isBad)
         {
             this.isBlock = isBlock;
             this.wasvisited = wasvisited;
             this.idVisit = idVisit;
             this.isBad = isBad;
         }
-        public Cell(string str)
-        {
-            string[] arr = str.Split(' ');
-            // Задание параметров клетки на основе строки из файла
-            isBlock = arr[0] == "True";
-            wasvisited = arr[1] == "True";
-            idVisit = int.Parse(arr[2]);
-            isBad = arr[3] == "True";
-        }
-        public Cell CopyWithoutBlock() { return new Cell(false, wasvisited, idVisit, isBad); }
-        public int IdVisit() { return idVisit; }
-        public string ToStr() { return isBlock + " " + wasvisited + " " + idVisit + " " + isBad; }
-        public TunellInterface Tunell() { return tunell; }
-        public TunellInterface MakeTunell(TunellInterface tunell) { return this.tunell = tunell; }
-        public void ClearTunell() { tunell = null; }
+        public void MakeBad() { isBad = true; }
         public void MakeVisit(int n)
         {
             wasvisited = true;
             idVisit = n;
         }
-        public void MakeBad() { isBad = true; }
-        public void MakeBlock() { isBlock = true; }
-        public bool IsBad() { return isBad; }
-        public bool IsBlock() { return isBlock; }
-        public bool IsTunell() { return !(tunell is null); }
-        public bool WasVisit() { return wasvisited; }
-        public void DelBlokcs() { isBlock = false; }
         public int ReversBlock()
         {
             if (isBlock = !isBlock)

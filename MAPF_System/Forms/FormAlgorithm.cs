@@ -37,9 +37,9 @@ namespace MAPF_System
                 Text = "Запуск MAPF - Децентрализованный";
             }
 
-            was_game = Board.GetWasGame();
+            was_game = Board.WasGame;
             textBox_kol_iter_a_star.Text = str_kol_iter_a_star;
-            label6.Text = Board.Name();
+            label6.Text = Board.name;
             // Позиция данной формы
             StartPosition = FormStartPosition.Manual;
             Location = new Point(100, 100);
@@ -96,7 +96,7 @@ namespace MAPF_System
             int N = 5000;
             BoardInterface TimeBoard = Board.CopyWithoutBlocks();
             int i = 0;
-            while (!TimeBoard.IsEnd() && (i++) < (N-1))
+            while (!TimeBoard.isEnd && (i++) < (N-1))
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
             if (isCentr)
                 (new FormAlgorithm(null, (BoardCentr)TimeBoard, true, i, i == N, "" + kol_iter_a_star, true)).Show();
@@ -120,7 +120,7 @@ namespace MAPF_System
             else
                 F = new FormAlgorithm((BoardDec)TimeBoard, null, false, 0, false, "" + kol_iter_a_star, true);
             F.Show();
-            while (!TimeBoard.IsEnd()) 
+            while (!TimeBoard.isEnd) 
             {
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
                 TimeBoard.Draw(F.CreateGraphics(), false);
@@ -161,7 +161,7 @@ namespace MAPF_System
         private Tuple<int, int> CELL(MouseEventArgs e)
         {
             int height = 18;
-            if (Math.Max(Board.GET_X(), Board.GET_Y()) < 30)
+            if (Math.Max(Board.X, Board.Y) < 30)
                 height = 24;
             return new Tuple<int, int>((e.Location.X - 100) / height, (e.Location.Y - 120) / height);
         }
@@ -197,18 +197,18 @@ namespace MAPF_System
             {
                 var C = CELL(e);
                 int height = 18;
-                if (Math.Max(Board.GET_X(), Board.GET_Y()) < 30)
+                if (Math.Max(Board.X, Board.Y) < 30)
                     height = 24;
                 var Font = new Font("Arial", 7, FontStyle.Bold);
                 var Font1 = new Font("Arial", 7, FontStyle.Bold | FontStyle.Underline);
-                if (!(CC is null) && (CC.Item1 < Board.GET_X()) && (CC.Item2 < Board.GET_Y()))
+                if (!(CC is null) && (CC.Item1 < Board.X) && (CC.Item2 < Board.Y))
                 {
                     g.DrawString("" + CC.Item2, Font1, Brushes.White, new Point(88, 124 + height * CC.Item2));
                     g.DrawString("" + CC.Item1, Font1, Brushes.White, new Point(104 + height * CC.Item1, 108));
                     g.DrawString("" + CC.Item2, Font, Brushes.Coral, new Point(88, 124 + height * CC.Item2));
                     g.DrawString("" + CC.Item1, Font, Brushes.Coral, new Point(104 + height * CC.Item1, 108));
                 }
-                if ((C.Item1 < Board.GET_X()) && (C.Item2 < Board.GET_Y()) && (e.Location.Y > 115) && (e.Location.X > 95))
+                if ((C.Item1 < Board.X) && (C.Item2 < Board.Y) && (e.Location.Y > 115) && (e.Location.X > 95))
                 {
                     if (!was_game)
                         Cursor = Cursors.Hand;

@@ -9,35 +9,25 @@ namespace MAPF_System
 {
     public class TunellCentr : Tunell<int>
     {
-        public TunellCentr(BoardInterface board)
-        {
-            Constructor(board);
-        }
+        public TunellCentr(BoardInterface board) : base(board) { }
+
         public void Add(int x, int y)
         {
-            foreach (var Unit in ((BoardCentr)board).Units())
-                if ((Unit.X_Purpose() == x) && (Unit.Y_Purpose() == y))
+            foreach (var Unit in ((BoardCentr)board).units)
+                if ((Unit.x_Purpose == x) && (Unit.y_Purpose == y))
                 {
-                    tunell_units.Add(Unit.Id());
+                    tunell_units.Add(Unit.id);
                     break;
                 }
         }
-        public void Add(List<TunellCentr> LT)
-        {
-            foreach (var tunell in LT)
-                Add(tunell);
-        }
 
-        public List<int> Ids()
+        public bool Contains(bool isReal, int id)
         {
-            foreach (var Unit_id in (from unit in ((BoardCentr)board).Units() select unit.Id()).Except(tunell_units))
-                if (((BoardCentr)board).InTunell(Unit_id, this))
-                    return new List<int>();
-            return RealIds();
-        }
+            if (!isReal)
+                foreach (var Unit_id in (from unit in ((BoardCentr)board).units select unit.id).Except(tunell_units))
+                    if (((BoardCentr)board).InTunell(Unit_id, this))
+                        return false;
 
-        public List<int> RealIds()
-        {
             List<int> lst = new List<int>();
             foreach (var Unit_id in tunell_units)
             {
@@ -46,9 +36,9 @@ namespace MAPF_System
                 foreach (var tunell in tunells)
                     b = b || ((BoardCentr)board).InTunell(Unit_id, tunell);
                 if (!b)
-                    return lst;
+                    return lst.Contains(id);
             }
-            return lst;
+            return lst.Contains(id);
         }
     }
 }

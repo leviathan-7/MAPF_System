@@ -118,13 +118,13 @@ namespace MAPF_System
                     {
                         BoardDec Board = new BoardDec(f);
                         // Плотность
-                        double density = 1.0 * Board.Units().Count / (Board.GET_X() * Board.GET_Y());
+                        double density = 1.0 * Board.units.Count / (Board.X * Board.Y);
                         int kol_iter_a_star = 7;
                         // Максимальное колличество итераций
                         int N = 5000;
                         BoardDec TimeBoard = (BoardDec)Board.CopyWithoutBlocks();
                         int i = 0;
-                        while (!TimeBoard.IsEnd() && (i++) < (N - 1))
+                        while (!TimeBoard.isEnd && (i++) < (N - 1))
                             TimeBoard.MakeStep(Board, kol_iter_a_star);
                         if (i == N)
                         {
@@ -133,7 +133,7 @@ namespace MAPF_System
                         }
                         else
                         {
-                            table.Rows.Add(f.Split('\\').Last(), "" + i , "" + (Board.GET_X() * Board.GET_Y()) , "" + Board.Units().Count , "" + density);
+                            table.Rows.Add(f.Split('\\').Last(), "" + i , "" + (Board.X * Board.Y) , "" + Board.units.Count , "" + density);
                             b++;
                         }
                     }
@@ -164,13 +164,13 @@ namespace MAPF_System
                     {
                         BoardCentr Board = new BoardCentr(f);
                         // Плотность
-                        double density = 1.0 * Board.Units().Count / (Board.GET_X() * Board.GET_Y());
+                        double density = 1.0 * Board.units.Count / (Board.X * Board.Y);
                         int kol_iter_a_star = 7;
                         // Максимальное колличество итераций
                         int N = 5000;
                         BoardCentr TimeBoard = (BoardCentr)Board.CopyWithoutBlocks();
                         int i = 0;
-                        while (!TimeBoard.IsEnd() && (i++) < (N - 1))
+                        while (!TimeBoard.isEnd && (i++) < (N - 1))
                             TimeBoard.MakeStep(Board, kol_iter_a_star);
                         if (i == N)
                         {
@@ -179,7 +179,7 @@ namespace MAPF_System
                         }
                         else
                         {
-                            table.Rows.Add(f.Split('\\').Last(), "" + i, "" + (Board.GET_X() * Board.GET_Y()), "" + Board.Units().Count, "" + density);
+                            table.Rows.Add(f.Split('\\').Last(), "" + i, "" + (Board.X * Board.Y), "" + Board.units.Count, "" + density);
                             b++;
                         }
                     }
@@ -210,7 +210,7 @@ namespace MAPF_System
                     {
                         BoardCentr Board = new BoardCentr(f);
                         // Плотность
-                        double density = 1.0 * Board.Units().Count / (Board.GET_X() * Board.GET_Y());
+                        double density = 1.0 * Board.units.Count / (Board.X * Board.Y);
                         int kol_iter_a_star = 7;
                         // Максимальное колличество итераций
                         int N = 5000;
@@ -219,14 +219,14 @@ namespace MAPF_System
                         if (density >= 0.01)
                         {
                             BoardCentr TimeBoard = (BoardCentr)Board.CopyWithoutBlocks();
-                            while (!TimeBoard.IsEnd() && (i++) < (N - 1))
+                            while (!TimeBoard.isEnd && (i++) < (N - 1))
                                 TimeBoard.MakeStep(Board, kol_iter_a_star);
                         }
                         else
                         {
                             BoardDec BoardDec = new BoardDec(f);
                             BoardDec TimeBoard = (BoardDec)BoardDec.CopyWithoutBlocks();
-                            while (!TimeBoard.IsEnd() && (i++) < (N - 1))
+                            while (!TimeBoard.isEnd && (i++) < (N - 1))
                                 TimeBoard.MakeStep(BoardDec, kol_iter_a_star);
                         }
                         
@@ -238,7 +238,7 @@ namespace MAPF_System
                         }
                         else
                         {
-                            table.Rows.Add(f.Split('\\').Last(), "" + i, "" + (Board.GET_X() * Board.GET_Y()), "" + Board.Units().Count, "" + density);
+                            table.Rows.Add(f.Split('\\').Last(), "" + i, "" + (Board.X * Board.Y), "" + Board.units.Count, "" + density);
                             b++;
                         }
                     }

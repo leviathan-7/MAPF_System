@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace MAPF_System
 {
@@ -12,30 +13,30 @@ namespace MAPF_System
         private int last__x;
         private int last__y;
         private bool was_step;
-        private bool was_near_end;
-        private bool was_bool_step;
-        private float F_;
         private int spec;
+        public bool was_near_end { get; private set; }
+        public bool was_bool_step { get; private set; }
+        public float F { get; private set; }
+        public UnitDec copy
+        {
+            get { return new UnitDec(x, y, x_Purpose, y_Purpose, id, last__x, last__y, X_Board, Y_Board, was_step, flag); }
+        }
 
-        public UnitDec(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false) {
+        public UnitDec(int x, int y, int x_Purpose, int y_Purpose, int id, int last__x, int last__y, int X, int Y, bool was_step = false, bool flag = false)
+            : base(x, y, X, Y, id, flag, x_Purpose, y_Purpose) 
+        {
             this.was_step = was_step;
             MakeLast(last__x, last__y);
             Arr = new int[X, Y];
-            Constructor(x, y, X, Y, id, flag, x_Purpose, y_Purpose);
         }
-        public UnitDec(string str, int i, int X, int Y)
+        public UnitDec(string str, int i, int X, int Y) : base(str, X, Y, i)
         {
             MakeLast(-1, -1);
-            ConstructorStr(str, X, Y, i);
         }
-        public UnitDec Copy() { return new UnitDec(x, y, x_Purpose, y_Purpose, id, last__x, last__y, X_Board, Y_Board, was_step, flag); }
         public void NotWasStep() { was_step = false; }
-        public float F() { return F_; }
-        public bool Was_near_end() { return was_near_end; }
-        public bool Was_bool_step() { return was_bool_step; }
         public void MakeStep(BoardDec Board, IEnumerable<UnitDec> AnotherUnits, int kol_iter_a_star)
         {
-            bool lasttrue = IsEnd();
+            bool lasttrue = isEnd;
             // Обнуление флага, когда юнит прошел через свою цель
             if (flag && (x == x_Purpose) && (y == y_Purpose))
                 flag = false;
@@ -44,7 +45,7 @@ namespace MAPF_System
                 return;
             StartSpec();
             // Алгоритм для решения проблемы перпендикулярного хождения юнитов
-            if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).IsEnd())
+            if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).isEnd)
                 MakeLast(-1, -1);
             last_Unit = null;
             // Список значений эвристической функции для каждой клетки
@@ -59,7 +60,7 @@ namespace MAPF_System
             Board.MakeVisit(x, y, id);
             // Находим подходящую нам клетку
             var T = MIN_I(rr, ff, Board, UsUnits, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 }, -1, -1, kol_iter_a_star);
-            F_ = T.Item2;
+            F = T.Item2;
             was_step = (T.Item1 != -10);
             if (was_step)
             {
@@ -68,13 +69,13 @@ namespace MAPF_System
                 if (T.Item1 != 4)
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
-                    if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).IsEnd())
+                    if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).isEnd)
                     {
                         last__x = -1;
                         last__y = -1;
                         last_Unit = null;
                     }
-                    if (IsRealEnd())
+                    if (isRealEnd)
                     {
                         was_near_end = true;
                         spec = X_Board * Y_Board;
@@ -92,7 +93,7 @@ namespace MAPF_System
 
         private bool MakeStep(BoardDec Board, IEnumerable<UnitDec> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, UnitDec AU)
         {
-            bool lasttrue = IsEnd();
+            bool lasttrue = isEnd;
             // Проверяем, что юнит еще не работал на данной итерации
             if (was_step)
                 return false;
@@ -131,7 +132,7 @@ namespace MAPF_System
             IfBoardIsEmpthy(rr, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star, true);
             // Находим подходящую нам клетку
             var T = MIN_I(rr, ff, Board, UsUnits, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, kol_iter_a_star);
-            F_ = T.Item2;
+            F = T.Item2;
             was_step = (T.Item1 != -10);
             if (was_step)
             {
@@ -141,7 +142,7 @@ namespace MAPF_System
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
                     var q = AU;
-                    if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).IsEnd())
+                    if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).isEnd)
                     {
                         MakeLast(-1, -1);
                         q = null;
@@ -191,7 +192,7 @@ namespace MAPF_System
             bool bb = min_i != 4;
             was_step = true;
             if (!(UsUnits[min_i] is null))
-                bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units() where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                bb = UsUnits[min_i].MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             int min_i_1 = min_i;
             if (!bb)
             {
@@ -210,7 +211,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units() where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_2 = min_i;
             if (!bb)
@@ -230,7 +231,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units() where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_3 = min_i;
             if (!bb)
@@ -250,12 +251,12 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.Units() where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
 
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет
             if (!bb)
-                return new Tuple<int, float>(-10, F_);
+                return new Tuple<int, float>(-10, F);
             
             // Возвращаем подходящую нам клетку
             return new Tuple<int, float>(min_i, min);
@@ -291,7 +292,7 @@ namespace MAPF_System
                     if ((au.x_Purpose == x0) && (au.y_Purpose == y0))
                     {
                         ff[i] += 0.5f;
-                        if (!au.IsEnd())
+                        if (!au.isEnd)
                             ff[i] += 0.5f;
                     }
             foreach (var au in AnotherUnits)
@@ -388,7 +389,6 @@ namespace MAPF_System
             // Считаем эвристическую оценку, если максимальная глубина достигнута
             return RealManheton(x, y);
         }
-
         private void MakeLast(int x, int y)
         {
             last__x = x;

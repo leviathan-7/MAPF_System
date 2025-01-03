@@ -34,8 +34,8 @@ namespace MAPF_System
                 int y_Purpose = rnd.Next(Y);
                 bool b = (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
                 foreach (var Unit in units)
-                    b = b && !((Unit.X() == x) && (Unit.Y() == y)) && !((Unit.X_Purpose() == x_Purpose) && (Unit.Y_Purpose() == y_Purpose))
-                        && !((Unit.X() == x_Purpose) && (Unit.Y() == y_Purpose)) && !((Unit.X_Purpose() == x) && (Unit.Y_Purpose() == y));
+                    b = b && !((Unit.x == x) && (Unit.y == y)) && !((Unit.x_Purpose == x_Purpose) && (Unit.y_Purpose == y_Purpose))
+                        && !((Unit.x == x_Purpose) && (Unit.y == y_Purpose)) && !((Unit.x_Purpose == x) && (Unit.y_Purpose == y));
                 if (b)
                 {
                     units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
@@ -63,105 +63,13 @@ namespace MAPF_System
         public BoardCentr(string path) { Constructor(path); }
         public BoardInterface CopyWithoutBlocks()
         {
-            Cell[,] CopyArr = new Cell[X, Y];
-            List<UnitCentr> CopyUnits = new List<UnitCentr>();
-            // Скопировать юнитов
-            foreach (var Unit in units)
-                CopyUnits.Add(Unit.Copy(true));
-            // Скопировать доску без блоков
-            for (int i = 0; i < X; i++)
-                for (int j = 0; j < Y; j++)
-                    CopyArr[i, j] = Arr[i, j].CopyWithoutBlock();
-            return new BoardCentr(X, Y, CopyArr, CopyUnits, name, tunells);
+            return new BoardCentr(X, Y, copyArrWithoutBlocks, units.Select(unit => unit.Copy(true)).ToList(), name, tunells);
         }
-        public void Draw(Graphics t, bool b = true, Tuple<int, int> C = null, Tuple<int, int> C1 = null, bool viewtunnel = true)
-        {
-            int height = 18;
-            if (Math.Max(X, Y) < 30)
-                height = 24;
-            int YY = 115;
-            int XX = 95;
-            using (Graphics g = t)
-            {
-                if (b)
-                    g.Clear(SystemColors.Control); // Очистка области рисования
-                using (Pen pen = new Pen(Color.Blue, 1))
-                {
-                    var Size = new Size(height, height);
-                    var Font = new Font("Arial", 9, FontStyle.Bold);
-                    var Font1 = new Font("Arial", 7, FontStyle.Bold);
-                    for (int i = 0; i < X; i++)
-                    {
-                        if (b)
-                            g.DrawString("" + i, Font1, Brushes.Coral, new Point(XX + 9 + height * i, YY - 7));
-                        for (int j = 0; j < Y; j++)
-                        {
-                            Rectangle rect = new Rectangle(new Point(XX + 5 + height * i, YY + 5 + height * j), Size);
-                            if (b)
-                            {
-                                g.DrawString("" + j, Font1, Brushes.Coral, new Point(XX - 7, YY + 9 + height * j));
-                                g.DrawRectangle(pen, rect);
-                            }
-                            // Отрисовка блоков
-                            if (Arr[i, j].IsBlock())
-                                g.FillRectangle(Brushes.Black, rect);
-                            // Отрисовка пройденного пути
-                            if (Arr[i, j].WasVisit())
-                            {
-                                int W = 100 + 100 * (Arr[i, j].IdVisit() + 1) / units.Count;
-                                g.FillRectangle(new SolidBrush(Color.FromArgb(W, W, 255)), rect);
-                            }
-                            // Отрисовка плохих узлов
-                            if (Arr[i, j].IsBad())
-                                g.DrawString("X", Font1, Brushes.Red, new Point(XX + 9 + height * i, YY + 9 + height * j));
-                            // Отрисовка туннеля
-                            if (viewtunnel && Arr[i, j].IsTunell())
-                                g.DrawRectangle(new Pen(Color.Red, 1), new Rectangle(new Point(XX + 6 + height * i, YY + 6 + height * j), new Size(height - 2, height - 2)));
-                        }
-                    }
-                    Size = new Size(height - 5, height - 5);
-                    foreach (var Unit in units)
-                    {
-                        // Отрисовка цели
-                        if (!Unit.IsRealEnd())
-                        {
-                            g.FillRectangle(Brushes.LawnGreen, new Rectangle(new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()), Size));
-                            g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X_Purpose(), YY + 8 + height * Unit.Y_Purpose()));
-                        }
-                    }
-                    foreach (var Unit in units)
-                    {
-                        // Отрисовка юнитов
-                        g.FillRectangle(Brushes.Red, new Rectangle(new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()), Size));
-                        g.DrawString("" + Unit.Id(), Font, Brushes.Black, new Point(XX + 8 + height * Unit.X(), YY + 8 + height * Unit.Y()));
-                    }
-                    if (!(C is null))
-                    {
-                        Size = new Size(height, height);
-                        g.FillRectangle(Brushes.White, new Rectangle(new Point(XX + 5 + height * C.Item1, YY + 5 + height * C.Item2), Size));
-                        g.DrawRectangle(pen, new Rectangle(new Point(XX + 5 + height * C.Item1, YY + 5 + height * C.Item2), Size));
-                        if (!(C1 is null))
-                        {
-                            g.FillRectangle(Brushes.White, new Rectangle(new Point(XX + 5 + height * C1.Item1, YY + 5 + height * C1.Item2), Size));
-                            g.DrawRectangle(pen, new Rectangle(new Point(XX + 5 + height * C1.Item1, YY + 5 + height * C1.Item2), Size));
-                        }
-                    }
-                }
-            }
-        }
-        
         public void MakeStep(BoardInterface Board, int kol_iter_a_star)
         {
-            BoardCentr BoardCentr = (BoardCentr)Board;
             // Добавить блоки в пределах видимости юнитов
             foreach (var Unit in units)
-            {
-                MakeBlock(BoardCentr, Unit.X(), Unit.Y() - 1);
-                MakeBlock(BoardCentr, Unit.X(), Unit.Y() + 1);
-                MakeBlock(BoardCentr, Unit.X() - 1, Unit.Y());
-                MakeBlock(BoardCentr, Unit.X() + 1, Unit.Y());
-            }
-
+                MakeBlocks(Board, Unit);
             // Добавить узлы -- части туннелей
             if (!AreNotTunells)
                 while (true)
@@ -169,7 +77,7 @@ namespace MAPF_System
                     int k = 0;
                     for (int i = 0; i < X; i++)
                         for (int j = 0; j < Y; j++)
-                            if (!(IsTunell(i, j) || Arr[i, j].IsBlock()))
+                            if (!(IsTunell(i, j) || Arr[i, j].isBlock))
                             {
                                 int kk = 0;
                                 kk += TunellAndNoEmpthy(i - 1, j);
@@ -179,7 +87,7 @@ namespace MAPF_System
 
                                 if (!AreNotTunells && kk == 3)
                                 {
-                                    List<TunellCentr> LT = new List<TunellCentr>();
+                                    List<TunellInterface> LT = new List<TunellInterface>();
                                     LT_ADD(LT, i - 1, j);
                                     LT_ADD(LT, i + 1, j);
                                     LT_ADD(LT, i, j - 1);
@@ -187,17 +95,17 @@ namespace MAPF_System
 
                                     var T = new TunellCentr(this);
                                     T.Add(LT);
-                                    Arr[i, j].MakeTunell(T);
+                                    Arr[i, j].tunell = T;
                                     tunells.Add(T);
                                     T.Add(i, j);
                                 }
 
-                                if (kk == 4 && Arr[i,j].WasVisit())
+                                if (kk == 4 && Arr[i,j].wasvisited)
                                 {
                                     AreNotTunells = true;
                                     for (int ii = 0; ii < X; ii++)
                                         for (int jj = 0; jj < Y; jj++)
-                                            Arr[ii, jj].ClearTunell();
+                                            Arr[ii, jj].tunell = null;
                                 }
                             }
 
@@ -207,9 +115,9 @@ namespace MAPF_System
 
             foreach (var Unit in units)
             {
-                Arr[Unit.X(), Unit.Y()].MakeVisit(Unit.Id());
+                Arr[Unit.x, Unit.y].MakeVisit(Unit.id);
                 Unit.PlusArr();
-                if (Unit.IsRealEnd())
+                if (Unit.isRealEnd)
                     Unit.ClearArr();
             }
 
@@ -219,7 +127,71 @@ namespace MAPF_System
             units = new_units;
 
         }
+        public TunellCentr Tunell(int x, int y) 
+        { 
+            return (TunellCentr)Arr[x, y].tunell; 
+        }
+        public bool InTunell(int unit_id, TunellInterface tunell) 
+        {
+            return InTunell(units.Find(u => u.id == unit_id), tunell);
+        }
+        public void PlusUnit()
+        {
+            if ((countBlocks + 2 * units.Count + 2) >= (X * Y))
+            {
+                SystemSounds.Beep.Play();
+                return;
+            }
+            rnd = new Random();
+            while (true)
+            {
+                int x = rnd.Next(X);
+                int y = rnd.Next(Y);
+                int x_Purpose = rnd.Next(X);
+                int y_Purpose = rnd.Next(Y);
+                bool b = !Arr[x, y].isBlock && !Arr[x_Purpose, y_Purpose].isBlock && (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
+                foreach (var Unit in units)
+                    b = b && !((Unit.x == x) && (Unit.y == y)) && !((Unit.x_Purpose == x_Purpose) && (Unit.y_Purpose == y_Purpose))
+                        && !((Unit.x == x_Purpose) && (Unit.y == y_Purpose)) && !((Unit.x_Purpose == x) && (Unit.y_Purpose == y));
+                if (b)
+                {
+                    units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y));
+                    return;
+                }
+            }
+        }
 
+        private void Constructor(string path)
+        {
+            try
+            {
+                Tuple<int, string[]> tuple = ConstructParams(path);
+                int t = 1;
+                for (int i = 0; i < X; i++)
+                    for (int j = 0; j < Y; j++)
+                    {
+                        Arr[i, j] = new Cell(tuple.Item2[t]);
+                        t++;
+                    }
+                // Создать юнитов по данным файла
+                units = new List<UnitCentr>();
+                for (int i = 0; i < tuple.Item1; i++)
+                {
+                    units.Add(new UnitCentr(tuple.Item2[t], i, X, Y));
+                    t++;
+                }
+                tunells = new List<TunellInterface>();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Файл повреждён.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void LT_ADD(List<TunellInterface> LT, int i, int j)
+        {
+            if (IsTunell(i, j))
+                LT.Add((TunellCentr)Arr[i, j].tunell);
+        }
         private List<HashSet<UnitCentr>> Clasterization(List<UnitCentr> units)
         {
             HashSet<UnitCentr> clasterizations = new HashSet<UnitCentr>();
@@ -233,17 +205,15 @@ namespace MAPF_System
                 }
             return clasters;
         }
-
         private IEnumerable<UnitCentr> NewUnits(IEnumerable<UnitCentr> claster)
         {
             Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>> TT = new Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>(new List<UnitCentr>(), claster);
-            int min_sum = claster.Sum(unit => unit.RealManheton()) - claster.Count(unit => !unit.IsRealEnd());
+            int min_sum = claster.Sum(unit => unit.realManheton) - claster.Count(unit => !unit.isRealEnd);
             IEnumerable<UnitCentr> res = NewUnitsStack(TT, min_sum, claster, true);
             if (!(res is null))
                 return res;
             return NewUnitsStack(TT, min_sum, claster, false);
         }
-
         private IEnumerable<UnitCentr> NewUnitsStack(Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>> TT, int min_sum, IEnumerable<UnitCentr> claster, bool b)
         {
             int sum = int.MaxValue;
@@ -270,18 +240,17 @@ namespace MAPF_System
             }
             return res;
         }
-
         private bool isntEqw(IEnumerable<UnitCentr> units1, IEnumerable<UnitCentr> units2)
         {
-            var sort1 = units1.OrderBy(unit => unit.Id()).ToList();
-            var sort2 = units2.OrderBy(unit => unit.Id()).ToList();
+            var sort1 = units1.OrderBy(unit => unit.id).ToList();
+            var sort2 = units2.OrderBy(unit => unit.id).ToList();
             for (int i = 0; i < sort1.Count(); i++)
-                if ((sort1[i].X() != sort2[i].X()) || (sort1[i].Y() != sort2[i].Y()))
+                if ((sort1[i].x != sort2[i].x) || (sort1[i].y != sort2[i].y))
                 {
-                    if (sort1[i].IsRealEnd() && !sort2[i].IsRealEnd())
+                    if (sort1[i].isRealEnd && !sort2[i].isRealEnd)
                     {
-                        TunellCentr T = Tunell(sort1[i].X(), sort1[i].Y());
-                        if (!(T is null) && !T.RealIds().Contains(sort1[i].Id()))
+                        TunellCentr T = Tunell(sort1[i].x, sort1[i].y);
+                        if (!(T is null) && !T.Contains(true, sort1[i].id))
                             return true;
                     }
                     else
@@ -292,93 +261,5 @@ namespace MAPF_System
             return false;
         }
 
-        public TunellCentr Tunell(int x, int y) 
-        { 
-            return (TunellCentr)Arr[x, y].Tunell(); 
-        }
-
-        public bool InTunell(int unit_id, TunellInterface tunell) 
-        {
-            UnitCentr unit = units.Find(u => u.Id() == unit_id);
-            return Arr[unit.X(), unit.Y()].Tunell() == tunell; 
-        }
-
-        public void PlusUnit()
-        {
-            int Blocks = 0;
-            for (int i = 0; i < X; i++)
-                for (int j = 0; j < Y; j++)
-                    if (Arr[i, j].IsBlock())
-                        Blocks++;
-            if ((Blocks + 2 * units.Count + 2) >= (X * Y))
-            {
-                SystemSounds.Beep.Play();
-                return;
-            }
-            rnd = new Random();
-            while (true)
-            {
-                int x = rnd.Next(X);
-                int y = rnd.Next(Y);
-                int x_Purpose = rnd.Next(X);
-                int y_Purpose = rnd.Next(Y);
-                bool b = !Arr[x, y].IsBlock() && !Arr[x_Purpose, y_Purpose].IsBlock() && (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
-                foreach (var Unit in units)
-                    b = b && !((Unit.X() == x) && (Unit.Y() == y)) && !((Unit.X_Purpose() == x_Purpose) && (Unit.Y_Purpose() == y_Purpose))
-                        && !((Unit.X() == x_Purpose) && (Unit.Y() == y_Purpose)) && !((Unit.X_Purpose() == x) && (Unit.Y_Purpose() == y));
-                if (b)
-                {
-                    units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y));
-                    return;
-                }
-            }
-        }
-
-        private void Constructor(string path)
-        {
-            try
-            {
-                name = path.Split('\\').Last();
-                string[] readText = File.ReadAllLines(path);
-                string[] arr = readText[0].Split(' ');
-                // Размеры поля
-                X = int.Parse(arr[0]);
-                Y = int.Parse(arr[1]);
-                // Количество юнитов
-                int N_Units = int.Parse(arr[2]);
-                // Была ли игра
-                WasGame = (arr[3] == "True");
-                // Создать доску по данным файла
-                Arr = new Cell[X, Y];
-                int t = 1;
-                for (int i = 0; i < X; i++)
-                    for (int j = 0; j < Y; j++)
-                    {
-                        Arr[i, j] = new Cell(readText[t]);
-                        t++;
-                    }
-                // Создать юнитов по данным файла
-                units = new List<UnitCentr>();
-                for (int i = 0; i < N_Units; i++)
-                {
-                    units.Add(new UnitCentr(readText[t], i, X, Y));
-                    t++;
-                }
-                tunells = new List<TunellInterface>();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Файл повреждён.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        private void LT_ADD(List<TunellCentr> LT, int i, int j)
-        {
-            if (IsTunell(i, j))
-                LT.Add((TunellCentr)Arr[i, j].Tunell());
-        }
-        public bool IsBlock(int x, int y)
-        {
-            return IsBlockBoard(x, y);
-        }
     }
 }
