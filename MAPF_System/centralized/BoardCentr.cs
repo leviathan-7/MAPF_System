@@ -12,14 +12,14 @@ using System.Collections;
 
 namespace MAPF_System
 {
-    public class BoardCentr : Board<UnitCentr>, BoardInterface
+    public class BoardCentr : Board<UnitCentr, int>, BoardInterface
     {
         private bool AreNotTunells;
 
         public BoardCentr(int X, int Y, int Blocks, int N_Units)
         {
             rnd = new Random();
-            SampleConstructor(X, Y, new Cell[X, Y], new List<UnitCentr>(), "", new List<TunellInterface>());
+            SampleConstructor(X, Y, new Cell<int>[X, Y], new List<UnitCentr>(), "", new List<Tunell<int>>());
             int x = rnd.Next(X);
             int y = rnd.Next(Y);
             // Генерация пустых узлов
@@ -46,7 +46,7 @@ namespace MAPF_System
             // Генерация препятствий
             GenerationBlocks(X, Y);
         }
-        public BoardCentr(int X, int Y, Cell[,] Arr, List<UnitCentr> units, string name, List<TunellInterface> tunells)
+        public BoardCentr(int X, int Y, Cell<int>[,] Arr, List<UnitCentr> units, string name, List<Tunell<int>> tunells)
         {
             SampleConstructor(X, Y, Arr, units, name, tunells);
         }
@@ -87,7 +87,7 @@ namespace MAPF_System
 
                                 if (!AreNotTunells && kk == 3)
                                 {
-                                    List<TunellInterface> LT = new List<TunellInterface>();
+                                    List<Tunell<int>> LT = new List<Tunell<int>>();
                                     LT_ADD(LT, i - 1, j);
                                     LT_ADD(LT, i + 1, j);
                                     LT_ADD(LT, i, j - 1);
@@ -131,7 +131,7 @@ namespace MAPF_System
         { 
             return (TunellCentr)Arr[x, y].tunell; 
         }
-        public bool InTunell(int unit_id, TunellInterface tunell) 
+        public bool InTunell(int unit_id, Tunell<int> tunell) 
         {
             return InTunell(units.Find(u => u.id == unit_id), tunell);
         }
@@ -170,7 +170,7 @@ namespace MAPF_System
                 for (int i = 0; i < X; i++)
                     for (int j = 0; j < Y; j++)
                     {
-                        Arr[i, j] = new Cell(tuple.Item2[t]);
+                        Arr[i, j] = new Cell<int>(tuple.Item2[t]);
                         t++;
                     }
                 // Создать юнитов по данным файла
@@ -180,14 +180,14 @@ namespace MAPF_System
                     units.Add(new UnitCentr(tuple.Item2[t], i, X, Y));
                     t++;
                 }
-                tunells = new List<TunellInterface>();
+                tunells = new List<Tunell<int>>();
             }
             catch (Exception)
             {
                 MessageBox.Show("Файл повреждён.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void LT_ADD(List<TunellInterface> LT, int i, int j)
+        private void LT_ADD(List<Tunell<int>> LT, int i, int j)
         {
             if (IsTunell(i, j))
                 LT.Add((TunellCentr)Arr[i, j].tunell);

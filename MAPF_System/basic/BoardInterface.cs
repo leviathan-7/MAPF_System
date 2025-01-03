@@ -26,6 +26,5 @@ namespace MAPF_System
         void PlusRow();
         void DelBlokcs();
         bool DelUnits();
-        bool IsBlock(int x, int y);
     }
 }

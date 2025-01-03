@@ -66,16 +66,15 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="basic\Board.cs" />
-    <Compile Include="basic\TunellInterface.cs" />
-    <Compile Include="basic\Unit.cs" />
-    <Compile Include="basic\Tunell.cs" />
-    <Compile Include="basic\BoardInterface.cs" />
-    <Compile Include="basic\Cell.cs" />
-    <Compile Include="centralized\BoardCentr.cs" />
-    <Compile Include="centralized\TunellCentr.cs" />
-    <Compile Include="centralized\UnitCentr.cs" />
-    <Compile Include="decentralized\BoardDec.cs" />
+    <Compile Include="Basic\Board.cs" />
+    <Compile Include="Basic\Unit.cs" />
+    <Compile Include="Basic\Tunell.cs" />
+    <Compile Include="Basic\BoardInterface.cs" />
+    <Compile Include="Basic\Cell.cs" />
+    <Compile Include="Centralized\BoardCentr.cs" />
+    <Compile Include="Centralized\TunellCentr.cs" />
+    <Compile Include="Centralized\UnitCentr.cs" />
+    <Compile Include="Decentralized\BoardDec.cs" />
     <Compile Include="Forms\FormAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -99,8 +98,8 @@
     <Compile Include="Style\RJButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="decentralized\TunellDec.cs" />
-    <Compile Include="decentralized\UnitDec.cs" />
+    <Compile Include="Decentralized\TunellDec.cs" />
+    <Compile Include="Decentralized\UnitDec.cs" />
     <EmbeddedResource Include="Forms\FormAbout.resx">
       <DependentUpon>FormAbout.cs</DependentUpon>
     </EmbeddedResource>
