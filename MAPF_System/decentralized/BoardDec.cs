@@ -11,58 +11,20 @@ using System.Media;
 
 namespace MAPF_System
 {
-    public class BoardDec : Board<UnitDec, Unit>, BoardInterface
+    public class BoardDec : Board<UnitDec, Unit>
     {
         public BoardDec(int X, int Y, int Blocks, int N_Units)
         {
-            rnd = new Random();
-            SampleConstructor(X, Y, new Cell<Unit>[X, Y], new List<UnitDec>(), "", new List<Tunell<Unit>>());
-            int x = rnd.Next(X);
-            int y = rnd.Next(Y);
-            // Генерация пустых узлов
-            GenerationEmthy(X, Y, Blocks, rnd, x, y);
-            // Генерация юнитов
-            int id = 0;
-            while (N_Units > 0)
-            {
-                x = rnd.Next(X);
-                y = rnd.Next(Y);
-                int x_Purpose = rnd.Next(X);
-                int y_Purpose = rnd.Next(Y);
-                bool b = (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
-                foreach (var Unit in units)
-                    b = b && !((Unit.x == x) && (Unit.y == y)) && !((Unit.x_Purpose == x_Purpose) && (Unit.y_Purpose == y_Purpose))
-                        && !((Unit.x == x_Purpose) && (Unit.y == y_Purpose)) && !((Unit.x_Purpose == x) && (Unit.y_Purpose == y));
-                if (b)
-                {
-                    units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
-                    N_Units--;
-                    id++;
-                }
-            }
-            // Генерация препятствий
-            GenerationBlocks(X, Y);
+            Generation(X, Y, Blocks, N_Units, false);
         }
-        public BoardDec(int X, int Y, Cell<Unit>[,] Arr, List<UnitDec> units, string name, List<Tunell<Unit>> tunells)
+        public BoardDec(int X, int Y, Cell<UnitDec, Unit>[,] Arr, List<UnitDec> units, string name, List<Tunell<UnitDec, Unit>> tunells)
         {
             SampleConstructor(X, Y, Arr, units, name, tunells);
         }
-        public BoardDec()
-        {
-            // Открытие файла в формате board
-            OpenFileDialog openFileDialog1 = new OpenFileDialog() { Filter = "(*.board)|*.board", };
-            openFileDialog1.ShowDialog();
-            // Проверка на то, что board файл был выбран
-            if (openFileDialog1.FileName == "")
-                return;
-            Constructor(openFileDialog1.FileName);
-        }
-        public BoardDec(string path) { Constructor(path); }
-        public BoardInterface CopyWithoutBlocks()
-        {
-            return new BoardDec(X, Y, copyArrWithoutBlocks, units.Select(unit => unit.copy).ToList(), name, tunells);
-        }
-        public void MakeStep(BoardInterface Board, int kol_iter_a_star)
+        public BoardDec(){ Constructor(false); }
+        public BoardDec(string path) { Constructor(path, false); }
+        
+        public void MakeStep(BoardDec Board, int kol_iter_a_star)
         {
             // Обнуление значений was_step
             foreach (var Unit in units)
@@ -117,7 +79,7 @@ namespace MAPF_System
 
                             if (kk == 3)
                             {
-                                List<Tunell<Unit>> LT = new List<Tunell<Unit>>();
+                                List<Tunell<UnitDec, Unit>> LT = new List<Tunell<UnitDec, Unit>>();
                                 LT_ADD(LT, i - 1, j);
                                 LT_ADD(LT, i + 1, j);
                                 LT_ADD(LT, i, j - 1);
@@ -174,6 +136,7 @@ namespace MAPF_System
                     Unit.MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
 
         }
+       
         public bool IsEmpthyAndNoTunel(int x, int y)
         {
             // Проверка на выход за пределы поля
@@ -186,58 +149,7 @@ namespace MAPF_System
         public bool IsBadCell(int x, int y) { return Arr[x, y].isBad; }
         public void MakeVisit(int x, int y, int id) { Arr[x, y].MakeVisit(id); }
         public int TunellId(int x, int y) { return ((TunellDec)Arr[x, y].tunell).id; }
-        public void PlusUnit()
-        {
-            if ((countBlocks + 2 * units.Count + 2) >= (X * Y))
-            {
-                SystemSounds.Beep.Play();
-                return;
-            }
-            rnd = new Random();
-            while (true)
-            {
-                int x = rnd.Next(X);
-                int y = rnd.Next(Y);
-                int x_Purpose = rnd.Next(X);
-                int y_Purpose = rnd.Next(Y);
-                bool b = !Arr[x, y].isBlock && !Arr[x_Purpose, y_Purpose].isBlock && (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
-                foreach (var Unit in units)
-                    b = b && !((Unit.x == x) && (Unit.y == y)) && !((Unit.x_Purpose == x_Purpose) && (Unit.y_Purpose == y_Purpose))
-                        && !((Unit.x == x_Purpose) && (Unit.y == y_Purpose)) && !((Unit.x_Purpose == x) && (Unit.y_Purpose == y));
-                if (b)
-                {
-                    units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y));
-                    return;
-                }
-            }
-        }
-        
-        private void Constructor(string path)
-        {
-            try
-            {
-                Tuple<int, string[]> tuple = ConstructParams(path);
-                int t = 1;
-                for (int i = 0; i < X; i++)
-                    for (int j = 0; j < Y; j++)
-                    {
-                        Arr[i, j] = new Cell<Unit>(tuple.Item2[t]);
-                        t++;
-                    }
-                // Создать юнитов по данным файла
-                units = new List<UnitDec>();
-                for (int i = 0; i < tuple.Item1; i++)
-                {
-                    units.Add(new UnitDec(tuple.Item2[t], i, X, Y));
-                    t++;
-                }
-                tunells = new List<Tunell<Unit>>();
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Файл повреждён.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+
         private bool IsBad(int x, int y)
         {
             // Проверка на выход за пределы поля
@@ -245,7 +157,7 @@ namespace MAPF_System
                 return false;
             return Arr[x, y].isBad;
         }
-        private void LT_ADD(List<Tunell<Unit>> LT, int i, int j)
+        private void LT_ADD(List<Tunell<UnitDec, Unit>> LT, int i, int j)
         {
             if (IsTunell(i, j) && !IsBad(i, j))
                 LT.Add((TunellDec)Arr[i, j].tunell);

@@ -1,7 +1,7 @@
 ﻿
 namespace MAPF_System
 {
-    partial class FormAlgorithm
+    partial class FormAlgorithm<U, T> where U : Unit
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,6 @@ namespace MAPF_System
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormAlgorithm));
             this.label_Error = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label_kol_iterat = new System.Windows.Forms.Label();
@@ -630,7 +629,6 @@ namespace MAPF_System
             this.ClientSize = new System.Drawing.Size(1919, 1055);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FormAlgorithm";

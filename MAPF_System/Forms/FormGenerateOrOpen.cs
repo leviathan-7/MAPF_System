@@ -19,18 +19,16 @@ namespace MAPF_System
             // Запущенный по двойному щелчку по файлу .Board запускается как централизованный
             InitializeComponent();
             if (args.Length != 0)
-                (new FormAlgorithm(null, new BoardCentr(args[0]), true, 0, true, "7", false, false)).ShowDialog();
+            {
+                FormAlgorithm<UnitCentr, int> F = new FormAlgorithm<UnitCentr, int>(new BoardCentr(args[0]), true, 0, false, "7", false, false);
+                F.Icon = Icon;
+                F.ShowDialog();
+            }
         }
         
-        private void button_Generation_Click_Dec(object sender, EventArgs e)
-        {
-            generation(false);
-        }
+        private void button_Generation_Click_Dec(object sender, EventArgs e){ generation(false); }
 
-        private void button_Generation_Click_Centr(object sender, EventArgs e)
-        {
-            generation(true);
-        }
+        private void button_Generation_Click_Centr(object sender, EventArgs e){ generation(true); }
 
         private void generation(bool isCentr)
         {
@@ -78,41 +76,56 @@ namespace MAPF_System
                 return;
             }
             if (isCentr)
-                (new FormAlgorithm(null, new BoardCentr(X, Y, Blocks, Units), true, 0, false, "7")).Show();
+            {
+                FormAlgorithm<UnitCentr, int> F = new FormAlgorithm<UnitCentr, int>(new BoardCentr(X, Y, Blocks, Units), true, 0, false, "7");
+                F.Icon = Icon;
+                F.Show();
+            }
             else
-                (new FormAlgorithm(new BoardDec(X, Y, Blocks, Units), null, false, 0, false, "7")).Show();
+            {
+                FormAlgorithm<UnitDec, Unit> F = new FormAlgorithm<UnitDec, Unit>(new BoardDec(X, Y, Blocks, Units), false, 0, false, "7");
+                F.Icon = Icon;
+                F.Show();
+            }
         }
 
-        private void button_Load_Click_Dec(object sender, EventArgs e) 
+        private void button_Load_Click_Dec(object sender, EventArgs e) { load(false); }
+
+        private void button_Load_Click_Centr(object sender, EventArgs e) { load(true); }
+
+        private void load(bool isCentr)
         {
             label_Error.Text = "";
             label12.Text = "⏳";
-            (new FormAlgorithm(new BoardDec(), null, false, 0, false, "7", false, false)).Show();
-            label12.Text = "";
-        }
-
-        private void button_Load_Click_Centr(object sender, EventArgs e)
-        {
-            label_Error.Text = "";
-            label12.Text = "⏳";
-            (new FormAlgorithm(null, new BoardCentr(), true, 0, false, "7", false, false)).Show();
+            if (isCentr)
+            {
+                FormAlgorithm<UnitCentr, int> F = new FormAlgorithm<UnitCentr, int>(new BoardCentr(), true, 0, false, "7", false, false);
+                if (!F.IsDisposed)
+                {
+                    F.Icon = Icon;
+                    F.Show();
+                }
+            }
+            else
+            {
+                FormAlgorithm<UnitDec, Unit> F = new FormAlgorithm<UnitDec, Unit>(new BoardDec(), false, 0, false, "7", false, false);
+                if (!F.IsDisposed)
+                {
+                    F.Icon = Icon;
+                    F.Show();
+                }
+            }
             label12.Text = "";
         }
 
         private void button_BigStart_Click_Dec(object sender, EventArgs e)
         {
-            label_Error.Text = "";
-            label11.Text = "⏳";
+            makeLoadText();
             using (FolderBrowserDialog fbd = new FolderBrowserDialog())
             {
                 if (fbd.ShowDialog() == DialogResult.OK)
                 {
-                    DataTable table = new DataTable("resultsDec");
-                    table.Columns.Add("Имя файла", typeof(string));
-                    table.Columns.Add("Колличество шагов", typeof(string));
-                    table.Columns.Add("Площадь", typeof(string));
-                    table.Columns.Add("Колличество агентов", typeof(string));
-                    table.Columns.Add("Плотность", typeof(string));
+                    DataTable table = makeTable("resultsDec");
                     int a = 0, b = 0;
                     foreach (var f in (from f in Directory.GetFiles(fbd.SelectedPath) where Path.GetExtension(f).ToLower() == ".board" select f))
                     {
@@ -122,10 +135,10 @@ namespace MAPF_System
                         int kol_iter_a_star = 7;
                         // Максимальное колличество итераций
                         int N = 5000;
-                        BoardDec TimeBoard = (BoardDec)Board.CopyWithoutBlocks();
+                        Board<UnitDec, Unit> TimeBoard = Board.CopyWithoutBlocks(false);
                         int i = 0;
                         while (!TimeBoard.isEnd && (i++) < (N - 1))
-                            TimeBoard.MakeStep(Board, kol_iter_a_star);
+                            TimeBoard.MakeStep(Board, kol_iter_a_star, false);
                         if (i == N)
                         {
                             table.Rows.Add(f.Split('\\').Last(), "Ошибка");
@@ -147,31 +160,24 @@ namespace MAPF_System
 
         private void button_BigStart_Click_Centr(object sender, EventArgs e)
         {
-            label_Error.Text = "";
-            label11.Text = "⏳";
+            makeLoadText();
             using (FolderBrowserDialog fbd = new FolderBrowserDialog())
             {
                 if (fbd.ShowDialog() == DialogResult.OK)
                 {
-                    DataTable table = new DataTable("resultsCentr");
-                    table.Columns.Add("Имя файла", typeof(string));
-                    table.Columns.Add("Колличество шагов", typeof(string));
-                    table.Columns.Add("Площадь", typeof(string));
-                    table.Columns.Add("Колличество агентов", typeof(string));
-                    table.Columns.Add("Плотность", typeof(string));
+                    DataTable table = makeTable("resultsCentr");
                     int a = 0, b = 0;
                     foreach (var f in (from f in Directory.GetFiles(fbd.SelectedPath) where Path.GetExtension(f).ToLower() == ".board" select f))
                     {
                         BoardCentr Board = new BoardCentr(f);
                         // Плотность
                         double density = 1.0 * Board.units.Count / (Board.X * Board.Y);
-                        int kol_iter_a_star = 7;
                         // Максимальное колличество итераций
                         int N = 5000;
-                        BoardCentr TimeBoard = (BoardCentr)Board.CopyWithoutBlocks();
+                        Board<UnitCentr, int> TimeBoard = Board.CopyWithoutBlocks(true);
                         int i = 0;
                         while (!TimeBoard.isEnd && (i++) < (N - 1))
-                            TimeBoard.MakeStep(Board, kol_iter_a_star);
+                            TimeBoard.MakeStep(Board, 0, true);
                         if (i == N)
                         {
                             table.Rows.Add(f.Split('\\').Last(), "Ошибка");
@@ -193,18 +199,12 @@ namespace MAPF_System
 
         private void button_BigStart_Click_Unite(object sender, EventArgs e)
         {
-            label_Error.Text = "";
-            label11.Text = "⏳";
+            makeLoadText();
             using (FolderBrowserDialog fbd = new FolderBrowserDialog())
             {
                 if (fbd.ShowDialog() == DialogResult.OK)
                 {
-                    DataTable table = new DataTable("resultsUnite");
-                    table.Columns.Add("Имя файла", typeof(string));
-                    table.Columns.Add("Колличество шагов", typeof(string));
-                    table.Columns.Add("Площадь", typeof(string));
-                    table.Columns.Add("Колличество агентов", typeof(string));
-                    table.Columns.Add("Плотность", typeof(string));
+                    DataTable table = makeTable("resultsUnite");
                     int a = 0, b = 0;
                     foreach (var f in (from f in Directory.GetFiles(fbd.SelectedPath) where Path.GetExtension(f).ToLower() == ".board" select f))
                     {
@@ -218,16 +218,16 @@ namespace MAPF_System
 
                         if (density >= 0.01)
                         {
-                            BoardCentr TimeBoard = (BoardCentr)Board.CopyWithoutBlocks();
+                            Board<UnitCentr, int> TimeBoard = Board.CopyWithoutBlocks(true);
                             while (!TimeBoard.isEnd && (i++) < (N - 1))
-                                TimeBoard.MakeStep(Board, kol_iter_a_star);
+                                TimeBoard.MakeStep(Board, kol_iter_a_star, true);
                         }
                         else
                         {
                             BoardDec BoardDec = new BoardDec(f);
-                            BoardDec TimeBoard = (BoardDec)BoardDec.CopyWithoutBlocks();
+                            Board<UnitDec, Unit> TimeBoard = BoardDec.CopyWithoutBlocks(false);
                             while (!TimeBoard.isEnd && (i++) < (N - 1))
-                                TimeBoard.MakeStep(BoardDec, kol_iter_a_star);
+                                TimeBoard.MakeStep(BoardDec, kol_iter_a_star, false);
                         }
                         
 
@@ -248,6 +248,23 @@ namespace MAPF_System
                 }
                 label11.Text = "";
             }
+        }
+
+        private DataTable makeTable(String str)
+        {
+            DataTable table = new DataTable(str);
+            table.Columns.Add("Имя файла", typeof(string));
+            table.Columns.Add("Колличество шагов", typeof(string));
+            table.Columns.Add("Площадь", typeof(string));
+            table.Columns.Add("Колличество агентов", typeof(string));
+            table.Columns.Add("Плотность", typeof(string));
+            return table;
+        }
+
+        private void makeLoadText()
+        {
+            label_Error.Text = "";
+            label11.Text = "⏳";
         }
 
         private void FormGenerateOrOpen_HelpButtonClicked(object sender, CancelEventArgs e)

@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public class TunellDec : Tunell<Unit>
+    public class TunellDec : Tunell<UnitDec ,Unit>
     {
         public int id
         {
@@ -15,9 +15,9 @@ namespace MAPF_System
             {
                 foreach (var Unit in tunell_units)
                 {
-                    bool b = ((BoardDec)board).InTunell(Unit, this);
+                    bool b = board.InTunell(Unit, this);
                     foreach (var tunell in tunells)
-                        b = b || ((BoardDec)board).InTunell(Unit, tunell);
+                        b = b || board.InTunell(Unit, tunell);
                     if (!b)
                         return Unit.id;
                 }
@@ -25,11 +25,11 @@ namespace MAPF_System
             }
         }
 
-        public TunellDec(BoardInterface board) : base(board) { }
+        public TunellDec(Board<UnitDec, Unit> board) : base(board) { }
 
         public void Add(int x, int y)
         {
-            foreach (var Unit in ((BoardDec)board).units)
+            foreach (var Unit in board.units)
                 if ((Unit.x_Purpose == x) && (Unit.y_Purpose == y))
                 {
                     tunell_units.Add(Unit);

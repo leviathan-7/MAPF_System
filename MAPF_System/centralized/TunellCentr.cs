@@ -7,13 +7,13 @@ using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public class TunellCentr : Tunell<int>
+    public class TunellCentr : Tunell<UnitCentr, int>
     {
-        public TunellCentr(BoardInterface board) : base(board) { }
+        public TunellCentr(Board<UnitCentr, int> board) : base(board) { }
 
         public void Add(int x, int y)
         {
-            foreach (var Unit in ((BoardCentr)board).units)
+            foreach (var Unit in board.units)
                 if ((Unit.x_Purpose == x) && (Unit.y_Purpose == y))
                 {
                     tunell_units.Add(Unit.id);
@@ -24,7 +24,7 @@ namespace MAPF_System
         public bool Contains(bool isReal, int id)
         {
             if (!isReal)
-                foreach (var Unit_id in (from unit in ((BoardCentr)board).units select unit.id).Except(tunell_units))
+                foreach (var Unit_id in (from unit in board.units select unit.id).Except(tunell_units))
                     if (((BoardCentr)board).InTunell(Unit_id, this))
                         return false;
 

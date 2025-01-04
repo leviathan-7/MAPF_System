@@ -11,31 +11,33 @@ using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public partial class FormAlgorithm : Form
+    public partial class FormAlgorithm<U, T> : Form where U : Unit
     {
-        private BoardInterface Board;
+        private Board<U, T> Board;
         private bool was_game;
         private bool move;
         private bool isCentr;
         private Tuple<int, int> C;
         private Tuple<int, int> CC;
 
-        public FormAlgorithm(BoardDec BoardDec, BoardCentr BoardCentr, bool isCentr, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false, bool viewtunnel = true)
+        public FormAlgorithm(Board<U, T> Board, bool isCentr, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false, bool viewtunnel = true)
         {
+            if (Board.units is null)
+            {
+                Close();
+                return;
+            }
+            this.Board = Board;
             InitializeComponent();
             this.isCentr = isCentr;
             if (isCentr) 
             {
                 label2.Visible = false;
                 textBox_kol_iter_a_star.Visible = false;
-                Board = BoardCentr;
                 Text = "Запуск MAPF - Централизованный";
             }
             else
-            {
-                Board = BoardDec;
                 Text = "Запуск MAPF - Децентрализованный";
-            }
 
             was_game = Board.WasGame;
             textBox_kol_iter_a_star.Text = str_kol_iter_a_star;
@@ -94,14 +96,13 @@ namespace MAPF_System
             }
             // Максимальное колличество итераций
             int N = 5000;
-            BoardInterface TimeBoard = Board.CopyWithoutBlocks();
+            Board<U, T> TimeBoard = Board.CopyWithoutBlocks(isCentr);
             int i = 0;
-            while (!TimeBoard.isEnd && (i++) < (N-1))
-                TimeBoard.MakeStep(Board, kol_iter_a_star);
-            if (isCentr)
-                (new FormAlgorithm(null, (BoardCentr)TimeBoard, true, i, i == N, "" + kol_iter_a_star, true)).Show();
-            else
-                (new FormAlgorithm((BoardDec)TimeBoard, null, false, i, i == N, "" + kol_iter_a_star, true)).Show();
+            while (!TimeBoard.isEnd && (i++) < (N - 1))
+                TimeBoard.MakeStep(Board, kol_iter_a_star, isCentr);
+            FormAlgorithm<U, T> F = new FormAlgorithm<U, T>(TimeBoard, isCentr, i, i == N, "" + kol_iter_a_star, true);
+            F.Icon = Icon;
+            F.Show();
         }
 
         private void button_Step_Click(object sender, EventArgs e)
@@ -112,17 +113,14 @@ namespace MAPF_System
                 label_Error.Text = "Глубина не верна!";
                 return;
             }
-            BoardInterface TimeBoard = Board.CopyWithoutBlocks();
+            Board<U, T> TimeBoard = Board.CopyWithoutBlocks(isCentr);
             int i = 1;
-            FormAlgorithm F;
-            if (isCentr)
-                F = new FormAlgorithm(null, (BoardCentr)TimeBoard, true, 0, false, "" + kol_iter_a_star, true);
-            else
-                F = new FormAlgorithm((BoardDec)TimeBoard, null, false, 0, false, "" + kol_iter_a_star, true);
+            FormAlgorithm<U, T> F = new FormAlgorithm<U, T>(TimeBoard, isCentr, 0, false, "" + kol_iter_a_star, true);
+            F.Icon = Icon;
             F.Show();
             while (!TimeBoard.isEnd) 
             {
-                TimeBoard.MakeStep(Board, kol_iter_a_star);
+                TimeBoard.MakeStep(Board, kol_iter_a_star, isCentr);
                 TimeBoard.Draw(F.CreateGraphics(), false);
                 F.label_kol_iterat.Text = "Количество шагов = " + i++;
                 if (MessageBox.Show("Далее?", "▶▶", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
@@ -227,7 +225,7 @@ namespace MAPF_System
         private void ButtonPlusUnit_Click(object sender, EventArgs e)
         {
             move = false;
-            Board.PlusUnit();
+            Board.PlusUnit(isCentr);
             Board.Draw(CreateGraphics(), false);
         }
 

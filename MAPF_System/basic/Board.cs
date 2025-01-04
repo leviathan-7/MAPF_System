@@ -6,15 +6,16 @@ using System.Linq;
 using System.Media;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public class Board<T, K> where T : Unit
+    public class Board<U, T> where U : Unit
     {
-        protected Cell<K>[,] Arr;
+        protected Cell<U, T>[,] Arr;
         protected Random rnd;
-        protected List<Tunell<K>> tunells;
-        public List<T> units { get; protected set; }
+        protected List<Tunell<U, T>> tunells;
+        public List<U> units { get; protected set; }
         public string name { get; protected set; }
         public bool WasGame { get; protected set; }
         public int X { get; protected set; }
@@ -28,17 +29,6 @@ namespace MAPF_System
                 foreach (var Unit in units)
                     b = b && Unit.isRealEnd;
                 return b;
-            }
-        }
-        protected Cell<K>[,] copyArrWithoutBlocks
-        {
-            get
-            {
-                Cell<K>[,] CopyArr = new Cell<K>[X, Y];
-                for (int i = 0; i < X; i++)
-                    for (int j = 0; j < Y; j++)
-                        CopyArr[i, j] = Arr[i, j].copyWithoutBlock;
-                return CopyArr;
             }
         }
         protected int countBlocks
@@ -118,18 +108,18 @@ namespace MAPF_System
                 SystemSounds.Beep.Play();
                 return false;
             }
-            units = new List<T> { units[0] };
+            units = new List<U> { units[0] };
             return true;
         }
         public void PlusColumn()
         {
             X++;
-            var arr = new Cell<K>[X, Y];
+            var arr = new Cell<U, T>[X, Y];
             for (int i = 0; i < X - 1; i++)
                 for (int j = 0; j < Y; j++)
                     arr[i, j] = Arr[i, j];
             for (int j = 0; j < Y; j++)
-                arr[X - 1, j] = new Cell<K>(false);
+                arr[X - 1, j] = new Cell<U, T>(false);
             Arr = arr;
             foreach (var unit in units)
                 unit.NewArr(X, Y);
@@ -137,15 +127,62 @@ namespace MAPF_System
         public void PlusRow()
         {
             Y++;
-            var arr = new Cell<K>[X, Y];
+            var arr = new Cell<U, T>[X, Y];
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y - 1; j++)
                     arr[i, j] = Arr[i, j];
             for (int i = 0; i < X; i++)
-                arr[i, Y - 1] = new Cell<K>(false);
+                arr[i, Y - 1] = new Cell<U, T>(false);
             Arr = arr;
             foreach (var unit in units)
                 unit.NewArr(X, Y);
+        }
+        public void PlusUnit(bool isCentr)
+        {
+            if ((countBlocks + 2 * units.Count + 2) >= (X * Y))
+            {
+                SystemSounds.Beep.Play();
+                return;
+            }
+            rnd = new Random();
+            while (true)
+            {
+                int x = rnd.Next(X);
+                int y = rnd.Next(Y);
+                int x_Purpose = rnd.Next(X);
+                int y_Purpose = rnd.Next(Y);
+                bool b = !Arr[x, y].isBlock && !Arr[x_Purpose, y_Purpose].isBlock && (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
+                foreach (var Unit in units)
+                    b = b && !((Unit.x == x) && (Unit.y == y)) && !((Unit.x_Purpose == x_Purpose) && (Unit.y_Purpose == y_Purpose))
+                        && !((Unit.x == x_Purpose) && (Unit.y == y_Purpose)) && !((Unit.x_Purpose == x) && (Unit.y_Purpose == y));
+                if (b)
+                {
+                    if (isCentr)
+                        units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y) as U);
+                    else
+                        units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y) as U);
+                    return;
+                }
+            }
+        }
+        public Board<U, T> CopyWithoutBlocks(bool isCentr)
+        {
+            Cell<U, T>[,] CopyArr = new Cell<U, T>[X, Y];
+            for (int i = 0; i < X; i++)
+                for (int j = 0; j < Y; j++)
+                    CopyArr[i, j] = Arr[i, j].copyWithoutBlock;
+
+            if (isCentr)
+                return new BoardCentr(X, Y, CopyArr as Cell<UnitCentr, int>[,], units.Select(unit => (unit as UnitCentr).Copy(true)).ToList(), name, tunells as List<Tunell<UnitCentr, int>>) as Board<U, T>;
+            else
+                return new BoardDec(X, Y, CopyArr as Cell<UnitDec, Unit>[,], units.Select(unit => (unit as UnitDec).copy).ToList(), name, tunells as List<Tunell<UnitDec, Unit>>) as Board<U, T>;
+        }
+        public void MakeStep(Board<U, T> Board, int kol_iter_a_star, bool isCentr)
+        {
+            if (isCentr)
+                (this as BoardCentr).MakeStep(Board as BoardCentr);
+            else
+                (this as BoardDec).MakeStep(Board as BoardDec, kol_iter_a_star);
         }
         public string Save(string name_, bool b = false)
         {
@@ -166,7 +203,7 @@ namespace MAPF_System
             catch (Exception) { }
             return name;
         }
-        public bool InTunell(Unit unit, Tunell<K> tunell) { return Arr[unit.x, unit.y].tunell == tunell; }
+        public bool InTunell(Unit unit, Tunell<U, T> tunell) { return Arr[unit.x, unit.y].tunell == tunell; }
         public void Draw(Graphics t, bool b = true, Tuple<int, int> C = null, Tuple<int, int> C1 = null, bool viewtunnel = true)
         {
             int height = 18;
@@ -243,13 +280,18 @@ namespace MAPF_System
             }
         }
 
-        protected void GenerationEmthy(int X, int Y, int Blocks, Random rnd, int x, int y)
+        protected void Generation(int X, int Y, int Blocks, int N_Units, bool isCentr)
         {
+            rnd = new Random();
+            SampleConstructor(X, Y, new Cell<U, T>[X, Y], new List<U>(), "", new List<Tunell<U, T>>());
+            int x = rnd.Next(X);
+            int y = rnd.Next(Y);
+            // Генерация пустых узлов
             int N = X * Y - Blocks - 1;
             int x_sum = x;
             int y_sum = y;
             int kol = 1;
-            Arr[x, y] = new Cell<K>(false);
+            Arr[x, y] = new Cell<U, T>(false);
             while (N > 0)
             {
                 int x1 = rnd.Next(X);
@@ -279,17 +321,87 @@ namespace MAPF_System
                 bool d = (y == Y - 1) || (Arr[x, y + 1] is null);
                 if (Arr[x, y] is null && !(a && b && c && d))
                 {
-                    Arr[x, y] = new Cell<K>(false);
+                    Arr[x, y] = new Cell<U, T>(false);
                     N--;
                 }
             }
-        }
-        protected void GenerationBlocks(int X, int Y)
-        {
+            // Генерация юнитов
+            int id = 0;
+            while (N_Units > 0)
+            {
+                x = rnd.Next(X);
+                y = rnd.Next(Y);
+                int x_Purpose = rnd.Next(X);
+                int y_Purpose = rnd.Next(Y);
+                bool b = (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
+                foreach (var Unit in units)
+                    b = b && !((Unit.x == x) && (Unit.y == y)) && !((Unit.x_Purpose == x_Purpose) && (Unit.y_Purpose == y_Purpose))
+                        && !((Unit.x == x_Purpose) && (Unit.y == y_Purpose)) && !((Unit.x_Purpose == x) && (Unit.y_Purpose == y));
+                if (b)
+                {
+                    if (isCentr)
+                        units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y) as U);
+                    else
+                        units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y) as U);
+                    N_Units--;
+                    id++;
+                }
+            }
+            // Генерация препятствий
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y; j++)
                     if (Arr[i, j] is null)
-                        Arr[i, j] = new Cell<K>(true);
+                        Arr[i, j] = new Cell<U, T>(true);
+        }
+        protected void Constructor(string path, bool isCentr)
+        {
+            try
+            {
+                name = path.Split('\\').Last();
+                string[] readText = File.ReadAllLines(path);
+                string[] arr = readText[0].Split(' ');
+                // Размеры поля
+                X = int.Parse(arr[0]);
+                Y = int.Parse(arr[1]);
+                // Количество юнитов
+                int N_Units = int.Parse(arr[2]);
+                // Была ли игра
+                WasGame = (arr[3] == "True");
+                // Создать доску по данным файла
+                Arr = new Cell<U, T>[X, Y];
+                int t = 1;
+                for (int i = 0; i < X; i++)
+                    for (int j = 0; j < Y; j++)
+                    {
+                        Arr[i, j] = new Cell<U, T>(readText[t]);
+                        t++;
+                    }
+                // Создать юнитов по данным файла
+                units = new List<U>();
+                for (int i = 0; i < N_Units; i++)
+                {
+                    if (isCentr)
+                        units.Add(new UnitCentr(readText[t], i, X, Y) as U);
+                    else
+                        units.Add(new UnitDec(readText[t], i, X, Y) as U);
+                    t++;
+                }
+                tunells = new List<Tunell<U, T>>();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Файл повреждён.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        protected void Constructor(bool isCentr)
+        {
+            // Открытие файла в формате board
+            OpenFileDialog openFileDialog1 = new OpenFileDialog() { Filter = "(*.board)|*.board", };
+            openFileDialog1.ShowDialog();
+            // Проверка на то, что board файл был выбран
+            if (openFileDialog1.FileName == "")
+                return;
+            Constructor(openFileDialog1.FileName, isCentr);
         }
         protected int TunellAndNoEmpthy(int i, int j)
         {
@@ -297,7 +409,7 @@ namespace MAPF_System
                 return 1;
             return 0;
         }
-        protected void SampleConstructor(int X, int Y, Cell<K>[,] Arr, List<T> units, string name, List<Tunell<K>> tunells)
+        protected void SampleConstructor(int X, int Y, Cell<U, T>[,] Arr, List<U> units, string name, List<Tunell<U, T>> tunells)
         {
             this.name = name;
             this.X = X;
@@ -306,33 +418,16 @@ namespace MAPF_System
             this.units = units;
             this.tunells = tunells;
         }
-        protected Tuple<int, string[]> ConstructParams(string path)
-        {
-            name = path.Split('\\').Last();
-            string[] readText = File.ReadAllLines(path);
-            string[] arr = readText[0].Split(' ');
-            // Размеры поля
-            X = int.Parse(arr[0]);
-            Y = int.Parse(arr[1]);
-            // Количество юнитов
-            int N_Units = int.Parse(arr[2]);
-            // Была ли игра
-            WasGame = (arr[3] == "True");
-            // Создать доску по данным файла
-            Arr = new Cell<K>[X, Y];
-
-            return new Tuple<int, string[]> (N_Units, readText);
-        }
-        protected void MakeBlocks(BoardInterface Board, Unit Unit)
+        protected void MakeBlocks(Board<U, T> Board, Unit Unit)
         {
             MakeBlock(Board, Unit.x, Unit.y - 1);
             MakeBlock(Board, Unit.x, Unit.y + 1);
             MakeBlock(Board, Unit.x - 1, Unit.y);
             MakeBlock(Board, Unit.x + 1, Unit.y);
         }
-        private void MakeBlock(BoardInterface Board, int x, int y)
+        private void MakeBlock(Board<U, T> Board, int x, int y)
         {
-            if ((Board as Board<T, K>).IsBlock(x, y))
+            if (Board.IsBlock(x, y))
                 Arr[x, y].isBlock = true;
         }
         private bool IsBlock(int x, int y)
