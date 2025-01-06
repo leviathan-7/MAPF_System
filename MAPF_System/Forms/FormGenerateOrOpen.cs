@@ -20,7 +20,7 @@ namespace MAPF_System
             InitializeComponent();
             if (args.Length != 0)
             {
-                FormAlgorithm<UnitCentr, int> F = new FormAlgorithm<UnitCentr, int>(new BoardCentr(args[0]), true, 0, false, "7", false, false);
+                FormAlgorithm<UnitCentr, int> F = new FormAlgorithm<UnitCentr, int>(new BoardCentr(args[0]), 0, false, "7", false, false);
                 F.Icon = Icon;
                 F.ShowDialog();
             }
@@ -77,13 +77,13 @@ namespace MAPF_System
             }
             if (isCentr)
             {
-                FormAlgorithm<UnitCentr, int> F = new FormAlgorithm<UnitCentr, int>(new BoardCentr(X, Y, Blocks, Units), true, 0, false, "7");
+                FormAlgorithm<UnitCentr, int> F = new FormAlgorithm<UnitCentr, int>(new BoardCentr(X, Y, Blocks, Units), 0, false, "7");
                 F.Icon = Icon;
                 F.Show();
             }
             else
             {
-                FormAlgorithm<UnitDec, Unit> F = new FormAlgorithm<UnitDec, Unit>(new BoardDec(X, Y, Blocks, Units), false, 0, false, "7");
+                FormAlgorithm<UnitDec, Unit> F = new FormAlgorithm<UnitDec, Unit>(new BoardDec(X, Y, Blocks, Units), 0, false, "7");
                 F.Icon = Icon;
                 F.Show();
             }
@@ -99,7 +99,7 @@ namespace MAPF_System
             label12.Text = "⏳";
             if (isCentr)
             {
-                FormAlgorithm<UnitCentr, int> F = new FormAlgorithm<UnitCentr, int>(new BoardCentr(), true, 0, false, "7", false, false);
+                FormAlgorithm<UnitCentr, int> F = new FormAlgorithm<UnitCentr, int>(new BoardCentr(), 0, false, "7", false, false);
                 if (!F.IsDisposed)
                 {
                     F.Icon = Icon;
@@ -108,7 +108,7 @@ namespace MAPF_System
             }
             else
             {
-                FormAlgorithm<UnitDec, Unit> F = new FormAlgorithm<UnitDec, Unit>(new BoardDec(), false, 0, false, "7", false, false);
+                FormAlgorithm<UnitDec, Unit> F = new FormAlgorithm<UnitDec, Unit>(new BoardDec(), 0, false, "7", false, false);
                 if (!F.IsDisposed)
                 {
                     F.Icon = Icon;
@@ -135,10 +135,10 @@ namespace MAPF_System
                         int kol_iter_a_star = 7;
                         // Максимальное колличество итераций
                         int N = 5000;
-                        Board<UnitDec, Unit> TimeBoard = Board.CopyWithoutBlocks(false);
+                        Board<UnitDec, Unit> TimeBoard = Board.CopyWithoutBlocks();
                         int i = 0;
                         while (!TimeBoard.isEnd && (i++) < (N - 1))
-                            TimeBoard.MakeStep(Board, kol_iter_a_star, false);
+                            TimeBoard.MakeStep(Board, kol_iter_a_star);
                         if (i == N)
                         {
                             table.Rows.Add(f.Split('\\').Last(), "Ошибка");
@@ -174,10 +174,10 @@ namespace MAPF_System
                         double density = 1.0 * Board.units.Count / (Board.X * Board.Y);
                         // Максимальное колличество итераций
                         int N = 5000;
-                        Board<UnitCentr, int> TimeBoard = Board.CopyWithoutBlocks(true);
+                        Board<UnitCentr, int> TimeBoard = Board.CopyWithoutBlocks();
                         int i = 0;
                         while (!TimeBoard.isEnd && (i++) < (N - 1))
-                            TimeBoard.MakeStep(Board, 0, true);
+                            TimeBoard.MakeStep(Board, 0);
                         if (i == N)
                         {
                             table.Rows.Add(f.Split('\\').Last(), "Ошибка");
@@ -218,16 +218,16 @@ namespace MAPF_System
 
                         if (density >= 0.01)
                         {
-                            Board<UnitCentr, int> TimeBoard = Board.CopyWithoutBlocks(true);
+                            Board<UnitCentr, int> TimeBoard = Board.CopyWithoutBlocks();
                             while (!TimeBoard.isEnd && (i++) < (N - 1))
-                                TimeBoard.MakeStep(Board, kol_iter_a_star, true);
+                                TimeBoard.MakeStep(Board, kol_iter_a_star);
                         }
                         else
                         {
                             BoardDec BoardDec = new BoardDec(f);
-                            Board<UnitDec, Unit> TimeBoard = BoardDec.CopyWithoutBlocks(false);
+                            Board<UnitDec, Unit> TimeBoard = BoardDec.CopyWithoutBlocks();
                             while (!TimeBoard.isEnd && (i++) < (N - 1))
-                                TimeBoard.MakeStep(BoardDec, kol_iter_a_star, false);
+                                TimeBoard.MakeStep(BoardDec, kol_iter_a_star);
                         }
                         
 

@@ -25,17 +25,8 @@ namespace MAPF_System
             }
         }
 
-        public TunellDec(Board<UnitDec, Unit> board) : base(board) { }
-
-        public void Add(int x, int y)
-        {
-            foreach (var Unit in board.units)
-                if ((Unit.x_Purpose == x) && (Unit.y_Purpose == y))
-                {
-                    tunell_units.Add(Unit);
-                    break;
-                }
-        }
+        public TunellDec(Board<UnitDec, Unit> board, List<Tunell<UnitDec, Unit>> LT, int x, int y) 
+            : base(board, LT, x, y) { }
 
         public void MakeFlags(BoardDec Board)
         {

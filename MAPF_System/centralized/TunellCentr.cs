@@ -9,17 +9,8 @@ namespace MAPF_System
 {
     public class TunellCentr : Tunell<UnitCentr, int>
     {
-        public TunellCentr(Board<UnitCentr, int> board) : base(board) { }
-
-        public void Add(int x, int y)
-        {
-            foreach (var Unit in board.units)
-                if ((Unit.x_Purpose == x) && (Unit.y_Purpose == y))
-                {
-                    tunell_units.Add(Unit.id);
-                    break;
-                }
-        }
+        public TunellCentr(Board<UnitCentr, int> board, List<Tunell<UnitCentr, int>> LT, int x, int y) 
+            : base(board, LT, x, y) { }
 
         public bool Contains(bool isReal, int id)
         {

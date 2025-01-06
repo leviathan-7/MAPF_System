@@ -16,11 +16,10 @@ namespace MAPF_System
         private Board<U, T> Board;
         private bool was_game;
         private bool move;
-        private bool isCentr;
         private Tuple<int, int> C;
         private Tuple<int, int> CC;
 
-        public FormAlgorithm(Board<U, T> Board, bool isCentr, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false, bool viewtunnel = true)
+        public FormAlgorithm(Board<U, T> Board, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false, bool viewtunnel = true)
         {
             if (Board.units is null)
             {
@@ -29,14 +28,13 @@ namespace MAPF_System
             }
             this.Board = Board;
             InitializeComponent();
-            this.isCentr = isCentr;
-            if (isCentr) 
+            if (Board is BoardCentr) 
             {
                 label2.Visible = false;
                 textBox_kol_iter_a_star.Visible = false;
                 Text = "Запуск MAPF - Централизованный";
             }
-            else
+            if (Board is BoardDec)
                 Text = "Запуск MAPF - Децентрализованный";
 
             was_game = Board.WasGame;
@@ -96,11 +94,11 @@ namespace MAPF_System
             }
             // Максимальное колличество итераций
             int N = 5000;
-            Board<U, T> TimeBoard = Board.CopyWithoutBlocks(isCentr);
+            Board<U, T> TimeBoard = Board.CopyWithoutBlocks();
             int i = 0;
             while (!TimeBoard.isEnd && (i++) < (N - 1))
-                TimeBoard.MakeStep(Board, kol_iter_a_star, isCentr);
-            FormAlgorithm<U, T> F = new FormAlgorithm<U, T>(TimeBoard, isCentr, i, i == N, "" + kol_iter_a_star, true);
+                TimeBoard.MakeStep(Board, kol_iter_a_star);
+            FormAlgorithm<U, T> F = new FormAlgorithm<U, T>(TimeBoard, i, i == N, "" + kol_iter_a_star, true);
             F.Icon = Icon;
             F.Show();
         }
@@ -113,14 +111,14 @@ namespace MAPF_System
                 label_Error.Text = "Глубина не верна!";
                 return;
             }
-            Board<U, T> TimeBoard = Board.CopyWithoutBlocks(isCentr);
+            Board<U, T> TimeBoard = Board.CopyWithoutBlocks();
             int i = 1;
-            FormAlgorithm<U, T> F = new FormAlgorithm<U, T>(TimeBoard, isCentr, 0, false, "" + kol_iter_a_star, true);
+            FormAlgorithm<U, T> F = new FormAlgorithm<U, T>(TimeBoard, 0, false, "" + kol_iter_a_star, true);
             F.Icon = Icon;
             F.Show();
             while (!TimeBoard.isEnd) 
             {
-                TimeBoard.MakeStep(Board, kol_iter_a_star, isCentr);
+                TimeBoard.MakeStep(Board, kol_iter_a_star);
                 TimeBoard.Draw(F.CreateGraphics(), false);
                 F.label_kol_iterat.Text = "Количество шагов = " + i++;
                 if (MessageBox.Show("Далее?", "▶▶", MessageBoxButtons.OKCancel) == DialogResult.Cancel)
@@ -225,7 +223,7 @@ namespace MAPF_System
         private void ButtonPlusUnit_Click(object sender, EventArgs e)
         {
             move = false;
-            Board.PlusUnit(isCentr);
+            Board.PlusUnit();
             Board.Draw(CreateGraphics(), false);
         }
 

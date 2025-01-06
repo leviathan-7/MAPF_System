@@ -16,16 +16,10 @@ namespace MAPF_System
     {
         private bool AreNotTunells;
 
-        public BoardCentr(int X, int Y, int Blocks, int N_Units)
-        {
-            Generation(X, Y, Blocks, N_Units, true);
-        }
+        public BoardCentr(int X, int Y, int Blocks, int N_Units) : base(X, Y, Blocks, N_Units) { }
         public BoardCentr(int X, int Y, Cell<UnitCentr, int>[,] Arr, List<UnitCentr> units, string name, List<Tunell<UnitCentr, int>> tunells)
-        {
-            SampleConstructor(X, Y, Arr, units, name, tunells);
-        }
-        public BoardCentr() { Constructor(true); }
-        public BoardCentr(string path) { Constructor(path, true); }
+            : base(X, Y, Arr, units, name, tunells) { }
+        public BoardCentr(string path = null) : base(path) { }
         
         public void MakeStep(BoardCentr Board)
         {
@@ -55,11 +49,9 @@ namespace MAPF_System
                                     LT_ADD(LT, i, j - 1);
                                     LT_ADD(LT, i, j + 1);
 
-                                    var T = new TunellCentr(this);
-                                    T.Add(LT);
+                                    var T = new TunellCentr(this, LT, i, j);
                                     Arr[i, j].tunell = T;
                                     tunells.Add(T);
-                                    T.Add(i, j);
                                 }
 
                                 if (kk == 4 && Arr[i,j].wasvisited)
@@ -102,7 +94,7 @@ namespace MAPF_System
         private void LT_ADD(List<Tunell<UnitCentr, int>> LT, int i, int j)
         {
             if (IsTunell(i, j))
-                LT.Add((TunellCentr)Arr[i, j].tunell);
+                LT.Add(Arr[i, j].tunell);
         }
         private List<HashSet<UnitCentr>> Clasterization(List<UnitCentr> units)
         {

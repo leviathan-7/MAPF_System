@@ -44,6 +44,135 @@ namespace MAPF_System
             }
         }
 
+        public Board(int X, int Y, int Blocks, int N_Units)
+        {
+            Constructor(X, Y, new Cell<U, T>[X, Y], new List<U>(), "", new List<Tunell<U, T>>());
+            rnd = new Random();
+            int x = rnd.Next(X);
+            int y = rnd.Next(Y);
+            // Генерация пустых узлов
+            int N = X * Y - Blocks - 1;
+            int x_sum = x;
+            int y_sum = y;
+            int kol = 1;
+            Arr[x, y] = new Cell<U, T>(false);
+            while (N > 0)
+            {
+                int x1 = rnd.Next(X);
+                int y1 = rnd.Next(Y);
+                int x2 = rnd.Next(X);
+                int y2 = rnd.Next(Y);
+                int x3 = rnd.Next(X);
+                int y3 = rnd.Next(Y);
+                if (Math.Abs(x1 - x_sum / kol) > Math.Abs(x2 - x_sum / kol))
+                    x = x1;
+                else
+                    x = x2;
+                if (Math.Abs(y1 - y_sum / kol) > Math.Abs(y2 - y_sum / kol))
+                    y = y1;
+                else
+                    y = y2;
+                if (Math.Abs(x - x_sum / kol) < Math.Abs(x3 - x_sum / kol))
+                    x = x3;
+                if (Math.Abs(y - y_sum / kol) < Math.Abs(y3 - y_sum / kol))
+                    y = y3;
+                x_sum += x;
+                y_sum += y;
+                kol++;
+                bool a = (x == 0) || (Arr[x - 1, y] is null);
+                bool b = (x == X - 1) || (Arr[x + 1, y] is null);
+                bool c = (y == 0) || (Arr[x, y - 1] is null);
+                bool d = (y == Y - 1) || (Arr[x, y + 1] is null);
+                if (Arr[x, y] is null && !(a && b && c && d))
+                {
+                    Arr[x, y] = new Cell<U, T>(false);
+                    N--;
+                }
+            }
+            // Генерация юнитов
+            int id = 0;
+            while (N_Units > 0)
+            {
+                x = rnd.Next(X);
+                y = rnd.Next(Y);
+                int x_Purpose = rnd.Next(X);
+                int y_Purpose = rnd.Next(Y);
+                bool b = (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
+                foreach (var Unit in units)
+                    b = b && !((Unit.x == x) && (Unit.y == y)) && !((Unit.x_Purpose == x_Purpose) && (Unit.y_Purpose == y_Purpose))
+                        && !((Unit.x == x_Purpose) && (Unit.y == y_Purpose)) && !((Unit.x_Purpose == x) && (Unit.y_Purpose == y));
+                if (b)
+                {
+                    if (this is BoardCentr)
+                        units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y) as U);
+                    if (this is BoardDec)
+                        units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y) as U);
+                    N_Units--;
+                    id++;
+                }
+            }
+            // Генерация препятствий
+            for (int i = 0; i < X; i++)
+                for (int j = 0; j < Y; j++)
+                    if (Arr[i, j] is null)
+                        Arr[i, j] = new Cell<U, T>(true);
+        }
+        public Board(string path = null)
+        {
+            if (path is null)
+            {
+                // Открытие файла в формате board
+                OpenFileDialog openFileDialog1 = new OpenFileDialog() { Filter = "(*.board)|*.board", };
+                openFileDialog1.ShowDialog();
+                // Проверка на то, что board файл был выбран
+                if (openFileDialog1.FileName == "")
+                    return;
+                path = openFileDialog1.FileName;
+            }
+
+            try
+            {
+                name = path.Split('\\').Last();
+                string[] readText = File.ReadAllLines(path);
+                string[] arr = readText[0].Split(' ');
+                // Размеры поля
+                X = int.Parse(arr[0]);
+                Y = int.Parse(arr[1]);
+                // Количество юнитов
+                int N_Units = int.Parse(arr[2]);
+                // Была ли игра
+                WasGame = (arr[3] == "True");
+                // Создать доску по данным файла
+                Arr = new Cell<U, T>[X, Y];
+                int t = 1;
+                for (int i = 0; i < X; i++)
+                    for (int j = 0; j < Y; j++)
+                    {
+                        Arr[i, j] = new Cell<U, T>(readText[t]);
+                        t++;
+                    }
+                // Создать юнитов по данным файла
+                units = new List<U>();
+                for (int i = 0; i < N_Units; i++)
+                {
+                    if (this is BoardCentr)
+                        units.Add(new UnitCentr(readText[t], i, X, Y) as U);
+                    if (this is BoardDec)
+                        units.Add(new UnitDec(readText[t], i, X, Y) as U);
+                    t++;
+                }
+                tunells = new List<Tunell<U, T>>();
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Файл повреждён.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        public Board(int X, int Y, Cell<U, T>[,] Arr, List<U> units, string name, List<Tunell<U, T>> tunells)
+        {
+            Constructor(X, Y, Arr, units, name, tunells);
+        }
+
         public void DelBlokcs()
         {
             for (int i = 0; i < X; i++)
@@ -137,7 +266,7 @@ namespace MAPF_System
             foreach (var unit in units)
                 unit.NewArr(X, Y);
         }
-        public void PlusUnit(bool isCentr)
+        public void PlusUnit()
         {
             if ((countBlocks + 2 * units.Count + 2) >= (X * Y))
             {
@@ -157,31 +286,30 @@ namespace MAPF_System
                         && !((Unit.x == x_Purpose) && (Unit.y == y_Purpose)) && !((Unit.x_Purpose == x) && (Unit.y_Purpose == y));
                 if (b)
                 {
-                    if (isCentr)
+                    if (this is BoardCentr)
                         units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y) as U);
-                    else
+                    if (this is BoardDec)
                         units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y) as U);
                     return;
                 }
             }
         }
-        public Board<U, T> CopyWithoutBlocks(bool isCentr)
+        public Board<U, T> CopyWithoutBlocks()
         {
             Cell<U, T>[,] CopyArr = new Cell<U, T>[X, Y];
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y; j++)
                     CopyArr[i, j] = Arr[i, j].copyWithoutBlock;
 
-            if (isCentr)
+            if (this is BoardCentr)
                 return new BoardCentr(X, Y, CopyArr as Cell<UnitCentr, int>[,], units.Select(unit => (unit as UnitCentr).Copy(true)).ToList(), name, tunells as List<Tunell<UnitCentr, int>>) as Board<U, T>;
-            else
-                return new BoardDec(X, Y, CopyArr as Cell<UnitDec, Unit>[,], units.Select(unit => (unit as UnitDec).copy).ToList(), name, tunells as List<Tunell<UnitDec, Unit>>) as Board<U, T>;
+            return new BoardDec(X, Y, CopyArr as Cell<UnitDec, Unit>[,], units.Select(unit => (unit as UnitDec).copy).ToList(), name, tunells as List<Tunell<UnitDec, Unit>>) as Board<U, T>;
         }
-        public void MakeStep(Board<U, T> Board, int kol_iter_a_star, bool isCentr)
+        public void MakeStep(Board<U, T> Board, int kol_iter_a_star)
         {
-            if (isCentr)
+            if (this is BoardCentr)
                 (this as BoardCentr).MakeStep(Board as BoardCentr);
-            else
+            if (this is BoardDec)
                 (this as BoardDec).MakeStep(Board as BoardDec, kol_iter_a_star);
         }
         public string Save(string name_, bool b = false)
@@ -280,143 +408,11 @@ namespace MAPF_System
             }
         }
 
-        protected void Generation(int X, int Y, int Blocks, int N_Units, bool isCentr)
-        {
-            rnd = new Random();
-            SampleConstructor(X, Y, new Cell<U, T>[X, Y], new List<U>(), "", new List<Tunell<U, T>>());
-            int x = rnd.Next(X);
-            int y = rnd.Next(Y);
-            // Генерация пустых узлов
-            int N = X * Y - Blocks - 1;
-            int x_sum = x;
-            int y_sum = y;
-            int kol = 1;
-            Arr[x, y] = new Cell<U, T>(false);
-            while (N > 0)
-            {
-                int x1 = rnd.Next(X);
-                int y1 = rnd.Next(Y);
-                int x2 = rnd.Next(X);
-                int y2 = rnd.Next(Y);
-                int x3 = rnd.Next(X);
-                int y3 = rnd.Next(Y);
-                if (Math.Abs(x1 - x_sum / kol) > Math.Abs(x2 - x_sum / kol))
-                    x = x1;
-                else
-                    x = x2;
-                if (Math.Abs(y1 - y_sum / kol) > Math.Abs(y2 - y_sum / kol))
-                    y = y1;
-                else
-                    y = y2;
-                if (Math.Abs(x - x_sum / kol) < Math.Abs(x3 - x_sum / kol))
-                    x = x3;
-                if (Math.Abs(y - y_sum / kol) < Math.Abs(y3 - y_sum / kol))
-                    y = y3;
-                x_sum += x;
-                y_sum += y;
-                kol++;
-                bool a = (x == 0) || (Arr[x - 1, y] is null);
-                bool b = (x == X - 1) || (Arr[x + 1, y] is null);
-                bool c = (y == 0) || (Arr[x, y - 1] is null);
-                bool d = (y == Y - 1) || (Arr[x, y + 1] is null);
-                if (Arr[x, y] is null && !(a && b && c && d))
-                {
-                    Arr[x, y] = new Cell<U, T>(false);
-                    N--;
-                }
-            }
-            // Генерация юнитов
-            int id = 0;
-            while (N_Units > 0)
-            {
-                x = rnd.Next(X);
-                y = rnd.Next(Y);
-                int x_Purpose = rnd.Next(X);
-                int y_Purpose = rnd.Next(Y);
-                bool b = (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
-                foreach (var Unit in units)
-                    b = b && !((Unit.x == x) && (Unit.y == y)) && !((Unit.x_Purpose == x_Purpose) && (Unit.y_Purpose == y_Purpose))
-                        && !((Unit.x == x_Purpose) && (Unit.y == y_Purpose)) && !((Unit.x_Purpose == x) && (Unit.y_Purpose == y));
-                if (b)
-                {
-                    if (isCentr)
-                        units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y) as U);
-                    else
-                        units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y) as U);
-                    N_Units--;
-                    id++;
-                }
-            }
-            // Генерация препятствий
-            for (int i = 0; i < X; i++)
-                for (int j = 0; j < Y; j++)
-                    if (Arr[i, j] is null)
-                        Arr[i, j] = new Cell<U, T>(true);
-        }
-        protected void Constructor(string path, bool isCentr)
-        {
-            try
-            {
-                name = path.Split('\\').Last();
-                string[] readText = File.ReadAllLines(path);
-                string[] arr = readText[0].Split(' ');
-                // Размеры поля
-                X = int.Parse(arr[0]);
-                Y = int.Parse(arr[1]);
-                // Количество юнитов
-                int N_Units = int.Parse(arr[2]);
-                // Была ли игра
-                WasGame = (arr[3] == "True");
-                // Создать доску по данным файла
-                Arr = new Cell<U, T>[X, Y];
-                int t = 1;
-                for (int i = 0; i < X; i++)
-                    for (int j = 0; j < Y; j++)
-                    {
-                        Arr[i, j] = new Cell<U, T>(readText[t]);
-                        t++;
-                    }
-                // Создать юнитов по данным файла
-                units = new List<U>();
-                for (int i = 0; i < N_Units; i++)
-                {
-                    if (isCentr)
-                        units.Add(new UnitCentr(readText[t], i, X, Y) as U);
-                    else
-                        units.Add(new UnitDec(readText[t], i, X, Y) as U);
-                    t++;
-                }
-                tunells = new List<Tunell<U, T>>();
-            }
-            catch (Exception)
-            {
-                MessageBox.Show("Файл повреждён.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-        protected void Constructor(bool isCentr)
-        {
-            // Открытие файла в формате board
-            OpenFileDialog openFileDialog1 = new OpenFileDialog() { Filter = "(*.board)|*.board", };
-            openFileDialog1.ShowDialog();
-            // Проверка на то, что board файл был выбран
-            if (openFileDialog1.FileName == "")
-                return;
-            Constructor(openFileDialog1.FileName, isCentr);
-        }
         protected int TunellAndNoEmpthy(int i, int j)
         {
             if (!IsEmpthy(i, j) || IsTunell(i, j))
                 return 1;
             return 0;
-        }
-        protected void SampleConstructor(int X, int Y, Cell<U, T>[,] Arr, List<U> units, string name, List<Tunell<U, T>> tunells)
-        {
-            this.name = name;
-            this.X = X;
-            this.Y = Y;
-            this.Arr = Arr;
-            this.units = units;
-            this.tunells = tunells;
         }
         protected void MakeBlocks(Board<U, T> Board, Unit Unit)
         {
@@ -436,6 +432,15 @@ namespace MAPF_System
             if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
                 return false;
             return Arr[x, y].isBlock;
+        }
+        private void Constructor(int X, int Y, Cell<U, T>[,] Arr, List<U> units, string name, List<Tunell<U, T>> tunells)
+        {
+            this.name = name;
+            this.X = X;
+            this.Y = Y;
+            this.Arr = Arr;
+            this.units = units;
+            this.tunells = tunells;
         }
 
     }

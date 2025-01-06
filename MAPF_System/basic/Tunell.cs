@@ -13,8 +13,12 @@ namespace MAPF_System
         protected List<Tunell<U, T>> tunells;
         protected List<T> tunell_units;
 
-        public void Add(List<Tunell<U, T>> LT)
+        public Tunell(Board<U, T> board, List<Tunell<U, T>> LT, int x, int y)
         {
+            this.board = board;
+            tunells = new List<Tunell<U, T>>();
+            tunell_units = new List<T>();
+
             foreach (var tunell in LT)
             {
                 tunells.Add(tunell);
@@ -23,13 +27,16 @@ namespace MAPF_System
                 foreach (var tt in tunell.tunells)
                     tunells.Add(tt);
             }
-        }
 
-        public Tunell(Board<U, T> board)
-        {
-            this.board = board;
-            tunells = new List<Tunell<U, T>>();
-            tunell_units = new List<T>();
+            foreach (var Unit in board.units)
+                if ((Unit.x_Purpose == x) && (Unit.y_Purpose == y))
+                {
+                    if (this is TunellDec)
+                        (this as TunellDec).tunell_units.Add(Unit);
+                    if (this is TunellCentr)
+                        (this as TunellCentr).tunell_units.Add(Unit.id);
+                    break;
+                }
         }
     }
 }

@@ -13,17 +13,11 @@ namespace MAPF_System
 {
     public class BoardDec : Board<UnitDec, Unit>
     {
-        public BoardDec(int X, int Y, int Blocks, int N_Units)
-        {
-            Generation(X, Y, Blocks, N_Units, false);
-        }
+        public BoardDec(int X, int Y, int Blocks, int N_Units) : base(X, Y, Blocks, N_Units) { }
         public BoardDec(int X, int Y, Cell<UnitDec, Unit>[,] Arr, List<UnitDec> units, string name, List<Tunell<UnitDec, Unit>> tunells)
-        {
-            SampleConstructor(X, Y, Arr, units, name, tunells);
-        }
-        public BoardDec(){ Constructor(false); }
-        public BoardDec(string path) { Constructor(path, false); }
-        
+            : base(X, Y, Arr, units, name, tunells) { }
+        public BoardDec(string path = null) : base(path) { }
+
         public void MakeStep(BoardDec Board, int kol_iter_a_star)
         {
             // Обнуление значений was_step
@@ -85,11 +79,9 @@ namespace MAPF_System
                                 LT_ADD(LT, i, j - 1);
                                 LT_ADD(LT, i, j + 1);
 
-                                var T = new TunellDec(this);
-                                T.Add(LT);
+                                var T = new TunellDec(this, LT, i, j);
                                 Arr[i, j].tunell = T;
                                 tunells.Add(T);
-                                T.Add(i, j);
                             }
                         }
 
@@ -160,7 +152,7 @@ namespace MAPF_System
         private void LT_ADD(List<Tunell<UnitDec, Unit>> LT, int i, int j)
         {
             if (IsTunell(i, j) && !IsBad(i, j))
-                LT.Add((TunellDec)Arr[i, j].tunell);
+                LT.Add(Arr[i, j].tunell);
         }
         private int BadAndNoEmpthy(int i, int j)
         {
