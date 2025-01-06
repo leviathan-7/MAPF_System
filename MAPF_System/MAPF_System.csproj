@@ -99,9 +99,6 @@
     </Compile>
     <Compile Include="Decentralized\TunellDec.cs" />
     <Compile Include="Decentralized\UnitDec.cs" />
-    <EmbeddedResource Include="Forms\FormAbout.resx">
-      <DependentUpon>FormAbout.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\FormGenerateOrOpen.resx">
       <DependentUpon>FormGenerateOrOpen.cs</DependentUpon>
     </EmbeddedResource>

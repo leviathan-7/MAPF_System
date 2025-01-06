@@ -24,8 +24,7 @@ namespace MAPF_System
         public void MakeStep(BoardCentr Board)
         {
             // Добавить блоки в пределах видимости юнитов
-            foreach (var Unit in units)
-                MakeBlocks(Board, Unit);
+            MakeBlocks(Board);
             // Добавить узлы -- части туннелей
             if (!AreNotTunells)
                 while (true)
@@ -36,18 +35,23 @@ namespace MAPF_System
                             if (!(IsTunell(i, j) || Arr[i, j].isBlock))
                             {
                                 int kk = 0;
-                                kk += TunellAndNoEmpthy(i - 1, j);
-                                kk += TunellAndNoEmpthy(i + 1, j);
-                                kk += TunellAndNoEmpthy(i, j - 1);
-                                kk += TunellAndNoEmpthy(i, j + 1);
+                                int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
+                                for (int w = 0; w < 4; w++)
+                                {
+                                    int newI = i + xx[w], newJ = j + yy[w];
+                                    if (!IsEmpthy(newI, newJ) || IsTunell(newI, newJ))
+                                        kk++;
+                                }
 
                                 if (!AreNotTunells && kk == 3)
                                 {
                                     List<Tunell<UnitCentr, int>> LT = new List<Tunell<UnitCentr, int>>();
-                                    LT_ADD(LT, i - 1, j);
-                                    LT_ADD(LT, i + 1, j);
-                                    LT_ADD(LT, i, j - 1);
-                                    LT_ADD(LT, i, j + 1);
+                                    for (int w = 0; w < 4; w++)
+                                    {
+                                        int newI = i + xx[w], newJ = j + yy[w];
+                                        if (IsTunell(newI, newJ))
+                                            LT.Add(Arr[newI, newJ].tunell);
+                                    }
 
                                     var T = new TunellCentr(this, LT, i, j);
                                     Arr[i, j].tunell = T;
@@ -76,8 +80,28 @@ namespace MAPF_System
             }
 
             var new_units = new List<UnitCentr>();
-            foreach (var Claster in Clasterization(units))
-                new_units.AddRange(NewUnits(Claster));
+
+            // Нахождение кластеров
+            HashSet<UnitCentr> clasterizations = new HashSet<UnitCentr>();
+            List<HashSet<UnitCentr>> clasters = new List<HashSet<UnitCentr>>();
+            foreach (var unit in units)
+                if (!clasterizations.Contains(unit))
+                {
+                    HashSet<UnitCentr> claster = unit.FindClaster(units);
+                    clasters.Add(claster);
+                    clasterizations.UnionWith(claster);
+                }
+
+            foreach (var Claster in clasters)
+            {
+                Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>> TT = new Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>(new List<UnitCentr>(), Claster);
+                int min_sum = Claster.Sum(unit => unit.realManheton) - Claster.Count(unit => !unit.isRealEnd);
+                IEnumerable<UnitCentr> res = NewUnitsStack(TT, min_sum, Claster, true);
+                if (!(res is null))
+                    new_units.AddRange(res);
+                else
+                    new_units.AddRange(NewUnitsStack(TT, min_sum, Claster, false));
+            }
             units = new_units;
 
         }
@@ -91,33 +115,6 @@ namespace MAPF_System
             return InTunell(units.Find(u => u.id == unit_id), tunell);
         }
 
-        private void LT_ADD(List<Tunell<UnitCentr, int>> LT, int i, int j)
-        {
-            if (IsTunell(i, j))
-                LT.Add(Arr[i, j].tunell);
-        }
-        private List<HashSet<UnitCentr>> Clasterization(List<UnitCentr> units)
-        {
-            HashSet<UnitCentr> clasterizations = new HashSet<UnitCentr>();
-            List<HashSet<UnitCentr>> clasters = new List<HashSet<UnitCentr>>();
-            foreach (var unit in units)
-                if (!clasterizations.Contains(unit))
-                {
-                    HashSet<UnitCentr> claster = unit.FindClaster(units);
-                    clasters.Add(claster);
-                    clasterizations.UnionWith(claster);
-                }
-            return clasters;
-        }
-        private IEnumerable<UnitCentr> NewUnits(IEnumerable<UnitCentr> claster)
-        {
-            Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>> TT = new Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>(new List<UnitCentr>(), claster);
-            int min_sum = claster.Sum(unit => unit.realManheton) - claster.Count(unit => !unit.isRealEnd);
-            IEnumerable<UnitCentr> res = NewUnitsStack(TT, min_sum, claster, true);
-            if (!(res is null))
-                return res;
-            return NewUnitsStack(TT, min_sum, claster, false);
-        }
         private IEnumerable<UnitCentr> NewUnitsStack(Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>> TT, int min_sum, IEnumerable<UnitCentr> claster, bool b)
         {
             int sum = int.MaxValue;
@@ -132,6 +129,7 @@ namespace MAPF_System
                     var s = T.Item1.Sum(unit => unit.Manheton(this));
                     if (s == min_sum)
                         return T.Item1;
+
                     if ((s < sum) && isntEqw(claster, T.Item1))
                     {
                         sum = s;
@@ -160,8 +158,6 @@ namespace MAPF_System
                     else
                         return true;
                 }
-
-
             return false;
         }
 

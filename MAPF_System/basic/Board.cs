@@ -408,23 +408,16 @@ namespace MAPF_System
             }
         }
 
-        protected int TunellAndNoEmpthy(int i, int j)
+        protected void MakeBlocks(Board<U, T> Board)
         {
-            if (!IsEmpthy(i, j) || IsTunell(i, j))
-                return 1;
-            return 0;
-        }
-        protected void MakeBlocks(Board<U, T> Board, Unit Unit)
-        {
-            MakeBlock(Board, Unit.x, Unit.y - 1);
-            MakeBlock(Board, Unit.x, Unit.y + 1);
-            MakeBlock(Board, Unit.x - 1, Unit.y);
-            MakeBlock(Board, Unit.x + 1, Unit.y);
-        }
-        private void MakeBlock(Board<U, T> Board, int x, int y)
-        {
-            if (Board.IsBlock(x, y))
-                Arr[x, y].isBlock = true;
+            int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
+            foreach (var Unit in units)
+                for (int w = 0; w < 4; w++)
+                {
+                    int newI = Unit.x + xx[w], newJ = Unit.y + yy[w];
+                    if (Board.IsBlock(newI, newJ))
+                        Arr[newI, newJ].isBlock = true;
+                }
         }
         private bool IsBlock(int x, int y)
         {

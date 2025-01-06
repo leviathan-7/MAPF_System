@@ -24,8 +24,7 @@ namespace MAPF_System
             foreach (var Unit in units)
                 Unit.NotWasStep();
             // Добавить блоки в пределах видимости юнитов
-            foreach (var Unit in units)
-                MakeBlocks(Board, Unit);
+            MakeBlocks(Board);
             // Добавить плохие узлы
             while (true)
             {
@@ -41,10 +40,13 @@ namespace MAPF_System
                             if (b)
                             {
                                 int kk = 0;
-                                kk += BadAndNoEmpthy(i - 1, j);
-                                kk += BadAndNoEmpthy(i + 1, j);
-                                kk += BadAndNoEmpthy(i, j - 1);
-                                kk += BadAndNoEmpthy(i, j + 1);
+                                int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
+                                for (int w = 0; w < 4; w++)
+                                {
+                                    int newI = i + xx[w], newJ = j + yy[w];
+                                    if (!IsEmpthy(newI, newJ) || IsBad(newI, newJ))
+                                        kk ++;
+                                }
 
                                 if (kk == 3)
                                 {
@@ -66,18 +68,23 @@ namespace MAPF_System
                         if (!(IsTunell(i, j) || Arr[i, j].isBlock))
                         {
                             int kk = 0;
-                            kk += TunellAndNoEmpthy(i - 1, j);
-                            kk += TunellAndNoEmpthy(i + 1, j);
-                            kk += TunellAndNoEmpthy(i, j - 1);
-                            kk += TunellAndNoEmpthy(i, j + 1);
+                            int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
+                            for (int w = 0; w < 4; w++)
+                            {
+                                int newI = i + xx[w], newJ = j + yy[w];
+                                if (!IsEmpthy(newI, newJ) || IsTunell(newI, newJ))
+                                    kk++;
+                            }
 
                             if (kk == 3)
                             {
                                 List<Tunell<UnitDec, Unit>> LT = new List<Tunell<UnitDec, Unit>>();
-                                LT_ADD(LT, i - 1, j);
-                                LT_ADD(LT, i + 1, j);
-                                LT_ADD(LT, i, j - 1);
-                                LT_ADD(LT, i, j + 1);
+                                for (int w = 0; w < 4; w++)
+                                {
+                                    int newI = i + xx[w], newJ = j + yy[w];
+                                    if (IsTunell(newI, newJ) && !IsBad(newI, newJ))
+                                        LT.Add(Arr[newI, newJ].tunell);
+                                }
 
                                 var T = new TunellDec(this, LT, i, j);
                                 Arr[i, j].tunell = T;
@@ -148,17 +155,6 @@ namespace MAPF_System
             if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
                 return false;
             return Arr[x, y].isBad;
-        }
-        private void LT_ADD(List<Tunell<UnitDec, Unit>> LT, int i, int j)
-        {
-            if (IsTunell(i, j) && !IsBad(i, j))
-                LT.Add(Arr[i, j].tunell);
-        }
-        private int BadAndNoEmpthy(int i, int j)
-        {
-            if (!IsEmpthy(i, j) || IsBad(i, j))
-                return 1;
-            return 0;
         }
 
     }

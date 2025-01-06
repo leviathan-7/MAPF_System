@@ -269,14 +269,20 @@ namespace MAPF_System
 
         private void FormGenerateOrOpen_HelpButtonClicked(object sender, CancelEventArgs e)
         {
-            (new FormAbout()).Show();
+            FormAbout F = new FormAbout();
+            F.Icon = Icon;
+            F.Show();
             e.Cancel = true;
         }
 
         private void FormGenerateOrOpen_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F1)
-                (new FormAbout()).Show();
+            {
+                FormAbout F = new FormAbout();
+                F.Icon = Icon;
+                F.Show();
+            }
         }
 
     }
