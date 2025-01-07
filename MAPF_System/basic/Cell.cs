@@ -51,9 +51,7 @@ namespace MAPF_System
         }
         public int ReversBlock()
         {
-            if (isBlock = !isBlock)
-                return 1;
-            return 2;
+            return (isBlock = !isBlock) ? 1 : 2;
         }
     }
 }

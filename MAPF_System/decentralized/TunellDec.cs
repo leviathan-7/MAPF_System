@@ -11,18 +11,7 @@ namespace MAPF_System
     {
         public int id
         {
-            get 
-            {
-                foreach (var Unit in tunell_units)
-                {
-                    bool b = false;
-                    foreach (var tunell in tunells)
-                        b = b || board.InTunell(Unit, tunell);
-                    if (!b)
-                        return Unit.id;
-                }
-                return -1;
-            }
+            get { return tunell_units.FirstOrDefault(Unit => !tunells.Any(tunell => board.InTunell(Unit, tunell)))?.id ?? -1; }
         }
 
         public TunellDec(Board<UnitDec, Unit> board, List<Tunell<UnitDec, Unit>> LT, int x, int y) 
@@ -31,17 +20,14 @@ namespace MAPF_System
         public void MakeFlags(BoardDec Board)
         {
             bool b = true;
-            foreach (var Unit in tunell_units)
+            tunell_units.ForEach(Unit =>
             {
                 if (Unit.isRealEnd)
                     Unit.flag = false;
-                bool t = false;
-                foreach (var tunell in tunells)
-                    t = t || Board.InTunell(Unit, tunell);
-                b = b && t;
+                b = b && tunells.Any(tunell => Board.InTunell(Unit, tunell));
                 if (Unit.isRealEnd && !b)
                     Unit.flag = true;
-            }
+            });
         }
 
     }

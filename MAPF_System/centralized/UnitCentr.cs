@@ -19,35 +19,35 @@ namespace MAPF_System
         public UnitCentr(string str, int i, int X, int Y) : base(str, X, Y, i) { }
         public UnitCentr Copy(bool b = false) 
         {
-            if (b)
-                Arr = new int[X_Board, Y_Board];
-            return new UnitCentr(Arr, x, y, x_Purpose, y_Purpose, id, -1, -1, X_Board, Y_Board, false, flag); 
+            return new UnitCentr(b ? new int[X_Board, Y_Board] : Arr, x, y, x_Purpose, y_Purpose, id, -1, -1, X_Board, Y_Board, false, flag); 
         }
         public List<UnitCentr> MakeStep(BoardCentr Board, IEnumerable<UnitCentr> was_step, IEnumerable<UnitCentr> units, bool b)
         {
             List <UnitCentr> lstUnits = new List<UnitCentr>();
-            int[] dx = { 0, 0, -1, 1 };
-            int[] dy = { -1, 1, 0, 0 };
-            for (int i = 0; i < 4; i++)
-                if (Board.IsEmpthy(x + dx[i], y + dy[i]) && NoOneCell(x + dx[i], y + dy[i], was_step, units))
+            int[] dx = { 0, 0, -1, 1, 0 }, dy = { -1, 1, 0, 0, 0 };
+
+            for (int i = 0; i <= 4; i++)
+            {
+                int _x = x + dx[i], _y = y + dy[i];
+
+                if (Board.IsEmpthy(_x, _y) 
+                    && !was_step.Any(unit => unit.x == _x && unit.y == _y)
+                    && !units.Any(unit => unit.x == _x && unit.y == _y && was_step.Any(u => u.id == unit.id && u.x == x && u.y == y)))
                 {
-                    UnitCentr U = Copy();
-                    U.x = x + dx[i];
-                    U.y = y + dy[i];
-                    U.last_Unit = this;
-                    if (b)
+                    if (i == 4)
+                        lstUnits.Add(Copy());
+                    else
                     {
-                        if (last_Unit is null || !(U.x == last_Unit.x && U.y == last_Unit.y) || !(Board.units.Find(unit => unit.x == U.x && unit.y == U.y) == null))
+                        UnitCentr U = Copy();
+                        U.x = _x;
+                        U.y = _y;
+                        U.last_Unit = this;
+                        if (!b || b && (last_Unit is null || !(U.x == last_Unit.x && U.y == last_Unit.y) || !(Board.units.Find(unit => unit.x == U.x && unit.y == U.y) == null)))
                             lstUnits.Add(U);
                     }
-                    else
-                        lstUnits.Add(U);
-                    
                 }
-
-            if (NoOneCell(x, y, was_step, units))
-                lstUnits.Add(Copy());
-
+            }
+                
             return lstUnits;
         }
         public HashSet<UnitCentr> FindClaster(List<UnitCentr> units)
@@ -58,7 +58,8 @@ namespace MAPF_System
             while (stack.Count() != 0)
             {
                 UnitCentr u = stack.Pop();
-                foreach (var unit in units)
+                units.ForEach(unit => 
+                {
                     if ((!claster.Contains(unit)) &&
                         ((((u.x + 1 == unit.x) || (u.x - 1 == unit.x)) && ((u.y == unit.y) || (u.y - 1 == unit.y) || (u.y + 1 == unit.y))) ||
                         (((u.x + 2 == unit.x) || (u.x - 2 == unit.x)) && (u.y == unit.y)) ||
@@ -67,6 +68,7 @@ namespace MAPF_System
                         claster.Add(unit);
                         stack.Push(unit);
                     }
+                });
             }
 
             return claster;
@@ -93,39 +95,13 @@ namespace MAPF_System
                 return s;
             List<int> list = new List<int>();
             int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
-            if (iter)
+            for (int w = 0; w < 4; w++)
             {
-                for (int w = 0; w < 4; w++)
-                {
-                    int newI = x + xx[w], newJ = y + yy[w];
-                    if (board.IsEmpthy(newI, newJ))
-                        list.Add(FindMin(newI, newJ, board, !iter));
-                }
-            }
-            else
-            {
-                for (int w = 0; w < 4; w++)
-                {
-                    int newI = x + xx[w], newJ = y + yy[w];
-                    if (board.IsEmpthy(newI, newJ))
-                        list.Add(RealManheton(newI, newJ));
-                }
+                int newI = x + xx[w], newJ = y + yy[w];
+                if (board.IsEmpthy(newI, newJ))
+                    list.Add(iter ? FindMin(newI, newJ, board, !iter) : RealManheton(newI, newJ));
             }
             return 1 + list.Min();
-        }
-        private bool NoOneCell(int _x, int _y, IEnumerable<UnitCentr> was_step, IEnumerable<UnitCentr> units)
-        {
-            foreach (var unit in was_step)
-                if ((unit.x == _x) && (unit.y == _y))
-                    return false;
-
-            foreach (var unit in units)
-                if ((unit.x == _x) && (unit.y == _y))
-                    foreach (var u in was_step)
-                        if((u.id == unit.id) && (u.x == x) && (u.y == y))
-                            return false;
-
-            return true;
         }
 
     }

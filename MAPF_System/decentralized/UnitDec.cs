@@ -259,56 +259,50 @@ namespace MAPF_System
         }
         private void IfBoardIsEmpthy(List<float> rr, List<float> ff, BoardDec Board, List<UnitDec> UsUnits, IEnumerable<UnitDec> AnotherUnits, int kol_iter_a_star, bool is_bool_step = false)
         {
-            Parallel.For(0, 4, (i) => 
+            int[] xx = { 0, 0, -1, 1 }, yy = { -1, 1, 0, 0 };
+            Parallel.For(0, 4, (i) =>
             {
-                if ((i == 0) && Board.IsEmpthy(x, y - 1) && (!((last__x == x) && (last__y == y - 1)) || is_bool_step))
-                    GetUnitAndF(0, rr, ff, UsUnits, x, y - 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
-                if ((i == 1) && Board.IsEmpthy(x, y + 1) && (!((last__x == x) && (last__y == y + 1)) || is_bool_step))
-                    GetUnitAndF(1, rr, ff, UsUnits, x, y + 1, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
-                if ((i == 2) && Board.IsEmpthy(x - 1, y) && (!((last__x == x - 1) && (last__y == y)) || is_bool_step))
-                    GetUnitAndF(2, rr, ff, UsUnits, x - 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
-                if ((i == 3) && Board.IsEmpthy(x + 1, y) && (!((last__x == x + 1) && (last__y == y)) || is_bool_step))
-                    GetUnitAndF(3, rr, ff, UsUnits, x + 1, y, x, y, Board, kol_iter_a_star, AnotherUnits, is_bool_step);
-            });
-            
-        }
-        private void GetUnitAndF(int i, List<float> rr, List<float> ff, List<UnitDec> UsUnits, int x0, int y0, int x, int y, BoardDec Board, int kol_iter_a_star, IEnumerable<UnitDec> AnotherUnits, bool is_bool_step)
-        {
-            float[,,,] ArrG = new float[X_Board, Y_Board, X_Board, Y_Board];
-            int MaxG = int.MaxValue;
-            bool GreatFlag = false;
-            ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step, 1, ref ArrG, ref MaxG, ref GreatFlag);
-            // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
-            if (!was_near_end && (ff[i] != 0))
-                ff[i] += Arr[x0, y0];
-            rr[i] = (float)Math.Sqrt(Math.Pow(x_Purpose - x0, 2) + Math.Pow(y_Purpose - y0, 2));
-            // Алгоритм для решения проблемы параллельного хождения
-            if (was_near_end)
-                foreach (var au in AnotherUnits)
-                    if ((au.x_Purpose == x0) && (au.y_Purpose == y0))
-                    {
-                        ff[i] += 0.5f;
-                        if (!au.isEnd)
-                            ff[i] += 0.5f;
-                    }
-            foreach (var au in AnotherUnits)
-                if ((au.x == x0) && (au.y == y0))
+                int x0 = x + xx[i], y0 = y + yy[i];
+                if (Board.IsEmpthy(x0, y0) && (!((last__x == x0) && (last__y == y0)) || is_bool_step))
                 {
-                    UsUnits[i] = au;
-                    return;
+                    float[,,,] ArrG = new float[X_Board, Y_Board, X_Board, Y_Board];
+                    int MaxG = int.MaxValue;
+                    bool GreatFlag = false;
+                    ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step, 1, ref ArrG, ref MaxG, ref GreatFlag);
+                    // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
+                    if (!was_near_end && (ff[i] != 0))
+                        ff[i] += Arr[x0, y0];
+                    rr[i] = (float)Math.Sqrt(Math.Pow(x_Purpose - x0, 2) + Math.Pow(y_Purpose - y0, 2));
+                    // Алгоритм для решения проблемы параллельного хождения
+                    if (was_near_end)
+                        foreach (var au in AnotherUnits)
+                            if ((au.x_Purpose == x0) && (au.y_Purpose == y0))
+                            {
+                                ff[i] += 0.5f;
+                                if (!au.isEnd)
+                                    ff[i] += 0.5f;
+                            }
+                    foreach (var au in AnotherUnits)
+                        if ((au.x == x0) && (au.y == y0))
+                        {
+                            UsUnits[i] = au;
+                            return;
+                        }
                 }
+            });
+
         }
         private void InWasStep(Tuple<int, float> T, bool lasttrue)
         {
             MakeLast(x, y);
-            if (T.Item1 == 0)
-                y = y - 1;
-            if (T.Item1 == 1)
-                y = y + 1;
-            if (T.Item1 == 2)
-                x = x - 1;
-            if (T.Item1 == 3)
-                x = x + 1;
+            switch (T.Item1)
+            {
+                case 0: y--; break;
+                case 1: y++; break;
+                case 2: x--; break;
+                case 3: x++; break;
+                default: break;
+            }
             if (lasttrue)
                 MakeLast(-1, -1);
         }
@@ -356,23 +350,15 @@ namespace MAPF_System
                 kol_iter_a_star--;
                 // Список значений эвристической функции для каждой клетки
                 List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
-
-                if (Board.IsEmpthy(x, y - 1) && !((last_x == x) && (last_y == y - 1)))
-                    ff[0] = f(x, y - 1, Board, kol_iter_a_star, x, y, false, g + 1, ref ArrG, ref MaxG, ref GreatFlag);
-                if (ff[0] == 0)
-                    return 1;
-                if (Board.IsEmpthy(x, y + 1) && !((last_x == x) && (last_y == y + 1)))
-                    ff[1] = f(x, y + 1, Board, kol_iter_a_star, x, y, false, g + 1, ref ArrG, ref MaxG, ref GreatFlag);
-                if (ff[1] == 0)
-                    return 1;
-                if (Board.IsEmpthy(x - 1, y) && !((last_x == x - 1) && (last_y == y)))
-                    ff[2] = f(x - 1, y, Board, kol_iter_a_star, x, y, false, g + 1, ref ArrG, ref MaxG, ref GreatFlag);
-                if (ff[2] == 0)
-                    return 1;
-                if (Board.IsEmpthy(x + 1, y) && !((last_x == x + 1) && (last_y == y)))
-                    ff[3] = f(x + 1, y, Board, kol_iter_a_star, x, y, false, g + 1, ref ArrG, ref MaxG, ref GreatFlag);
-                if (ff[3] == 0)
-                    return 1;
+                int[] xx = { 0, 0, -1, 1}, yy = { -1, 1, 0, 0 };
+                for (int w = 0; w < 4; w++)
+                {
+                    int newI = x + xx[w], newJ = y + yy[w];
+                    if (Board.IsEmpthy(newI, newJ) && !((last_x == newI) && (last_y == newJ)))
+                        ff[w] = f(newI, newJ, Board, kol_iter_a_star, x, y, false, g + 1, ref ArrG, ref MaxG, ref GreatFlag);
+                    if (ff[w] == 0)
+                        return 1;
+                }
                 ff[4] = int.MaxValue / 2;
                 // Находим клетку с минимальным значением эвристической функции
                 float min = ff[4];

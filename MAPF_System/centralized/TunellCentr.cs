@@ -23,10 +23,7 @@ namespace MAPF_System
             foreach (var Unit_id in tunell_units)
             {
                 lst.Add(Unit_id);
-                bool b = false;
-                foreach (var tunell in tunells)
-                    b = b || board.InTunell(board.units.Find(u => u.id == Unit_id), tunell);
-                if (!b)
+                if (!tunells.Any(tunell => board.InTunell(board.units.Find(u => u.id == Unit_id), tunell)))
                     return lst.Contains(id);
             }
             return lst.Contains(id);
