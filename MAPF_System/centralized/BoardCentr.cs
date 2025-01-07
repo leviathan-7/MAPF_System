@@ -14,8 +14,6 @@ namespace MAPF_System
 {
     public class BoardCentr : Board<UnitCentr, int>
     {
-        private bool AreNotTunells;
-
         public BoardCentr(int X, int Y, int Blocks, int N_Units) : base(X, Y, Blocks, N_Units) { }
         public BoardCentr(int X, int Y, Cell<UnitCentr, int>[,] Arr, List<UnitCentr> units, string name, List<Tunell<UnitCentr, int>> tunells)
             : base(X, Y, Arr, units, name, tunells) { }
@@ -96,69 +94,65 @@ namespace MAPF_System
             {
                 Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>> TT = new Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>(new List<UnitCentr>(), Claster);
                 int min_sum = Claster.Sum(unit => unit.realManheton) - Claster.Count(unit => !unit.isRealEnd);
-                IEnumerable<UnitCentr> res = NewUnitsStack(TT, min_sum, Claster, true);
-                if (!(res is null))
-                    new_units.AddRange(res);
-                else
-                    new_units.AddRange(NewUnitsStack(TT, min_sum, Claster, false));
+                IEnumerable<UnitCentr> res = null;
+                bool b = true;
+                while (res is null)
+                {
+                    int sum = int.MaxValue;
+                    Stack<Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>> stack = new Stack<Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>>();
+                    stack.Push(TT);
+                    while (stack.Count() != 0)
+                    {
+                        var T = stack.Pop();
+                        if (T.Item2.Count() == 0)
+                        {
+                            var s = T.Item1.Sum(unit => unit.Manheton(this));
+                            if (s == min_sum)
+                            {
+                                res = T.Item1;
+                                break;
+                            }
+
+                            // Проверка на неравнество кластеров
+                            bool isntEqw = false;
+                            var sort1 = Claster.OrderBy(unit => unit.id).ToList();
+                            var sort2 = T.Item1.OrderBy(unit => unit.id).ToList();
+                            for (int i = 0; i < sort1.Count(); i++)
+                                if ((sort1[i].x != sort2[i].x) || (sort1[i].y != sort2[i].y))
+                                {
+                                    if (sort1[i].isRealEnd && !sort2[i].isRealEnd)
+                                    {
+                                        TunellCentr TC = (TunellCentr)Arr[sort1[i].x, sort1[i].y].tunell;
+                                        if (!(TC is null) && !TC.Contains(true, sort1[i].id))
+                                        {
+                                            isntEqw = true;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        isntEqw = true;
+                                        break;
+                                    }
+                                }
+
+                            if ((s < sum) && isntEqw)
+                            {
+                                sum = s;
+                                res = T.Item1;
+                            }
+                        }
+                        else
+                            foreach (var unit in T.Item2.First().MakeStep(this, T.Item1, Claster, b))
+                                stack.Push(new Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>(T.Item1.Concat(new List<UnitCentr> { unit }), T.Item2.Skip(1)));
+                    }
+
+                    b = false;
+                }
+                new_units.AddRange(res);
             }
             units = new_units;
 
-        }
-        
-        public TunellCentr Tunell(int x, int y) 
-        { 
-            return (TunellCentr)Arr[x, y].tunell; 
-        }
-        public bool InTunell(int unit_id, Tunell<UnitCentr, int> tunell) 
-        {
-            return InTunell(units.Find(u => u.id == unit_id), tunell);
-        }
-
-        private IEnumerable<UnitCentr> NewUnitsStack(Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>> TT, int min_sum, IEnumerable<UnitCentr> claster, bool b)
-        {
-            int sum = int.MaxValue;
-            Stack<Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>> stack = new Stack<Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>>();
-            stack.Push(TT);
-            IEnumerable<UnitCentr> res = null;
-            while (stack.Count() != 0)
-            {
-                var T = stack.Pop();
-                if (T.Item2.Count() == 0)
-                {
-                    var s = T.Item1.Sum(unit => unit.Manheton(this));
-                    if (s == min_sum)
-                        return T.Item1;
-
-                    if ((s < sum) && isntEqw(claster, T.Item1))
-                    {
-                        sum = s;
-                        res = T.Item1;
-                    }
-                }
-                else
-                    foreach (var unit in T.Item2.First().MakeStep(this, T.Item1, claster, b))
-                        stack.Push(new Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>(T.Item1.Concat(new List<UnitCentr> { unit }), T.Item2.Skip(1)));
-            }
-            return res;
-        }
-        private bool isntEqw(IEnumerable<UnitCentr> units1, IEnumerable<UnitCentr> units2)
-        {
-            var sort1 = units1.OrderBy(unit => unit.id).ToList();
-            var sort2 = units2.OrderBy(unit => unit.id).ToList();
-            for (int i = 0; i < sort1.Count(); i++)
-                if ((sort1[i].x != sort2[i].x) || (sort1[i].y != sort2[i].y))
-                {
-                    if (sort1[i].isRealEnd && !sort2[i].isRealEnd)
-                    {
-                        TunellCentr T = Tunell(sort1[i].x, sort1[i].y);
-                        if (!(T is null) && !T.Contains(true, sort1[i].id))
-                            return true;
-                    }
-                    else
-                        return true;
-                }
-            return false;
         }
 
     }

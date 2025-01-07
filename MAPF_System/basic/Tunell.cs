@@ -19,13 +19,12 @@ namespace MAPF_System
             tunells = new List<Tunell<U, T>>();
             tunell_units = new List<T>();
 
+            tunells.Add(this);
+
             foreach (var tunell in LT)
             {
-                tunells.Add(tunell);
-                foreach (var u in tunell.tunell_units)
-                    tunell_units.Add(u);
-                foreach (var tt in tunell.tunells)
-                    tunells.Add(tt);
+                tunell_units.AddRange(tunell.tunell_units);
+                tunells.AddRange(tunell.tunells);
             }
 
             foreach (var Unit in board.units)

@@ -31,7 +31,7 @@ namespace MAPF_System
                 int k = 0;
                 for (int i = 0; i < X; i++)
                     for (int j = 0; j < Y; j++)
-                        if (!(IsBad(i, j) || Arr[i, j].isBlock))
+                        if (!(Arr[i, j].isBad || Arr[i, j].isBlock))
                         {
                             // Проверка на отсутсвие целей
                             bool b = true;
@@ -44,7 +44,7 @@ namespace MAPF_System
                                 for (int w = 0; w < 4; w++)
                                 {
                                     int newI = i + xx[w], newJ = j + yy[w];
-                                    if (!IsEmpthy(newI, newJ) || IsBad(newI, newJ))
+                                    if (!IsEmpthy(newI, newJ) || Arr[newI, newJ].isBad)
                                         kk ++;
                                 }
 
@@ -82,7 +82,7 @@ namespace MAPF_System
                                 for (int w = 0; w < 4; w++)
                                 {
                                     int newI = i + xx[w], newJ = j + yy[w];
-                                    if (IsTunell(newI, newJ) && !IsBad(newI, newJ))
+                                    if (IsTunell(newI, newJ) && !Arr[newI, newJ].isBad)
                                         LT.Add(Arr[newI, newJ].tunell);
                                 }
 
@@ -138,24 +138,10 @@ namespace MAPF_System
        
         public bool IsEmpthyAndNoTunel(int x, int y)
         {
-            // Проверка на выход за пределы поля
-            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
-                return false;
-            if (Arr[x, y].isTunell)
-                return false;
-            return !Arr[x, y].isBlock;
+            return !((x < 0) || (y < 0) || (x >= X) || (y >= Y) || Arr[x, y].isTunell || Arr[x, y].isBlock);
         }
         public bool IsBadCell(int x, int y) { return Arr[x, y].isBad; }
         public void MakeVisit(int x, int y, int id) { Arr[x, y].MakeVisit(id); }
-        public int TunellId(int x, int y) { return ((TunellDec)Arr[x, y].tunell).id; }
-
-        private bool IsBad(int x, int y)
-        {
-            // Проверка на выход за пределы поля
-            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
-                return false;
-            return Arr[x, y].isBad;
-        }
 
     }
 }

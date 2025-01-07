@@ -16,16 +16,16 @@ namespace MAPF_System
         {
             if (!isReal)
                 foreach (var Unit_id in (from unit in board.units select unit.id).Except(tunell_units))
-                    if (((BoardCentr)board).InTunell(Unit_id, this))
+                    if (board.InTunell(board.units.Find(u => u.id == Unit_id), this))
                         return false;
 
             List<int> lst = new List<int>();
             foreach (var Unit_id in tunell_units)
             {
                 lst.Add(Unit_id);
-                bool b = ((BoardCentr)board).InTunell(Unit_id, this);
+                bool b = false;
                 foreach (var tunell in tunells)
-                    b = b || ((BoardCentr)board).InTunell(Unit_id, tunell);
+                    b = b || board.InTunell(board.units.Find(u => u.id == Unit_id), tunell);
                 if (!b)
                     return lst.Contains(id);
             }

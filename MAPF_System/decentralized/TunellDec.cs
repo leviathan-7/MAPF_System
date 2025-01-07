@@ -15,7 +15,7 @@ namespace MAPF_System
             {
                 foreach (var Unit in tunell_units)
                 {
-                    bool b = board.InTunell(Unit, this);
+                    bool b = false;
                     foreach (var tunell in tunells)
                         b = b || board.InTunell(Unit, tunell);
                     if (!b)
@@ -35,7 +35,7 @@ namespace MAPF_System
             {
                 if (Unit.isRealEnd)
                     Unit.flag = false;
-                bool t = Board.InTunell(Unit, this);
+                bool t = false;
                 foreach (var tunell in tunells)
                     t = t || Board.InTunell(Unit, tunell);
                 b = b && t;

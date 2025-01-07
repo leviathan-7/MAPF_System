@@ -80,8 +80,6 @@ namespace MAPF_System
                         was_near_end = true;
                         spec = X_Board * Y_Board;
                     }
-                    // Помечаем клетку как посещенную
-                    Board.MakeVisit(x, y, id);
                     if (!was_near_end)
                         Arr[x, y] += 4;
                     return;
@@ -100,14 +98,12 @@ namespace MAPF_System
             StartSpec();
             // Проверяем, надо ли ставить флаг того, что 2 юнита оказались в тупике и им надо на места друг-друга
             int t = 0;
-            if (!Board.IsEmpthyAndNoTunel(x, y - 1))
-                t++;
-            if (!Board.IsEmpthyAndNoTunel(x, y + 1))
-                t++;
-            if (!Board.IsEmpthyAndNoTunel(x - 1, y))
-                t++;
-            if (!Board.IsEmpthyAndNoTunel(x + 1, y))
-                t++;
+
+            int[] _x = { -1, 1, 0, 0 }, _y = { 0, 0, -1, 1 };
+            for (int w = 0; w < 4; w++)
+                if (!Board.IsEmpthyAndNoTunel(x + _x[w], y + _y[w]))
+                    t++;
+
             if ((RealManheton(x, y) == 1) && (t >= 2))
                 flag = signal;
             if (flag)
@@ -344,13 +340,14 @@ namespace MAPF_System
             // Случай, когда простой туннель
             if (Board.IsTunell(x, y))
             {
-                if (Board.TunellId(x, y) == id)
+                int ID = (Board.Tunell(x, y) as TunellDec).id;
+                if (ID == id)
                 {
                     if (g == Math.Abs(x - this.x) + Math.Abs(y - this.y))
                         GreatFlag = true;
                     return 1;
                 }
-                if (!(Board.TunellId(x, y) == -1))
+                if (!(ID == -1))
                     return int.MaxValue / 2;
             }
             // Если глубина не достигнута, тогда рассматриваем клетки, в которые можем попасть

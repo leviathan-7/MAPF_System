@@ -13,8 +13,9 @@ namespace MAPF_System
     public class Board<U, T> where U : Unit
     {
         protected Cell<U, T>[,] Arr;
-        protected Random rnd;
         protected List<Tunell<U, T>> tunells;
+        protected bool AreNotTunells;
+        private Random rnd;
         public List<U> units { get; protected set; }
         public string name { get; protected set; }
         public bool WasGame { get; protected set; }
@@ -332,6 +333,7 @@ namespace MAPF_System
             return name;
         }
         public bool InTunell(Unit unit, Tunell<U, T> tunell) { return Arr[unit.x, unit.y].tunell == tunell; }
+        public Tunell<U, T> Tunell(int x, int y) { return Arr[x, y].tunell; }
         public void Draw(Graphics t, bool b = true, Tuple<int, int> C = null, Tuple<int, int> C1 = null, bool viewtunnel = true)
         {
             int height = 18;

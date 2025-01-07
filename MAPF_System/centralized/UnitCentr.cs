@@ -75,7 +75,7 @@ namespace MAPF_System
         {
             int s = FindMin(x, y, board, true);
 
-            TunellCentr T = board.Tunell(x, y);
+            TunellCentr T = board.Tunell(x, y) as TunellCentr;
             int a = Arr[x, y];
             if (!(T is null) && !T.Contains(false, id))
                 return 1000 + s + 2 * a;
@@ -92,27 +92,24 @@ namespace MAPF_System
             if (s <= 1)
                 return s;
             List<int> list = new List<int>();
+            int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
             if (iter)
             {
-                if (board.IsEmpthy(x + 1, y))
-                    list.Add(FindMin(x + 1, y, board, !iter));
-                if (board.IsEmpthy(x - 1, y))
-                    list.Add(FindMin(x - 1, y, board, !iter));
-                if (board.IsEmpthy(x, y + 1))
-                    list.Add(FindMin(x, y + 1, board, !iter));
-                if (board.IsEmpthy(x, y - 1))
-                    list.Add(FindMin(x, y - 1, board, !iter));
+                for (int w = 0; w < 4; w++)
+                {
+                    int newI = x + xx[w], newJ = y + yy[w];
+                    if (board.IsEmpthy(newI, newJ))
+                        list.Add(FindMin(newI, newJ, board, !iter));
+                }
             }
             else
             {
-                if (board.IsEmpthy(x + 1, y))
-                    list.Add(RealManheton(x + 1, y));
-                if (board.IsEmpthy(x - 1, y))
-                    list.Add(RealManheton(x - 1, y));
-                if (board.IsEmpthy(x, y + 1))
-                    list.Add(RealManheton(x, y + 1));
-                if (board.IsEmpthy(x, y - 1))
-                    list.Add(RealManheton(x, y - 1));
+                for (int w = 0; w < 4; w++)
+                {
+                    int newI = x + xx[w], newJ = y + yy[w];
+                    if (board.IsEmpthy(newI, newJ))
+                        list.Add(RealManheton(newI, newJ));
+                }
             }
             return 1 + list.Min();
         }
