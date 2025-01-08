@@ -23,8 +23,6 @@ namespace MAPF_System
             // Обнуление значений was_step
             foreach (var Unit in units)
                 Unit.NotWasStep();
-            // Добавить блоки в пределах видимости юнитов
-            MakeBlocks(Board);
             // Добавить плохие узлы
             while (true)
             {

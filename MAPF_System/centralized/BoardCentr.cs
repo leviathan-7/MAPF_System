@@ -21,8 +21,6 @@ namespace MAPF_System
         
         public void MakeStep(BoardCentr Board)
         {
-            // Добавить блоки в пределах видимости юнитов
-            MakeBlocks(Board);
             // Добавить узлы -- части туннелей
             if (!AreNotTunells)
                 while (true)

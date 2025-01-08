@@ -7,6 +7,7 @@ using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace MAPF_System
 {
@@ -45,9 +46,9 @@ namespace MAPF_System
             }
         }
 
-        public Board(int X, int Y, int Blocks, int N_Units)
+        public Board(int X, int Y, int Blocks, int N_Units) 
+            : this(X, Y, new Cell<U, T>[X, Y], new List<U>(), "", new List<Tunell<U, T>>())
         {
-            Constructor(X, Y, new Cell<U, T>[X, Y], new List<U>(), "", new List<Tunell<U, T>>());
             rnd = new Random();
             int x = rnd.Next(X);
             int y = rnd.Next(Y);
@@ -171,7 +172,12 @@ namespace MAPF_System
         }
         public Board(int X, int Y, Cell<U, T>[,] Arr, List<U> units, string name, List<Tunell<U, T>> tunells)
         {
-            Constructor(X, Y, Arr, units, name, tunells);
+            this.name = name;
+            this.X = X;
+            this.Y = Y;
+            this.Arr = Arr;
+            this.units = units;
+            this.tunells = tunells;
         }
 
         public void DelBlokcs()
@@ -306,6 +312,19 @@ namespace MAPF_System
         }
         public void MakeStep(Board<U, T> Board, int kol_iter_a_star)
         {
+            // Добавить блоки в пределах видимости юнитов
+            int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
+            foreach (var Unit in units)
+                for (int w = 0; w < 4; w++)
+                {
+                    int newI = Unit.x + xx[w], newJ = Unit.y + yy[w];
+                    // Проверка на выход за пределы поля
+                    if ((newI < 0) || (newJ < 0) || (newI >= X) || (newJ >= Y))
+                        continue;
+                    if (Board.Arr[newI, newJ].isBlock)
+                        Arr[newI, newJ].isBlock = true;
+                }
+
             if (this is BoardCentr)
                 (this as BoardCentr).MakeStep(Board as BoardCentr);
             if (this is BoardDec)
@@ -406,34 +425,6 @@ namespace MAPF_System
                     }
                 }
             }
-        }
-
-        protected void MakeBlocks(Board<U, T> Board)
-        {
-            int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
-            foreach (var Unit in units)
-                for (int w = 0; w < 4; w++)
-                {
-                    int newI = Unit.x + xx[w], newJ = Unit.y + yy[w];
-                    if (Board.IsBlock(newI, newJ))
-                        Arr[newI, newJ].isBlock = true;
-                }
-        }
-        private bool IsBlock(int x, int y)
-        {
-            // Проверка на выход за пределы поля
-            if ((x < 0) || (y < 0) || (x >= X) || (y >= Y))
-                return false;
-            return Arr[x, y].isBlock;
-        }
-        private void Constructor(int X, int Y, Cell<U, T>[,] Arr, List<U> units, string name, List<Tunell<U, T>> tunells)
-        {
-            this.name = name;
-            this.X = X;
-            this.Y = Y;
-            this.Arr = Arr;
-            this.units = units;
-            this.tunells = tunells;
         }
 
     }
