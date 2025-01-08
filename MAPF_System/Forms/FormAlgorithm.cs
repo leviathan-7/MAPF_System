@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CustomControls.Style;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -52,35 +53,16 @@ namespace MAPF_System
             if (block_elem || was_game)
             {
                 was_game = true;
-                button_Start.Dispose();
-                Controls.Remove(button_Start);
-                button_Step.Dispose();
-                Controls.Remove(button_Step);
-                ButtonPlusUnit.Dispose();
-                Controls.Remove(ButtonPlusUnit);
-                ButtonMinusUnit.Dispose();
-                Controls.Remove(ButtonMinusUnit);
-                ButtonPlusRow.Dispose();
-                Controls.Remove(ButtonPlusRow);
-                ButtonPlusColumn.Dispose();
-                Controls.Remove(ButtonPlusColumn);
-                ButtonDelBlock.Dispose();
-                Controls.Remove(ButtonDelBlock);
-                ButtonDelUnits.Dispose();
-                Controls.Remove(ButtonDelUnits);
-                label4.Text = "";
-                label7.Text = "";
-                label8.Text = "";
-                label10.Text = "";
-                label11.Text = "";
-                label12.Text = "";
-                label13.Text = "";
-                label14.Text = "";
-                label15.Text = "";
-                label16.Text = "";
-                label17.Text = "";
-                label21.Text = "";
-                label22.Text = "";
+
+                new List<RJButton>() { button_Start, button_Step, ButtonPlusUnit, ButtonMinusUnit, ButtonPlusRow,
+                    ButtonPlusColumn, ButtonDelBlock, ButtonDelUnits}.ForEach(b => 
+                    {
+                        b.Dispose();
+                        Controls.Remove(b);
+                    });
+
+                new List<Label>() { label4, label7, label8, label10, label11, label12, label13, label14, label15,
+                    label16, label17, label21, label22}.ForEach(label => label.Text = "");
             }
         }
 
@@ -156,9 +138,7 @@ namespace MAPF_System
 
         private Tuple<int, int> CELL(MouseEventArgs e)
         {
-            int height = 18;
-            if (Math.Max(Board.X, Board.Y) < 30)
-                height = 24;
+            int height = Math.Max(Board.X, Board.Y) < 30 ? 24 : 18;
             return new Tuple<int, int>((e.Location.X - 100) / height, (e.Location.Y - 120) / height);
         }
         
@@ -180,9 +160,8 @@ namespace MAPF_System
             if (was_game)
                 return;
             var C1 = CELL(e);
-            if (move)
-                if(Board.Move(C, C1))
-                    Board.Draw(CreateGraphics(), false, C);
+            if (move && Board.Move(C, C1))
+                Board.Draw(CreateGraphics(), false, C);
             C = C1;
             move = !move;
         }

@@ -14,10 +14,9 @@ namespace MAPF_System
 
         public bool Contains(bool isReal, int id)
         {
-            if (!isReal)
-                foreach (var Unit_id in (from unit in board.units select unit.id).Except(tunell_units))
-                    if (board.InTunell(board.units.Find(u => u.id == Unit_id), this))
-                        return false;
+            if (!isReal && (from unit in board.units select unit.id).Except(tunell_units)
+                .Any(Unit_id => board.InTunell(board.units.Find(u => u.id == Unit_id), this)))
+                    return false;
 
             List<int> lst = new List<int>();
             foreach (var Unit_id in tunell_units)

@@ -86,9 +86,7 @@ namespace MAPF_System
                                         LT.Add(Arr[newI, newJ].tunell);
                                 }
 
-                                var T = new TunellDec(this, LT, i, j);
-                                Arr[i, j].tunell = T;
-                                tunells.Add(T);
+                                tunells.Add(Arr[i, j].tunell = new TunellDec(this, LT, i, j));
                             }
                         }
 
@@ -99,10 +97,8 @@ namespace MAPF_System
             foreach (var t in tunells)
                 ((TunellDec)t).MakeFlags(this);
             // Сделать шаг теми юнитами, которые еще не достигли своей цели, при этом давая приоритет тем юнитам, которые дальше от цели
-            List<UnitDec> Was_bool_step_units = new List<UnitDec>();
-            List<UnitDec> Was_near_end_units = new List<UnitDec>();
-            List<UnitDec> NOT_Was_near_end_units = new List<UnitDec>();
-            List<UnitDec> Tunell_NOT_Was_near_end_units = new List<UnitDec>();
+            List<UnitDec> Was_bool_step_units = new List<UnitDec>(), Was_near_end_units = new List<UnitDec>(),
+            NOT_Was_near_end_units = new List<UnitDec>(), Tunell_NOT_Was_near_end_units = new List<UnitDec>();
 
             foreach (var Unit in units)
                 if (Unit.was_near_end)
@@ -120,20 +116,12 @@ namespace MAPF_System
                         NOT_Was_near_end_units.Add(Unit);
                 }
 
-
-            foreach (var Unit in NOT_Was_near_end_units.OrderBy(u => -u.F))
-                if (!Unit.isEnd)
-                    Unit.MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
-            foreach (var Unit in Was_near_end_units.OrderBy(u => -u.F))
-                if (!Unit.isEnd)
-                    Unit.MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
-            foreach (var Unit in Tunell_NOT_Was_near_end_units.OrderBy(u => -u.F))
-                if (!Unit.isEnd)
-                    Unit.MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
-            foreach (var Unit in Was_bool_step_units.OrderBy(u => -u.F))
-                if (!Unit.isEnd)
-                    Unit.MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
-
+            new List<List<UnitDec>>() { NOT_Was_near_end_units, Was_near_end_units, Tunell_NOT_Was_near_end_units, Was_bool_step_units }.ForEach(list =>
+            {
+                foreach (var Unit in list.OrderBy(u => -u.F))
+                    if (!Unit.isEnd)
+                        Unit.MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
+            });
         }
        
         public bool IsEmpthyAndNoTunel(int x, int y)

@@ -253,11 +253,8 @@ namespace MAPF_System
         private DataTable makeTable(String str)
         {
             DataTable table = new DataTable(str);
-            table.Columns.Add("Имя файла", typeof(string));
-            table.Columns.Add("Колличество шагов", typeof(string));
-            table.Columns.Add("Площадь", typeof(string));
-            table.Columns.Add("Колличество агентов", typeof(string));
-            table.Columns.Add("Плотность", typeof(string));
+            new List<String>() { "Имя файла", "Колличество шагов", "Площадь", "Колличество агентов", "Плотность" }
+            .ForEach(s => table.Columns.Add(s));
             return table;
         }
 

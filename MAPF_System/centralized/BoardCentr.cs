@@ -51,9 +51,7 @@ namespace MAPF_System
                                             LT.Add(Arr[newI, newJ].tunell);
                                     }
 
-                                    var T = new TunellCentr(this, LT, i, j);
-                                    Arr[i, j].tunell = T;
-                                    tunells.Add(T);
+                                    tunells.Add(Arr[i, j].tunell = new TunellCentr(this, LT, i, j));
                                 }
 
                                 if (kk == 4 && Arr[i,j].wasvisited)

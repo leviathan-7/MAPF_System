@@ -212,12 +212,10 @@ namespace MAPF_System
         }
         public int ReversBlock(Tuple<int, int> c)
         {
-            // Проверка на выход за пределы поля
-            if ((c.Item1 < 0) || (c.Item2 < 0) || (c.Item1 >= X) || (c.Item2 >= Y))
+            if ((c.Item1 < 0) || (c.Item2 < 0) || (c.Item1 >= X) || (c.Item2 >= Y) 
+                || units.Any(unit => (unit.x == c.Item1 && unit.y == c.Item2) || (unit.x_Purpose == c.Item1 && unit.y_Purpose == c.Item2)))
                 return 0;
-            foreach (var unit in units)
-                if (((unit.x == c.Item1) && (unit.y == c.Item2)) || ((unit.x_Purpose == c.Item1) && (unit.y_Purpose == c.Item2)))
-                    return 0;
+
             return Arr[c.Item1, c.Item2].ReversBlock();
         }
         public Tuple<Tuple<int, int>, Tuple<int, int>> MinusUnit()
