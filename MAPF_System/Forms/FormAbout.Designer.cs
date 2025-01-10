@@ -75,9 +75,9 @@ namespace MAPF_System
             // 
             this.groupBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(236)))), ((int)(((byte)(236)))), ((int)(((byte)(236)))));
             this.groupBox1.Location = new System.Drawing.Point(-339, -14);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(1465, 17);
             this.groupBox1.TabIndex = 14;
             this.groupBox1.TabStop = false;
@@ -93,14 +93,14 @@ namespace MAPF_System
             this.button_Close.FlatAppearance.BorderSize = 0;
             this.button_Close.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button_Close.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.button_Close.ForeColor = System.Drawing.Color.Black;
+            this.button_Close.ForeColor = System.Drawing.Color.Red;
             this.button_Close.Location = new System.Drawing.Point(180, 366);
-            this.button_Close.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button_Close.Margin = new System.Windows.Forms.Padding(4);
             this.button_Close.Name = "button_Close";
             this.button_Close.Size = new System.Drawing.Size(417, 78);
             this.button_Close.TabIndex = 10;
             this.button_Close.Text = "❌  Закрыть";
-            this.button_Close.TextColor = System.Drawing.Color.Black;
+            this.button_Close.TextColor = System.Drawing.Color.Red;
             this.button_Close.UseVisualStyleBackColor = false;
             this.button_Close.Click += new System.EventHandler(this.button_Close_Click);
             // 
@@ -116,7 +116,7 @@ namespace MAPF_System
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.KeyPreview = true;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormAbout";
