@@ -25,14 +25,18 @@ namespace MAPF_System
                 tunells.AddRange(tunell.tunells);
             });
 
-            foreach (var Unit in board.units)
-                if ((Unit.x_Purpose == x) && (Unit.y_Purpose == y))
+            var foundUnit = board.units.FirstOrDefault(Unit => (Unit.x_Purpose == x) && (Unit.y_Purpose == y));
+            if (foundUnit != null)
+                switch (this)
                 {
-                    if (this is TunellDec)
-                        tunell_units.Add(Unit);
-                    if (this is TunellCentr)
-                        tunell_units.Add(Unit.id);
-                    break;
+                    case TunellDec _:
+                        tunell_units.Add(foundUnit);
+                        break;
+                    case TunellCentr _:
+                        tunell_units.Add(foundUnit.id);
+                        break;
+                    default:
+                        break;
                 }
         }
     }
