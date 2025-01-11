@@ -48,31 +48,19 @@ namespace MAPF_System
             if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).isEnd)
                 MakeLast(-1, -1);
             last_Unit = null;
-            // Список значений эвристической функции для каждой клетки
-            List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
-            // Список значений расстояний для каждой клетки
-            List<float> rr = new List<float> { -1, -1, -1, -1, -1 };
-            // Список юнитов для каждой клетки
-            List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
-            // Заполняем значения ff и UsUnits
-            IfBoardIsEmpthy(rr, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star);
-            // Помечаем старую клетку как посещенную
-            Board.MakeVisit(x, y, id);
+
             // Находим подходящую нам клетку
-            var T = MIN_I(rr, ff, Board, UsUnits, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 }, -1, -1, kol_iter_a_star);
-            F = T.Item2;
-            was_step = (T.Item1 != -10);
+            var min_i = MIN_I(Board, AnotherUnits, kol_iter_a_star, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 }, -1, -1, false, lasttrue);
+
+            was_step = (min_i != -10);
             if (was_step)
             {
-                was_bool_step = false;
-                InWasStep(T, lasttrue);
-                if (T.Item1 != 4)
+                if (min_i != 4)
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
                     if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).isEnd)
                     {
-                        last__x = -1;
-                        last__y = -1;
+                        MakeLast(-1, -1);
                         last_Unit = null;
                     }
                     if (isRealEnd)
@@ -118,23 +106,14 @@ namespace MAPF_System
                 if (flag)
                     was_near_end = true;
             }
-            // Список значений эвристической функции для каждой клетки
-            List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
-            // Список значений расстояний для каждой клетки
-            List<float> rr = new List<float> { -1, -1, -1, -1, -1 };
-            // Список юнитов для каждой клетки
-            List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
-            // Заполняем значения ff и UsUnits
-            IfBoardIsEmpthy(rr, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star, true);
+            
             // Находим подходящую нам клетку
-            var T = MIN_I(rr, ff, Board, UsUnits, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, kol_iter_a_star);
-            F = T.Item2;
-            was_step = (T.Item1 != -10);
+            var min_i = MIN_I(Board, AnotherUnits, kol_iter_a_star, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, true, lasttrue);
+
+            was_step = (min_i != -10);
             if (was_step)
             {
-                was_bool_step = true;
-                InWasStep(T, lasttrue);
-                if (T.Item1 != 4)
+                if (min_i != 4)
                 {
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
                     var q = AU;
@@ -144,8 +123,7 @@ namespace MAPF_System
                         q = null;
                     }
                     last_Unit = q;
-                    // Помечаем клетку как посещенную
-                    Board.MakeVisit(x, y, id);
+                    
                     if (!was_near_end)
                         Arr[x, y] += 4;
                     return true;
@@ -156,18 +134,52 @@ namespace MAPF_System
 
             return was_step;
         }
-        private void StartSpec()
+        private int MIN_I(BoardDec Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, List<int> a, List<int> b, int xx, int yy, bool is_bool_step, bool lasttrue)
         {
-            if (was_near_end)
-                was_near_end = false;
-            if (spec > 0)
+            // Помечаем клетку как посещенную
+            Board.MakeVisit(x, y, id);
+
+            // Список значений эвристической функции для каждой клетки
+            List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
+            // Список значений расстояний для каждой клетки
+            List<float> rr = new List<float> { -1, -1, -1, -1, -1 };
+            // Список юнитов для каждой клетки
+            List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
+
+            // Заполняем значения ff и UsUnits
+            int[] _xx = { 0, 0, -1, 1 }, _yy = { -1, 1, 0, 0 };
+            Parallel.For(0, 4, (i) =>
             {
-                spec--;
-                was_near_end = true;
-            }
-        }
-        private Tuple<int, float> MIN_I(List<float> rr, List<float> ff, BoardDec Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
-        {
+                int x0 = x + _xx[i], y0 = y + _yy[i];
+                if (Board.IsEmpthy(x0, y0) && (!((last__x == x0) && (last__y == y0)) || is_bool_step))
+                {
+                    float[,,,] ArrG = new float[X_Board, Y_Board, X_Board, Y_Board];
+                    int MaxG = int.MaxValue;
+                    bool GreatFlag = false;
+                    ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step, 1, ref ArrG, ref MaxG, ref GreatFlag);
+                    // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
+                    if (!was_near_end && (ff[i] != 0))
+                        ff[i] += Arr[x0, y0];
+                    rr[i] = (float)Math.Sqrt(Math.Pow(x_Purpose - x0, 2) + Math.Pow(y_Purpose - y0, 2));
+                    // Алгоритм для решения проблемы параллельного хождения
+                    if (was_near_end)
+                        foreach (var au in AnotherUnits)
+                            if ((au.x_Purpose == x0) && (au.y_Purpose == y0))
+                            {
+                                ff[i] += 0.5f;
+                                if (!au.isEnd)
+                                    ff[i] += 0.5f;
+                            }
+                    foreach (var au in AnotherUnits)
+                        if ((au.x == x0) && (au.y == y0))
+                        {
+                            UsUnits[i] = au;
+                            return;
+                        }
+                }
+            });
+
+            // Находим подходящую нам клетку
             ff[4] = int.MaxValue;
             float min = ff[4];
             float minr = ff[4];
@@ -184,7 +196,7 @@ namespace MAPF_System
                     }
                 }
             }
-                
+
             bool bb = min_i != 4;
             was_step = true;
             if (!(UsUnits[min_i] is null))
@@ -252,50 +264,17 @@ namespace MAPF_System
 
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет
             if (!bb)
-                return new Tuple<int, float>(-10, F);
-            
-            // Возвращаем подходящую нам клетку
-            return new Tuple<int, float>(min_i, min);
-        }
-        private void IfBoardIsEmpthy(List<float> rr, List<float> ff, BoardDec Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool is_bool_step = false)
-        {
-            int[] xx = { 0, 0, -1, 1 }, yy = { -1, 1, 0, 0 };
-            Parallel.For(0, 4, (i) =>
-            {
-                int x0 = x + xx[i], y0 = y + yy[i];
-                if (Board.IsEmpthy(x0, y0) && (!((last__x == x0) && (last__y == y0)) || is_bool_step))
-                {
-                    float[,,,] ArrG = new float[X_Board, Y_Board, X_Board, Y_Board];
-                    int MaxG = int.MaxValue;
-                    bool GreatFlag = false;
-                    ff[i] = f(x0, y0, Board, kol_iter_a_star, x, y, is_bool_step, 1, ref ArrG, ref MaxG, ref GreatFlag);
-                    // Добавляем коэффицент на стоимость вершины в виде количества её посещений данным юнитом
-                    if (!was_near_end && (ff[i] != 0))
-                        ff[i] += Arr[x0, y0];
-                    rr[i] = (float)Math.Sqrt(Math.Pow(x_Purpose - x0, 2) + Math.Pow(y_Purpose - y0, 2));
-                    // Алгоритм для решения проблемы параллельного хождения
-                    if (was_near_end)
-                        foreach (var au in AnotherUnits)
-                            if ((au.x_Purpose == x0) && (au.y_Purpose == y0))
-                            {
-                                ff[i] += 0.5f;
-                                if (!au.isEnd)
-                                    ff[i] += 0.5f;
-                            }
-                    foreach (var au in AnotherUnits)
-                        if ((au.x == x0) && (au.y == y0))
-                        {
-                            UsUnits[i] = au;
-                            return;
-                        }
-                }
-            });
+                return -10;
 
-        }
-        private void InWasStep(Tuple<int, float> T, bool lasttrue)
-        {
-            MakeLast(x, y);
-            switch (T.Item1)
+            // если юнит сдвинулся
+            F = min;
+            was_bool_step = is_bool_step;
+            if (lasttrue)
+                MakeLast(-1, -1);
+            else
+                MakeLast(x, y);
+
+            switch (min_i)
             {
                 case 0: y--; break;
                 case 1: y++; break;
@@ -303,8 +282,9 @@ namespace MAPF_System
                 case 3: x++; break;
                 default: break;
             }
-            if (lasttrue)
-                MakeLast(-1, -1);
+
+            // Возвращаем подходящую нам клетку
+            return min_i;
         }
         private float f(int x, int y, BoardDec Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step, int g, ref float[,,,] ArrG, ref int MaxG, ref bool GreatFlag)
         {
@@ -350,7 +330,7 @@ namespace MAPF_System
                 kol_iter_a_star--;
                 // Список значений эвристической функции для каждой клетки
                 List<float> ff = new List<float> { -1, -1, -1, -1, -1 };
-                int[] xx = { 0, 0, -1, 1}, yy = { -1, 1, 0, 0 };
+                int[] xx = { 0, 0, -1, 1 }, yy = { -1, 1, 0, 0 };
                 for (int w = 0; w < 4; w++)
                 {
                     int newI = x + xx[w], newJ = y + yy[w];
@@ -372,10 +352,16 @@ namespace MAPF_System
             // Считаем эвристическую оценку, если максимальная глубина достигнута
             return RealManheton(x, y);
         }
+        private void StartSpec()
+        {
+            if (was_near_end = (spec > 0))
+                spec--;
+        }
         private void MakeLast(int x, int y)
         {
             last__x = x;
             last__y = y;
         }
+    
     }
 }
