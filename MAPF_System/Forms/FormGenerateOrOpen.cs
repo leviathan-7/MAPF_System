@@ -20,7 +20,7 @@ namespace MAPF_System
             InitializeComponent();
             if (args.Length != 0)
             {
-                FormAlgorithm<int> F = new FormAlgorithm<int>(new BoardCentr(args[0]), 0, false, "7", false, false);
+                FormAlgorithm F = new FormAlgorithm(new BoardCentr(args[0]), 0, false, "7", false, false);
                 F.Icon = Icon;
                 F.ShowDialog();
             }
@@ -77,13 +77,13 @@ namespace MAPF_System
             }
             if (isCentr)
             {
-                FormAlgorithm<int> F = new FormAlgorithm<int>(new BoardCentr(X, Y, Blocks, Units), 0, false, "7");
+                FormAlgorithm F = new FormAlgorithm(new BoardCentr(X, Y, Blocks, Units), 0, false, "7");
                 F.Icon = Icon;
                 F.Show();
             }
             else
             {
-                FormAlgorithm<Unit> F = new FormAlgorithm<Unit>(new BoardDec(X, Y, Blocks, Units), 0, false, "7");
+                FormAlgorithm F = new FormAlgorithm(new BoardDec(X, Y, Blocks, Units), 0, false, "7");
                 F.Icon = Icon;
                 F.Show();
             }
@@ -99,7 +99,7 @@ namespace MAPF_System
             label12.Text = "⏳";
             if (isCentr)
             {
-                FormAlgorithm<int> F = new FormAlgorithm<int>(new BoardCentr(), 0, false, "7", false, false);
+                FormAlgorithm F = new FormAlgorithm(new BoardCentr(), 0, false, "7", false, false);
                 if (!F.IsDisposed)
                 {
                     F.Icon = Icon;
@@ -108,7 +108,7 @@ namespace MAPF_System
             }
             else
             {
-                FormAlgorithm<Unit> F = new FormAlgorithm<Unit>(new BoardDec(), 0, false, "7", false, false);
+                FormAlgorithm F = new FormAlgorithm(new BoardDec(), 0, false, "7", false, false);
                 if (!F.IsDisposed)
                 {
                     F.Icon = Icon;
@@ -135,7 +135,7 @@ namespace MAPF_System
                         int kol_iter_a_star = 7;
                         // Максимальное колличество итераций
                         int N = 5000;
-                        Board<Unit> TimeBoard = Board.CopyWithoutBlocks();
+                        Board TimeBoard = Board.CopyWithoutBlocks();
                         int i = 0;
                         while (!TimeBoard.isEnd && (i++) < (N - 1))
                             TimeBoard.MakeStep(Board, kol_iter_a_star);
@@ -174,7 +174,7 @@ namespace MAPF_System
                         double density = 1.0 * Board.units.Count / (Board.X * Board.Y);
                         // Максимальное колличество итераций
                         int N = 5000;
-                        Board<int> TimeBoard = Board.CopyWithoutBlocks();
+                        Board TimeBoard = Board.CopyWithoutBlocks();
                         int i = 0;
                         while (!TimeBoard.isEnd && (i++) < (N - 1))
                             TimeBoard.MakeStep(Board, 0);
@@ -218,14 +218,14 @@ namespace MAPF_System
 
                         if (density >= 0.01)
                         {
-                            Board<int> TimeBoard = Board.CopyWithoutBlocks();
+                            Board TimeBoard = Board.CopyWithoutBlocks();
                             while (!TimeBoard.isEnd && (i++) < (N - 1))
                                 TimeBoard.MakeStep(Board, kol_iter_a_star);
                         }
                         else
                         {
                             BoardDec BoardDec = new BoardDec(f);
-                            Board<Unit> TimeBoard = BoardDec.CopyWithoutBlocks();
+                            Board TimeBoard = BoardDec.CopyWithoutBlocks();
                             while (!TimeBoard.isEnd && (i++) < (N - 1))
                                 TimeBoard.MakeStep(BoardDec, kol_iter_a_star);
                         }

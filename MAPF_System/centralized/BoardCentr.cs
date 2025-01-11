@@ -12,14 +12,14 @@ using System.Collections;
 
 namespace MAPF_System
 {
-    public class BoardCentr : Board<int>
+    public class BoardCentr : Board
     {
         public BoardCentr(int X, int Y, int Blocks, int N_Units) : base(X, Y, Blocks, N_Units) { }
-        public BoardCentr(int X, int Y, Cell<int>[,] Arr, List<Unit> units, string name, List<Tunell<int>> tunells)
+        public BoardCentr(int X, int Y, Cell[,] Arr, List<Unit> units, string name, List<Tunell> tunells)
             : base(X, Y, Arr, units, name, tunells) { }
         public BoardCentr(string path = null) : base(path) { }
         
-        public void MakeStep(BoardCentr Board)
+        public void MakeStep()
         {
             // Добавить узлы -- части туннелей
             if (!AreNotTunells)
@@ -41,7 +41,7 @@ namespace MAPF_System
 
                                 if (!AreNotTunells && kk == 3)
                                 {
-                                    List<Tunell<int>> LT = new List<Tunell<int>>();
+                                    List<Tunell> LT = new List<Tunell>();
                                     for (int w = 0; w < 4; w++)
                                     {
                                         int newI = i + xx[w], newJ = j + yy[w];
@@ -81,7 +81,27 @@ namespace MAPF_System
             foreach (var unit in units)
                 if (!clasterizations.Contains(unit))
                 {
-                    HashSet<Unit> claster = (unit as UnitCentr).FindClaster(units);
+                    // Находим кластер
+                    HashSet<Unit> claster = new HashSet<Unit>() { unit };
+                    Stack<Unit> stack = new Stack<Unit>();
+                    stack.Push(unit);
+                    while (stack.Count() != 0)
+                    {
+                        Unit u = stack.Pop();
+                        units.ForEach(item =>
+                        {
+                            if ((!claster.Contains(item)) &&
+                                ((((u.x + 1 == item.x) || (u.x - 1 == item.x)) && ((u.y == item.y) || (u.y - 1 == item.y) || (u.y + 1 == item.y))) ||
+                                (((u.x + 2 == item.x) || (u.x - 2 == item.x)) && (u.y == item.y)) ||
+                                ((u.x == item.x) && ((u.y - 1 == item.y) || (u.y + 1 == item.y) || (u.y - 2 == item.y) || (u.y + 2 == item.y)))))
+                            {
+                                claster.Add(item);
+                                stack.Push(item);
+                            }
+                        });
+                    }
+
+                    // Добавляем найденный кластер
                     clasters.Add(claster);
                     clasterizations.UnionWith(claster);
                 }

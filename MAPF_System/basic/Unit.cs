@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MAPF_System
 {
@@ -39,10 +40,16 @@ namespace MAPF_System
         public Unit copy
         {
             get 
-            { 
-                if (this is UnitCentr)
-                    return ((UnitCentr)this).copy;
-                return ((UnitDec)this).copy;
+            {
+                switch (this)
+                {
+                    case UnitCentr _:
+                        return ((UnitCentr)this).copy;
+                    case UnitDec _:
+                        return ((UnitDec)this).copy;
+                    default:
+                        return null;
+                }
             }
         }
 

@@ -11,10 +11,10 @@ using System.Xml.Linq;
 
 namespace MAPF_System
 {
-    public class Board<T>
+    public class Board
     {
-        protected Cell<T>[,] Arr;
-        protected List<Tunell<T>> tunells;
+        protected Cell[,] Arr;
+        protected List<Tunell> tunells;
         protected bool AreNotTunells;
         private Random rnd;
         public List<Unit> units { get; protected set; }
@@ -47,7 +47,7 @@ namespace MAPF_System
         }
 
         public Board(int X, int Y, int Blocks, int N_Units) 
-            : this(X, Y, new Cell<T>[X, Y], new List<Unit>(), "", new List<Tunell<T>>())
+            : this(X, Y, new Cell[X, Y], new List<Unit>(), "", new List<Tunell>())
         {
             rnd = new Random();
             int x = rnd.Next(X);
@@ -57,7 +57,7 @@ namespace MAPF_System
             int x_sum = x;
             int y_sum = y;
             int kol = 1;
-            Arr[x, y] = new Cell<T>(false);
+            Arr[x, y] = new Cell(false);
             while (N > 0)
             {
                 int x1 = rnd.Next(X);
@@ -87,7 +87,7 @@ namespace MAPF_System
                 bool d = (y == Y - 1) || (Arr[x, y + 1] is null);
                 if (Arr[x, y] is null && !(a && b && c && d))
                 {
-                    Arr[x, y] = new Cell<T>(false);
+                    Arr[x, y] = new Cell(false);
                     N--;
                 }
             }
@@ -105,10 +105,7 @@ namespace MAPF_System
                         && !((Unit.x == x_Purpose) && (Unit.y == y_Purpose)) && !((Unit.x_Purpose == x) && (Unit.y_Purpose == y));
                 if (b)
                 {
-                    if (this is BoardCentr)
-                        units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
-                    if (this is BoardDec)
-                        units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
+                    addUnits(x, y, x_Purpose, y_Purpose, id);
                     N_Units--;
                     id++;
                 }
@@ -117,7 +114,7 @@ namespace MAPF_System
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y; j++)
                     if (Arr[i, j] is null)
-                        Arr[i, j] = new Cell<T>(true);
+                        Arr[i, j] = new Cell(true);
         }
         public Board(string path = null)
         {
@@ -145,32 +142,39 @@ namespace MAPF_System
                 // Была ли игра
                 WasGame = (arr[3] == "True");
                 // Создать доску по данным файла
-                Arr = new Cell<T>[X, Y];
+                Arr = new Cell[X, Y];
                 int t = 1;
                 for (int i = 0; i < X; i++)
                     for (int j = 0; j < Y; j++)
                     {
-                        Arr[i, j] = new Cell<T>(readText[t]);
+                        Arr[i, j] = new Cell(readText[t]);
                         t++;
                     }
                 // Создать юнитов по данным файла
                 units = new List<Unit>();
                 for (int i = 0; i < N_Units; i++)
                 {
-                    if (this is BoardCentr)
-                        units.Add(new UnitCentr(readText[t], i, X, Y));
-                    if (this is BoardDec)
-                        units.Add(new UnitDec(readText[t], i, X, Y));
+                    switch (this)
+                    {
+                        case BoardCentr _:
+                            units.Add(new UnitCentr(readText[t], i, X, Y));
+                            break;
+                        case BoardDec _:
+                            units.Add(new UnitDec(readText[t], i, X, Y));
+                            break;
+                        default:
+                            break;
+                    }
                     t++;
                 }
-                tunells = new List<Tunell<T>>();
+                tunells = new List<Tunell>();
             }
             catch (Exception)
             {
                 MessageBox.Show("Файл повреждён.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        public Board(int X, int Y, Cell<T>[,] Arr, List<Unit> units, string name, List<Tunell<T>> tunells)
+        public Board(int X, int Y, Cell[,] Arr, List<Unit> units, string name, List<Tunell> tunells)
         {
             this.name = name;
             this.X = X;
@@ -248,12 +252,12 @@ namespace MAPF_System
         public void PlusColumn()
         {
             X++;
-            var arr = new Cell<T>[X, Y];
+            var arr = new Cell[X, Y];
             for (int i = 0; i < X - 1; i++)
                 for (int j = 0; j < Y; j++)
                     arr[i, j] = Arr[i, j];
             for (int j = 0; j < Y; j++)
-                arr[X - 1, j] = new Cell<T>(false);
+                arr[X - 1, j] = new Cell(false);
             Arr = arr;
             foreach (var unit in units)
                 unit.NewArr(X, Y);
@@ -261,12 +265,12 @@ namespace MAPF_System
         public void PlusRow()
         {
             Y++;
-            var arr = new Cell<T>[X, Y];
+            var arr = new Cell[X, Y];
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y - 1; j++)
                     arr[i, j] = Arr[i, j];
             for (int i = 0; i < X; i++)
-                arr[i, Y - 1] = new Cell<T>(false);
+                arr[i, Y - 1] = new Cell(false);
             Arr = arr;
             foreach (var unit in units)
                 unit.NewArr(X, Y);
@@ -291,27 +295,31 @@ namespace MAPF_System
                         && !((Unit.x == x_Purpose) && (Unit.y == y_Purpose)) && !((Unit.x_Purpose == x) && (Unit.y_Purpose == y));
                 if (b)
                 {
-                    if (this is BoardCentr)
-                        units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y));
-                    if (this is BoardDec)
-                        units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y));
+                    addUnits(x, y, x_Purpose, y_Purpose, units.Count);
                     return;
                 }
             }
         }
-        public Board<T> CopyWithoutBlocks()
+        public Board CopyWithoutBlocks()
         {
-            Cell<T>[,] CopyArr = new Cell<T>[X, Y];
+            Cell[,] CopyArr = new Cell[X, Y];
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y; j++)
                     CopyArr[i, j] = Arr[i, j].copyWithoutBlock;
 
             List<Unit> copy = units.Select(unit => unit.copy).ToList();
-            if (this is BoardCentr)
-                return new BoardCentr(X, Y, CopyArr as Cell<int>[,], copy, name, tunells as List<Tunell<int>>) as Board<T>;
-            return new BoardDec(X, Y, CopyArr as Cell<Unit>[,], copy, name, tunells as List<Tunell<Unit>>) as Board<T>;
+
+            switch (this)
+            {
+                case BoardCentr _:
+                    return new BoardCentr(X, Y, CopyArr, copy, name, tunells);
+                case BoardDec _:
+                    return new BoardDec(X, Y, CopyArr, copy, name, tunells);
+                default:
+                    return null;
+            }
         }
-        public void MakeStep(Board<T> Board, int kol_iter_a_star)
+        public void MakeStep(Board Board, int kol_iter_a_star)
         {
             // Добавить блоки в пределах видимости юнитов
             int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
@@ -325,11 +333,17 @@ namespace MAPF_System
                     if (Board.Arr[newI, newJ].isBlock)
                         Arr[newI, newJ].isBlock = true;
                 }
-
-            if (this is BoardCentr)
-                (this as BoardCentr).MakeStep(Board as BoardCentr);
-            if (this is BoardDec)
-                (this as BoardDec).MakeStep(Board as BoardDec, kol_iter_a_star);
+            switch (this)
+            {
+                case BoardCentr _:
+                    (this as BoardCentr).MakeStep();
+                    break;
+                case BoardDec _:
+                    (this as BoardDec).MakeStep(kol_iter_a_star);
+                    break;
+                default:
+                    break;
+            }
         }
         public string Save(string name_, bool b = false)
         {
@@ -350,8 +364,8 @@ namespace MAPF_System
             catch (Exception) { }
             return name;
         }
-        public bool InTunell(Unit unit, Tunell<T> tunell) { return Arr[unit.x, unit.y].tunell == tunell; }
-        public Tunell<T> Tunell(int x, int y) { return Arr[x, y].tunell; }
+        public bool InTunell(Unit unit, Tunell tunell) { return Arr[unit.x, unit.y].tunell == tunell; }
+        public Tunell Tunell(int x, int y) { return Arr[x, y].tunell; }
         public void Draw(Graphics t, bool b = true, Tuple<int, int> C = null, Tuple<int, int> C1 = null, bool viewtunnel = true)
         {
             int height = 18;
@@ -428,5 +442,20 @@ namespace MAPF_System
             }
         }
 
+        private void addUnits(int x, int y, int x_Purpose, int y_Purpose, int id)
+        {
+            switch (this)
+            {
+                case BoardCentr _:
+                    units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
+                    break;
+                case BoardDec _:
+                    units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
+                    break;
+                default:
+                    break;
+            }
+        }
+    
     }
 }

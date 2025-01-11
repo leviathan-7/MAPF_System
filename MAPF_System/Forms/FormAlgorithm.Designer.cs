@@ -1,7 +1,7 @@
 ﻿
 namespace MAPF_System
 {
-    partial class FormAlgorithm<T>
+    partial class FormAlgorithm
     {
         /// <summary>
         /// Required designer variable.

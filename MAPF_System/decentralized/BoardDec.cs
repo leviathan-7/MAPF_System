@@ -11,14 +11,14 @@ using System.Media;
 
 namespace MAPF_System
 {
-    public class BoardDec : Board<Unit>
+    public class BoardDec : Board
     {
         public BoardDec(int X, int Y, int Blocks, int N_Units) : base(X, Y, Blocks, N_Units) { }
-        public BoardDec(int X, int Y, Cell<Unit>[,] Arr, List<Unit> units, string name, List<Tunell<Unit>> tunells)
+        public BoardDec(int X, int Y, Cell[,] Arr, List<Unit> units, string name, List<Tunell> tunells)
             : base(X, Y, Arr, units, name, tunells) { }
         public BoardDec(string path = null) : base(path) { }
 
-        public void MakeStep(BoardDec Board, int kol_iter_a_star)
+        public void MakeStep(int kol_iter_a_star)
         {
             // Обнуление значений was_step
             foreach (var Unit in units)
@@ -76,7 +76,7 @@ namespace MAPF_System
 
                             if (kk == 3)
                             {
-                                List<Tunell<Unit>> LT = new List<Tunell<Unit>>();
+                                List<Tunell> LT = new List<Tunell>();
                                 for (int w = 0; w < 4; w++)
                                 {
                                     int newI = i + xx[w], newJ = j + yy[w];

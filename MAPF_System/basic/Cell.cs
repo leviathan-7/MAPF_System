@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace MAPF_System
 {
-    public class Cell<T>
+    public class Cell
     {
-        public Tunell<T> tunell;
+        public Tunell tunell;
         public bool isBlock;
         public bool wasvisited { get; private set; }
         public int idVisit { get; private set; }
@@ -22,9 +22,9 @@ namespace MAPF_System
         { 
             get { return isBlock + " " + wasvisited + " " + idVisit + " " + isBad; } 
         }
-        public Cell<T> copyWithoutBlock
+        public Cell copyWithoutBlock
         { 
-            get { return new Cell<T>(false, wasvisited, idVisit, isBad); }
+            get { return new Cell(false, wasvisited, idVisit, isBad); }
         } 
 
         public Cell(bool isBlock, bool wasvisited = false, int idVisit = -1, bool isBad = false)

@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace MAPF_System
 {
-    public class Tunell<T>
+    public class Tunell
     {
-        protected Board<T> board;
-        protected List<Tunell<T>> tunells;
-        protected List<T> tunell_units;
+        protected Board board;
+        protected List<Tunell> tunells;
+        protected List<object> tunell_units;
 
-        public Tunell(Board<T> board, List<Tunell<T>> LT, int x, int y)
+        public Tunell(Board board, List<Tunell> LT, int x, int y)
         {
             this.board = board;
-            tunells = new List<Tunell<T>>() { this };
-            tunell_units = new List<T>();
+            tunells = new List<Tunell>() { this };
+            tunell_units = new List<object>();
 
             LT.ForEach(tunell =>
             {
@@ -29,9 +29,9 @@ namespace MAPF_System
                 if ((Unit.x_Purpose == x) && (Unit.y_Purpose == y))
                 {
                     if (this is TunellDec)
-                        (this as TunellDec).tunell_units.Add(Unit);
+                        tunell_units.Add(Unit);
                     if (this is TunellCentr)
-                        (this as TunellCentr).tunell_units.Add(Unit.id);
+                        tunell_units.Add(Unit.id);
                     break;
                 }
         }

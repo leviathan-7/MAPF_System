@@ -51,29 +51,6 @@ namespace MAPF_System
                 
             return lstUnits;
         }
-        public HashSet<Unit> FindClaster(List<Unit> units)
-        {
-            HashSet<Unit> claster = new HashSet<Unit>() { this };
-            Stack<Unit> stack = new Stack<Unit>();
-            stack.Push(this);
-            while (stack.Count() != 0)
-            {
-                Unit u = stack.Pop();
-                units.ForEach(unit => 
-                {
-                    if ((!claster.Contains(unit)) &&
-                        ((((u.x + 1 == unit.x) || (u.x - 1 == unit.x)) && ((u.y == unit.y) || (u.y - 1 == unit.y) || (u.y + 1 == unit.y))) ||
-                        (((u.x + 2 == unit.x) || (u.x - 2 == unit.x)) && (u.y == unit.y)) ||
-                        ((u.x == unit.x) && ((u.y - 1 == unit.y) || (u.y + 1 == unit.y) || (u.y - 2 == unit.y) || (u.y + 2 == unit.y)))))
-                    {
-                        claster.Add(unit);
-                        stack.Push(unit);
-                    }
-                });
-            }
-
-            return claster;
-        }
         public int Manheton(BoardCentr board)
         {
             // Находим минимальное значение для вычесления расстояния
