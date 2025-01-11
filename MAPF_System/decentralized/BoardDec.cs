@@ -11,10 +11,10 @@ using System.Media;
 
 namespace MAPF_System
 {
-    public class BoardDec : Board<UnitDec, Unit>
+    public class BoardDec : Board<Unit>
     {
         public BoardDec(int X, int Y, int Blocks, int N_Units) : base(X, Y, Blocks, N_Units) { }
-        public BoardDec(int X, int Y, Cell<UnitDec, Unit>[,] Arr, List<UnitDec> units, string name, List<Tunell<UnitDec, Unit>> tunells)
+        public BoardDec(int X, int Y, Cell<Unit>[,] Arr, List<Unit> units, string name, List<Tunell<Unit>> tunells)
             : base(X, Y, Arr, units, name, tunells) { }
         public BoardDec(string path = null) : base(path) { }
 
@@ -22,7 +22,7 @@ namespace MAPF_System
         {
             // Обнуление значений was_step
             foreach (var Unit in units)
-                Unit.NotWasStep();
+                (Unit as UnitDec).NotWasStep();
             // Добавить плохие узлы
             while (true)
             {
@@ -76,7 +76,7 @@ namespace MAPF_System
 
                             if (kk == 3)
                             {
-                                List<Tunell<UnitDec, Unit>> LT = new List<Tunell<UnitDec, Unit>>();
+                                List<Tunell<Unit>> LT = new List<Tunell<Unit>>();
                                 for (int w = 0; w < 4; w++)
                                 {
                                     int newI = i + xx[w], newJ = j + yy[w];
@@ -95,13 +95,13 @@ namespace MAPF_System
             foreach (var t in tunells)
                 ((TunellDec)t).MakeFlags(this);
             // Сделать шаг теми юнитами, которые еще не достигли своей цели, при этом давая приоритет тем юнитам, которые дальше от цели
-            List<UnitDec> Was_bool_step_units = new List<UnitDec>(), Was_near_end_units = new List<UnitDec>(),
-            NOT_Was_near_end_units = new List<UnitDec>(), Tunell_NOT_Was_near_end_units = new List<UnitDec>();
+            List<Unit> Was_bool_step_units = new List<Unit>(), Was_near_end_units = new List<Unit>(),
+            NOT_Was_near_end_units = new List<Unit>(), Tunell_NOT_Was_near_end_units = new List<Unit>();
 
             foreach (var Unit in units)
-                if (Unit.was_near_end)
+                if ((Unit as UnitDec).was_near_end)
                 {
-                    if (Unit.was_bool_step)
+                    if ((Unit as UnitDec).was_bool_step)
                         Was_bool_step_units.Add(Unit);
                     else
                         Was_near_end_units.Add(Unit);
@@ -114,11 +114,11 @@ namespace MAPF_System
                         NOT_Was_near_end_units.Add(Unit);
                 }
 
-            new List<List<UnitDec>>() { NOT_Was_near_end_units, Was_near_end_units, Tunell_NOT_Was_near_end_units, Was_bool_step_units }.ForEach(list =>
+            new List<List<Unit>>() { NOT_Was_near_end_units, Was_near_end_units, Tunell_NOT_Was_near_end_units, Was_bool_step_units }.ForEach(list =>
             {
-                foreach (var Unit in list.OrderBy(u => -u.F))
+                foreach (var Unit in list.OrderBy(u => -(u as UnitDec).F))
                     if (!Unit.isEnd)
-                        Unit.MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
+                        (Unit as UnitDec).MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
             });
         }
        

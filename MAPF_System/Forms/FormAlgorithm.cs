@@ -12,15 +12,15 @@ using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public partial class FormAlgorithm<U, T> : Form where U : Unit
+    public partial class FormAlgorithm<T> : Form
     {
-        private Board<U, T> Board;
+        private Board<T> Board;
         private bool was_game;
         private bool move;
         private Tuple<int, int> C;
         private Tuple<int, int> CC;
 
-        public FormAlgorithm(Board<U, T> Board, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false, bool viewtunnel = true)
+        public FormAlgorithm(Board<T> Board, int kol_iterat = 0, bool error = false, string str_kol_iter_a_star = "", bool block_elem = false, bool viewtunnel = true)
         {
             if (Board.units is null)
             {
@@ -76,11 +76,11 @@ namespace MAPF_System
             }
             // Максимальное колличество итераций
             int N = 5000;
-            Board<U, T> TimeBoard = Board.CopyWithoutBlocks();
+            Board<T> TimeBoard = Board.CopyWithoutBlocks();
             int i = 0;
             while (!TimeBoard.isEnd && (i++) < (N - 1))
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
-            FormAlgorithm<U, T> F = new FormAlgorithm<U, T>(TimeBoard, i, i == N, "" + kol_iter_a_star, true);
+            FormAlgorithm<T> F = new FormAlgorithm<T>(TimeBoard, i, i == N, "" + kol_iter_a_star, true);
             F.Icon = Icon;
             F.Show();
         }
@@ -93,9 +93,9 @@ namespace MAPF_System
                 label_Error.Text = "Глубина не верна!";
                 return;
             }
-            Board<U, T> TimeBoard = Board.CopyWithoutBlocks();
+            Board<T> TimeBoard = Board.CopyWithoutBlocks();
             int i = 1;
-            FormAlgorithm<U, T> F = new FormAlgorithm<U, T>(TimeBoard, 0, false, "" + kol_iter_a_star, true);
+            FormAlgorithm<T> F = new FormAlgorithm<T>(TimeBoard, 0, false, "" + kol_iter_a_star, true);
             F.Icon = Icon;
             F.Show();
             while (!TimeBoard.isEnd) 

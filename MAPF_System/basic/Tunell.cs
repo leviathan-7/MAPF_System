@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace MAPF_System
 {
-    public class Tunell<U, T> where U : Unit 
+    public class Tunell<T>
     {
-        protected Board<U, T> board;
-        protected List<Tunell<U, T>> tunells;
+        protected Board<T> board;
+        protected List<Tunell<T>> tunells;
         protected List<T> tunell_units;
 
-        public Tunell(Board<U, T> board, List<Tunell<U, T>> LT, int x, int y)
+        public Tunell(Board<T> board, List<Tunell<T>> LT, int x, int y)
         {
             this.board = board;
-            tunells = new List<Tunell<U, T>>() { this };
+            tunells = new List<Tunell<T>>() { this };
             tunell_units = new List<T>();
 
             LT.ForEach(tunell =>

@@ -17,7 +17,7 @@ namespace MAPF_System
         public bool was_near_end { get; private set; }
         public bool was_bool_step { get; private set; }
         public float F { get; private set; }
-        public UnitDec copy
+        public new UnitDec copy
         {
             get { return new UnitDec(x, y, x_Purpose, y_Purpose, id, last__x, last__y, X_Board, Y_Board, was_step, flag); }
         }
@@ -34,7 +34,7 @@ namespace MAPF_System
             MakeLast(-1, -1);
         }
         public void NotWasStep() { was_step = false; }
-        public void MakeStep(BoardDec Board, IEnumerable<UnitDec> AnotherUnits, int kol_iter_a_star)
+        public void MakeStep(BoardDec Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star)
         {
             bool lasttrue = isEnd;
             // Обнуление флага, когда юнит прошел через свою цель
@@ -53,7 +53,7 @@ namespace MAPF_System
             // Список значений расстояний для каждой клетки
             List<float> rr = new List<float> { -1, -1, -1, -1, -1 };
             // Список юнитов для каждой клетки
-            List<UnitDec> UsUnits = new List<UnitDec> { null, null, null, null, null };
+            List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
             // Заполняем значения ff и UsUnits
             IfBoardIsEmpthy(rr, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star);
             // Помечаем старую клетку как посещенную
@@ -89,7 +89,7 @@ namespace MAPF_System
                 MakeLast(-1, -1);
         }
 
-        private bool MakeStep(BoardDec Board, IEnumerable<UnitDec> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, UnitDec AU)
+        private bool MakeStep(BoardDec Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, UnitDec AU)
         {
             bool lasttrue = isEnd;
             // Проверяем, что юнит еще не работал на данной итерации
@@ -123,7 +123,7 @@ namespace MAPF_System
             // Список значений расстояний для каждой клетки
             List<float> rr = new List<float> { -1, -1, -1, -1, -1 };
             // Список юнитов для каждой клетки
-            List<UnitDec> UsUnits = new List<UnitDec> { null, null, null, null, null };
+            List<Unit> UsUnits = new List<Unit> { null, null, null, null, null };
             // Заполняем значения ff и UsUnits
             IfBoardIsEmpthy(rr, ff, Board, UsUnits, AnotherUnits, kol_iter_a_star, true);
             // Находим подходящую нам клетку
@@ -166,7 +166,7 @@ namespace MAPF_System
                 was_near_end = true;
             }
         }
-        private Tuple<int, float> MIN_I(List<float> rr, List<float> ff, BoardDec Board, List<UnitDec> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
+        private Tuple<int, float> MIN_I(List<float> rr, List<float> ff, BoardDec Board, List<Unit> UsUnits, List<int> a, List<int> b, int xx, int yy, int kol_iter_a_star)
         {
             ff[4] = int.MaxValue;
             float min = ff[4];
@@ -176,7 +176,7 @@ namespace MAPF_System
             {
                 if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && !((xx == a[i]) && (yy == b[i])))
                 {
-                    if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
+                    if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step))
                     {
                         min = ff[i];
                         minr = rr[i];
@@ -188,7 +188,7 @@ namespace MAPF_System
             bool bb = min_i != 4;
             was_step = true;
             if (!(UsUnits[min_i] is null))
-                bb = UsUnits[min_i].MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                bb = (UsUnits[min_i] as UnitDec).MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             int min_i_1 = min_i;
             if (!bb)
             {
@@ -198,7 +198,7 @@ namespace MAPF_System
                 for (int i = 0; i < 4; i++)
                     if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && !((xx == a[i]) && (yy == b[i])))
                     {
-                        if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
+                        if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step))
                         {
                             min = ff[i];
                             minr = rr[i];
@@ -207,7 +207,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = (UsUnits[min_i] as UnitDec).MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_2 = min_i;
             if (!bb)
@@ -218,7 +218,7 @@ namespace MAPF_System
                 for (int i = 0; i < 4; i++)
                     if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && !((xx == a[i]) && (yy == b[i])))
                     {
-                        if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
+                        if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step))
                         {
                             min = ff[i];
                             minr = rr[i];
@@ -227,7 +227,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = (UsUnits[min_i] as UnitDec).MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_3 = min_i;
             if (!bb)
@@ -238,7 +238,7 @@ namespace MAPF_System
                 for (int i = 0; i < 4; i++)
                     if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && (min_i_3 != i) && !((xx == a[i]) && (yy == b[i])))
                     {
-                        if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !UsUnits[i].was_step))
+                        if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step))
                         {
                             min = ff[i];
                             minr = rr[i];
@@ -247,7 +247,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = UsUnits[min_i].MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = (UsUnits[min_i] as UnitDec).MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
 
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет
@@ -257,7 +257,7 @@ namespace MAPF_System
             // Возвращаем подходящую нам клетку
             return new Tuple<int, float>(min_i, min);
         }
-        private void IfBoardIsEmpthy(List<float> rr, List<float> ff, BoardDec Board, List<UnitDec> UsUnits, IEnumerable<UnitDec> AnotherUnits, int kol_iter_a_star, bool is_bool_step = false)
+        private void IfBoardIsEmpthy(List<float> rr, List<float> ff, BoardDec Board, List<Unit> UsUnits, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, bool is_bool_step = false)
         {
             int[] xx = { 0, 0, -1, 1 }, yy = { -1, 1, 0, 0 };
             Parallel.For(0, 4, (i) =>

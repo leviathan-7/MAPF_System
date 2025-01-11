@@ -11,13 +11,13 @@ using System.Xml.Linq;
 
 namespace MAPF_System
 {
-    public class Board<U, T> where U : Unit
+    public class Board<T>
     {
-        protected Cell<U, T>[,] Arr;
-        protected List<Tunell<U, T>> tunells;
+        protected Cell<T>[,] Arr;
+        protected List<Tunell<T>> tunells;
         protected bool AreNotTunells;
         private Random rnd;
-        public List<U> units { get; protected set; }
+        public List<Unit> units { get; protected set; }
         public string name { get; protected set; }
         public bool WasGame { get; protected set; }
         public int X { get; protected set; }
@@ -47,7 +47,7 @@ namespace MAPF_System
         }
 
         public Board(int X, int Y, int Blocks, int N_Units) 
-            : this(X, Y, new Cell<U, T>[X, Y], new List<U>(), "", new List<Tunell<U, T>>())
+            : this(X, Y, new Cell<T>[X, Y], new List<Unit>(), "", new List<Tunell<T>>())
         {
             rnd = new Random();
             int x = rnd.Next(X);
@@ -57,7 +57,7 @@ namespace MAPF_System
             int x_sum = x;
             int y_sum = y;
             int kol = 1;
-            Arr[x, y] = new Cell<U, T>(false);
+            Arr[x, y] = new Cell<T>(false);
             while (N > 0)
             {
                 int x1 = rnd.Next(X);
@@ -87,7 +87,7 @@ namespace MAPF_System
                 bool d = (y == Y - 1) || (Arr[x, y + 1] is null);
                 if (Arr[x, y] is null && !(a && b && c && d))
                 {
-                    Arr[x, y] = new Cell<U, T>(false);
+                    Arr[x, y] = new Cell<T>(false);
                     N--;
                 }
             }
@@ -106,9 +106,9 @@ namespace MAPF_System
                 if (b)
                 {
                     if (this is BoardCentr)
-                        units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y) as U);
+                        units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
                     if (this is BoardDec)
-                        units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y) as U);
+                        units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, id, -1, -1, X, Y));
                     N_Units--;
                     id++;
                 }
@@ -117,7 +117,7 @@ namespace MAPF_System
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y; j++)
                     if (Arr[i, j] is null)
-                        Arr[i, j] = new Cell<U, T>(true);
+                        Arr[i, j] = new Cell<T>(true);
         }
         public Board(string path = null)
         {
@@ -145,32 +145,32 @@ namespace MAPF_System
                 // Была ли игра
                 WasGame = (arr[3] == "True");
                 // Создать доску по данным файла
-                Arr = new Cell<U, T>[X, Y];
+                Arr = new Cell<T>[X, Y];
                 int t = 1;
                 for (int i = 0; i < X; i++)
                     for (int j = 0; j < Y; j++)
                     {
-                        Arr[i, j] = new Cell<U, T>(readText[t]);
+                        Arr[i, j] = new Cell<T>(readText[t]);
                         t++;
                     }
                 // Создать юнитов по данным файла
-                units = new List<U>();
+                units = new List<Unit>();
                 for (int i = 0; i < N_Units; i++)
                 {
                     if (this is BoardCentr)
-                        units.Add(new UnitCentr(readText[t], i, X, Y) as U);
+                        units.Add(new UnitCentr(readText[t], i, X, Y));
                     if (this is BoardDec)
-                        units.Add(new UnitDec(readText[t], i, X, Y) as U);
+                        units.Add(new UnitDec(readText[t], i, X, Y));
                     t++;
                 }
-                tunells = new List<Tunell<U, T>>();
+                tunells = new List<Tunell<T>>();
             }
             catch (Exception)
             {
                 MessageBox.Show("Файл повреждён.", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        public Board(int X, int Y, Cell<U, T>[,] Arr, List<U> units, string name, List<Tunell<U, T>> tunells)
+        public Board(int X, int Y, Cell<T>[,] Arr, List<Unit> units, string name, List<Tunell<T>> tunells)
         {
             this.name = name;
             this.X = X;
@@ -242,18 +242,18 @@ namespace MAPF_System
                 SystemSounds.Beep.Play();
                 return false;
             }
-            units = new List<U> { units[0] };
+            units = new List<Unit> { units[0] };
             return true;
         }
         public void PlusColumn()
         {
             X++;
-            var arr = new Cell<U, T>[X, Y];
+            var arr = new Cell<T>[X, Y];
             for (int i = 0; i < X - 1; i++)
                 for (int j = 0; j < Y; j++)
                     arr[i, j] = Arr[i, j];
             for (int j = 0; j < Y; j++)
-                arr[X - 1, j] = new Cell<U, T>(false);
+                arr[X - 1, j] = new Cell<T>(false);
             Arr = arr;
             foreach (var unit in units)
                 unit.NewArr(X, Y);
@@ -261,12 +261,12 @@ namespace MAPF_System
         public void PlusRow()
         {
             Y++;
-            var arr = new Cell<U, T>[X, Y];
+            var arr = new Cell<T>[X, Y];
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y - 1; j++)
                     arr[i, j] = Arr[i, j];
             for (int i = 0; i < X; i++)
-                arr[i, Y - 1] = new Cell<U, T>(false);
+                arr[i, Y - 1] = new Cell<T>(false);
             Arr = arr;
             foreach (var unit in units)
                 unit.NewArr(X, Y);
@@ -292,25 +292,26 @@ namespace MAPF_System
                 if (b)
                 {
                     if (this is BoardCentr)
-                        units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y) as U);
+                        units.Add(new UnitCentr(new int[X, Y], x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y));
                     if (this is BoardDec)
-                        units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y) as U);
+                        units.Add(new UnitDec(x, y, x_Purpose, y_Purpose, units.Count, -1, -1, X, Y));
                     return;
                 }
             }
         }
-        public Board<U, T> CopyWithoutBlocks()
+        public Board<T> CopyWithoutBlocks()
         {
-            Cell<U, T>[,] CopyArr = new Cell<U, T>[X, Y];
+            Cell<T>[,] CopyArr = new Cell<T>[X, Y];
             for (int i = 0; i < X; i++)
                 for (int j = 0; j < Y; j++)
                     CopyArr[i, j] = Arr[i, j].copyWithoutBlock;
 
+            List<Unit> copy = units.Select(unit => unit.copy).ToList();
             if (this is BoardCentr)
-                return new BoardCentr(X, Y, CopyArr as Cell<UnitCentr, int>[,], units.Select(unit => (unit as UnitCentr).Copy(true)).ToList(), name, tunells as List<Tunell<UnitCentr, int>>) as Board<U, T>;
-            return new BoardDec(X, Y, CopyArr as Cell<UnitDec, Unit>[,], units.Select(unit => (unit as UnitDec).copy).ToList(), name, tunells as List<Tunell<UnitDec, Unit>>) as Board<U, T>;
+                return new BoardCentr(X, Y, CopyArr as Cell<int>[,], copy, name, tunells as List<Tunell<int>>) as Board<T>;
+            return new BoardDec(X, Y, CopyArr as Cell<Unit>[,], copy, name, tunells as List<Tunell<Unit>>) as Board<T>;
         }
-        public void MakeStep(Board<U, T> Board, int kol_iter_a_star)
+        public void MakeStep(Board<T> Board, int kol_iter_a_star)
         {
             // Добавить блоки в пределах видимости юнитов
             int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
@@ -349,8 +350,8 @@ namespace MAPF_System
             catch (Exception) { }
             return name;
         }
-        public bool InTunell(Unit unit, Tunell<U, T> tunell) { return Arr[unit.x, unit.y].tunell == tunell; }
-        public Tunell<U, T> Tunell(int x, int y) { return Arr[x, y].tunell; }
+        public bool InTunell(Unit unit, Tunell<T> tunell) { return Arr[unit.x, unit.y].tunell == tunell; }
+        public Tunell<T> Tunell(int x, int y) { return Arr[x, y].tunell; }
         public void Draw(Graphics t, bool b = true, Tuple<int, int> C = null, Tuple<int, int> C1 = null, bool viewtunnel = true)
         {
             int height = 18;

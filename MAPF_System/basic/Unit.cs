@@ -36,6 +36,15 @@ namespace MAPF_System
         {
             get { return RealManheton(x, y); }
         }
+        public Unit copy
+        {
+            get 
+            { 
+                if (this is UnitCentr)
+                    return ((UnitCentr)this).copy;
+                return ((UnitDec)this).copy;
+            }
+        }
 
         public Unit(int x, int y, int X, int Y, int id, bool flag, int x_Purpose, int y_Purpose)
         {

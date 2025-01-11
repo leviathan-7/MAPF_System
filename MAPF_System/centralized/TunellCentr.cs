@@ -7,9 +7,9 @@ using System.Windows.Forms;
 
 namespace MAPF_System
 {
-    public class TunellCentr : Tunell<UnitCentr, int>
+    public class TunellCentr : Tunell<int>
     {
-        public TunellCentr(Board<UnitCentr, int> board, List<Tunell<UnitCentr, int>> LT, int x, int y) 
+        public TunellCentr(Board<int> board, List<Tunell<int>> LT, int x, int y) 
             : base(board, LT, x, y) { }
 
         public bool Contains(bool isReal, int id)

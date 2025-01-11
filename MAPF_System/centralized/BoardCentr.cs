@@ -12,10 +12,10 @@ using System.Collections;
 
 namespace MAPF_System
 {
-    public class BoardCentr : Board<UnitCentr, int>
+    public class BoardCentr : Board<int>
     {
         public BoardCentr(int X, int Y, int Blocks, int N_Units) : base(X, Y, Blocks, N_Units) { }
-        public BoardCentr(int X, int Y, Cell<UnitCentr, int>[,] Arr, List<UnitCentr> units, string name, List<Tunell<UnitCentr, int>> tunells)
+        public BoardCentr(int X, int Y, Cell<int>[,] Arr, List<Unit> units, string name, List<Tunell<int>> tunells)
             : base(X, Y, Arr, units, name, tunells) { }
         public BoardCentr(string path = null) : base(path) { }
         
@@ -41,7 +41,7 @@ namespace MAPF_System
 
                                 if (!AreNotTunells && kk == 3)
                                 {
-                                    List<Tunell<UnitCentr, int>> LT = new List<Tunell<UnitCentr, int>>();
+                                    List<Tunell<int>> LT = new List<Tunell<int>>();
                                     for (int w = 0; w < 4; w++)
                                     {
                                         int newI = i + xx[w], newJ = j + yy[w];
@@ -73,36 +73,36 @@ namespace MAPF_System
                     Unit.ClearArr();
             }
 
-            var new_units = new List<UnitCentr>();
+            var new_units = new List<Unit>();
 
             // Нахождение кластеров
-            HashSet<UnitCentr> clasterizations = new HashSet<UnitCentr>();
-            List<HashSet<UnitCentr>> clasters = new List<HashSet<UnitCentr>>();
+            HashSet<Unit> clasterizations = new HashSet<Unit>();
+            List<HashSet<Unit>> clasters = new List<HashSet<Unit>>();
             foreach (var unit in units)
                 if (!clasterizations.Contains(unit))
                 {
-                    HashSet<UnitCentr> claster = unit.FindClaster(units);
+                    HashSet<Unit> claster = (unit as UnitCentr).FindClaster(units);
                     clasters.Add(claster);
                     clasterizations.UnionWith(claster);
                 }
 
             foreach (var Claster in clasters)
             {
-                Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>> TT = new Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>(new List<UnitCentr>(), Claster);
+                Tuple<IEnumerable<Unit>, IEnumerable<Unit>> TT = new Tuple<IEnumerable<Unit>, IEnumerable<Unit>>(new List<Unit>(), Claster);
                 int min_sum = Claster.Sum(unit => unit.realManheton) - Claster.Count(unit => !unit.isRealEnd);
-                IEnumerable<UnitCentr> res = null;
+                IEnumerable<Unit> res = null;
                 bool b = true;
                 while (res is null)
                 {
                     int sum = int.MaxValue;
-                    Stack<Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>> stack = new Stack<Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>>();
+                    Stack<Tuple<IEnumerable<Unit>, IEnumerable<Unit>>> stack = new Stack<Tuple<IEnumerable<Unit>, IEnumerable<Unit>>>();
                     stack.Push(TT);
                     while (stack.Count() != 0)
                     {
                         var T = stack.Pop();
                         if (T.Item2.Count() == 0)
                         {
-                            var s = T.Item1.Sum(unit => unit.Manheton(this));
+                            var s = T.Item1.Sum(unit => (unit as UnitCentr).Manheton(this));
                             if (s == min_sum)
                             {
                                 res = T.Item1;
@@ -139,8 +139,8 @@ namespace MAPF_System
                             }
                         }
                         else
-                            foreach (var unit in T.Item2.First().MakeStep(this, T.Item1, Claster, b))
-                                stack.Push(new Tuple<IEnumerable<UnitCentr>, IEnumerable<UnitCentr>>(T.Item1.Concat(new List<UnitCentr> { unit }), T.Item2.Skip(1)));
+                            foreach (var unit in (T.Item2.First() as UnitCentr).MakeStep(this, T.Item1, Claster, b))
+                                stack.Push(new Tuple<IEnumerable<Unit>, IEnumerable<Unit>>(T.Item1.Concat(new List<Unit> { unit }), T.Item2.Skip(1)));
                     }
 
                     b = false;
