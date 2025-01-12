@@ -40,50 +40,24 @@ namespace MAPF_System
             // Обнуление флага, когда юнит прошел через свою цель
             if (flag && (x == x_Purpose) && (y == y_Purpose))
                 flag = false;
-            // Проверяем, что юнит еще не работал на данной итерации
-            if (was_step)
+
+            if (!StartStep())
                 return;
-            StartSpec();
+
             // Алгоритм для решения проблемы перпендикулярного хождения юнитов
             if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).isEnd)
                 MakeLast(-1, -1);
             last_Unit = null;
 
-            // Находим подходящую нам клетку
-            var min_i = MIN_I(Board, AnotherUnits, kol_iter_a_star, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 }, -1, -1, false, lasttrue);
-
-            was_step = (min_i != -10);
-            if (was_step)
-            {
-                if (min_i != 4)
-                {
-                    // Алгоритм для решения проблемы перпендикулярного хождения юнитов
-                    if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).isEnd)
-                    {
-                        MakeLast(-1, -1);
-                        last_Unit = null;
-                    }
-                    if (isRealEnd)
-                    {
-                        was_near_end = true;
-                        spec = X_Board * Y_Board;
-                    }
-                    if (!was_near_end)
-                        Arr[x, y] += 4;
-                    return;
-                }
-            }
-            else
-                MakeLast(-1, -1);
+            MakeMinStep(Board, AnotherUnits, kol_iter_a_star, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 }, -1, -1, false, lasttrue, null);
         }
 
-        private bool MakeStep(BoardDec Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, UnitDec AU)
+        private bool MakeBoolStep(BoardDec Board, IEnumerable<Unit> AnotherUnits, int xx, int yy, int kol_iter_a_star, bool signal, UnitDec AU)
         {
             bool lasttrue = isEnd;
-            // Проверяем, что юнит еще не работал на данной итерации
-            if (was_step)
+            if (!StartStep())
                 return false;
-            StartSpec();
+
             // Проверяем, надо ли ставить флаг того, что 2 юнита оказались в тупике и им надо на места друг-друга
             int t = 0;
 
@@ -107,35 +81,12 @@ namespace MAPF_System
                     was_near_end = true;
             }
             
-            // Находим подходящую нам клетку
-            var min_i = MIN_I(Board, AnotherUnits, kol_iter_a_star, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, true, lasttrue);
-
-            was_step = (min_i != -10);
-            if (was_step)
-            {
-                if (min_i != 4)
-                {
-                    // Алгоритм для решения проблемы перпендикулярного хождения юнитов
-                    var q = AU;
-                    if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).isEnd)
-                    {
-                        MakeLast(-1, -1);
-                        q = null;
-                    }
-                    last_Unit = q;
-                    
-                    if (!was_near_end)
-                        Arr[x, y] += 4;
-                    return true;
-                }
-            }
-            else
-                MakeLast(-1, -1);
-
-            return was_step;
+            return MakeMinStep(Board, AnotherUnits, kol_iter_a_star, new List<int> { x, x, x - 1, x + 1 }, new List<int> { y - 1, y + 1, y, y }, xx, yy, true, lasttrue, AU);
         }
-        private int MIN_I(BoardDec Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, List<int> a, List<int> b, int xx, int yy, bool is_bool_step, bool lasttrue)
+        private bool MakeMinStep(BoardDec Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star, List<int> a, List<int> b, int xx, int yy, bool is_bool_step, bool lasttrue, Unit AU)
         {
+            // 1) Находим подходящую нам клетку
+
             // Помечаем клетку как посещенную
             Board.MakeVisit(x, y, id);
 
@@ -200,7 +151,7 @@ namespace MAPF_System
             bool bb = min_i != 4;
             was_step = true;
             if (!(UsUnits[min_i] is null))
-                bb = (UsUnits[min_i] as UnitDec).MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                bb = (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             int min_i_1 = min_i;
             if (!bb)
             {
@@ -219,7 +170,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = (UsUnits[min_i] as UnitDec).MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_2 = min_i;
             if (!bb)
@@ -239,7 +190,7 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = (UsUnits[min_i] as UnitDec).MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_3 = min_i;
             if (!bb)
@@ -259,32 +210,57 @@ namespace MAPF_System
                     }
                 bb = min_i != 4;
                 if (!(UsUnits[min_i] is null))
-                    bb = (UsUnits[min_i] as UnitDec).MakeStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                    bb = (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
 
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет
             if (!bb)
-                return -10;
-
-            // если юнит сдвинулся
-            F = min;
-            was_bool_step = is_bool_step;
-            if (lasttrue)
-                MakeLast(-1, -1);
-            else
-                MakeLast(x, y);
-
-            switch (min_i)
             {
-                case 0: y--; break;
-                case 1: y++; break;
-                case 2: x--; break;
-                case 3: x++; break;
-                default: break;
+                MakeLast(-1, -1);
+                return was_step = false;
             }
+            else
+            {
+                // 2) если юнит сдвинулся
+                F = min;
+                was_bool_step = is_bool_step;
+                if (lasttrue)
+                    MakeLast(-1, -1);
+                else
+                    MakeLast(x, y);
 
-            // Возвращаем подходящую нам клетку
-            return min_i;
+                switch (min_i)
+                {
+                    case 0: y--; break;
+                    case 1: y++; break;
+                    case 2: x--; break;
+                    case 3: x++; break;
+                    default: break;
+                }
+
+                if (min_i != 4)
+                {
+                    if (is_bool_step)
+                        last_Unit = AU;
+
+                    // Алгоритм для решения проблемы перпендикулярного хождения юнитов
+                    if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).isEnd)
+                    {
+                        MakeLast(-1, -1);
+                        last_Unit = null;
+                    }
+
+                    if (!is_bool_step && isRealEnd)
+                    {
+                        was_near_end = true;
+                        spec = X_Board * Y_Board;
+                    }
+                    // Запоминаем пройденный путь
+                    if (!was_near_end)
+                        Arr[x, y] += 4;
+                }
+                return true;
+            }
         }
         private float f(int x, int y, BoardDec Board, int kol_iter_a_star, int last_x, int last_y, bool is_bool_step, int g, ref float[,,,] ArrG, ref int MaxG, ref bool GreatFlag)
         {
@@ -352,10 +328,14 @@ namespace MAPF_System
             // Считаем эвристическую оценку, если максимальная глубина достигнута
             return RealManheton(x, y);
         }
-        private void StartSpec()
+        private bool StartStep()
         {
+            // Проверяем, что юнит еще не работал на данной итерации
+            if (was_step)
+                return false;
             if (was_near_end = (spec > 0))
                 spec--;
+            return true;
         }
         private void MakeLast(int x, int y)
         {
