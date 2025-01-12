@@ -47,19 +47,9 @@ namespace MAPF_System
             units.ForEach(Unit => 
             {
                 if ((Unit as UnitDec).was_near_end)
-                {
-                    if ((Unit as UnitDec).was_bool_step)
-                        Was_bool_step_units.Add(Unit);
-                    else
-                        Was_near_end_units.Add(Unit);
-                }
+                    ((Unit as UnitDec).was_bool_step ? Was_bool_step_units : Was_near_end_units).Add(Unit);
                 else
-                {
-                    if (IsTunell(Unit.x, Unit.y))
-                        Tunell_NOT_Was_near_end_units.Add(Unit);
-                    else
-                        NOT_Was_near_end_units.Add(Unit);
-                }
+                    (IsTunell(Unit.x, Unit.y) ? Tunell_NOT_Was_near_end_units : NOT_Was_near_end_units).Add(Unit);
             });
 
             new List<List<Unit>>() { NOT_Was_near_end_units, Was_near_end_units, Tunell_NOT_Was_near_end_units, Was_bool_step_units }.ForEach(list =>

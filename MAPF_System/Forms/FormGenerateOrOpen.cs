@@ -75,18 +75,9 @@ namespace MAPF_System
                 label_Error.Text = "Количество препятствий и юнитов слишком большое!";
                 return;
             }
-            if (isCentr)
-            {
-                FormAlgorithm F = new FormAlgorithm(new BoardCentr(X, Y, Blocks, Units), 0, false, "7");
-                F.Icon = Icon;
-                F.Show();
-            }
-            else
-            {
-                FormAlgorithm F = new FormAlgorithm(new BoardDec(X, Y, Blocks, Units), 0, false, "7");
-                F.Icon = Icon;
-                F.Show();
-            }
+            FormAlgorithm F = new FormAlgorithm(isCentr ? (Board)new BoardCentr(X, Y, Blocks, Units) : new BoardDec(X, Y, Blocks, Units), 0, false, "7");
+            F.Icon = Icon;
+            F.Show();
         }
 
         private void button_Load_Click_Dec(object sender, EventArgs e) { load(false); }
@@ -97,23 +88,11 @@ namespace MAPF_System
         {
             label_Error.Text = "";
             label12.Text = "⏳";
-            if (isCentr)
+            FormAlgorithm F = new FormAlgorithm(isCentr ? (Board)new BoardCentr() : new BoardDec(), 0, false, "7", false, false);
+            if (!F.IsDisposed)
             {
-                FormAlgorithm F = new FormAlgorithm(new BoardCentr(), 0, false, "7", false, false);
-                if (!F.IsDisposed)
-                {
-                    F.Icon = Icon;
-                    F.Show();
-                }
-            }
-            else
-            {
-                FormAlgorithm F = new FormAlgorithm(new BoardDec(), 0, false, "7", false, false);
-                if (!F.IsDisposed)
-                {
-                    F.Icon = Icon;
-                    F.Show();
-                }
+                F.Icon = Icon;
+                F.Show();
             }
             label12.Text = "";
         }
@@ -208,28 +187,18 @@ namespace MAPF_System
                     int a = 0, b = 0;
                     foreach (var f in (from f in Directory.GetFiles(fbd.SelectedPath) where Path.GetExtension(f).ToLower() == ".board" select f))
                     {
-                        BoardCentr Board = new BoardCentr(f);
+                        Board Board = new BoardCentr(f);
                         // Плотность
                         double density = 1.0 * Board.units.Count / (Board.X * Board.Y);
                         int kol_iter_a_star = 7;
                         // Максимальное колличество итераций
-                        int N = 5000;
-                        int i = 0;
+                        int N = 5000, i = 0;
 
-                        if (density >= 0.01)
-                        {
-                            Board TimeBoard = Board.CopyWithoutBlocks();
-                            while (!TimeBoard.isEnd && (i++) < (N - 1))
-                                TimeBoard.MakeStep(Board, kol_iter_a_star);
-                        }
-                        else
-                        {
-                            BoardDec BoardDec = new BoardDec(f);
-                            Board TimeBoard = BoardDec.CopyWithoutBlocks();
-                            while (!TimeBoard.isEnd && (i++) < (N - 1))
-                                TimeBoard.MakeStep(BoardDec, kol_iter_a_star);
-                        }
-                        
+                        if (density < 0.01)
+                            Board = new BoardDec(f);
+                        Board TimeBoard = Board.CopyWithoutBlocks();
+                        while (!TimeBoard.isEnd && (i++) < (N - 1))
+                            TimeBoard.MakeStep(Board, kol_iter_a_star);
 
                         if (i == N)
                         {

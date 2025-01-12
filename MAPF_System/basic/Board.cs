@@ -50,30 +50,19 @@ namespace MAPF_System
             : this(X, Y, new Cell[X, Y], new List<Unit>(), "", new List<Tunell>())
         {
             rnd = new Random();
-            int x = rnd.Next(X);
-            int y = rnd.Next(Y);
+            int x = rnd.Next(X), y = rnd.Next(Y);
             // Генерация пустых узлов
             int N = X * Y - Blocks - 1;
-            int x_sum = x;
-            int y_sum = y;
+            int x_sum = x, y_sum = y;
             int kol = 1;
             Arr[x, y] = new Cell(false);
             while (N > 0)
             {
-                int x1 = rnd.Next(X);
-                int y1 = rnd.Next(Y);
-                int x2 = rnd.Next(X);
-                int y2 = rnd.Next(Y);
-                int x3 = rnd.Next(X);
-                int y3 = rnd.Next(Y);
-                if (Math.Abs(x1 - x_sum / kol) > Math.Abs(x2 - x_sum / kol))
-                    x = x1;
-                else
-                    x = x2;
-                if (Math.Abs(y1 - y_sum / kol) > Math.Abs(y2 - y_sum / kol))
-                    y = y1;
-                else
-                    y = y2;
+                int x1 = rnd.Next(X), y1 = rnd.Next(Y);
+                int x2 = rnd.Next(X), y2 = rnd.Next(Y);
+                int x3 = rnd.Next(X), y3 = rnd.Next(Y);
+                x = (Math.Abs(x1 - x_sum / kol) > Math.Abs(x2 - x_sum / kol)) ? x1 : x2;
+                y = (Math.Abs(y1 - y_sum / kol) > Math.Abs(y2 - y_sum / kol)) ? y1 : y2;
                 if (Math.Abs(x - x_sum / kol) < Math.Abs(x3 - x_sum / kol))
                     x = x3;
                 if (Math.Abs(y - y_sum / kol) < Math.Abs(y3 - y_sum / kol))
@@ -81,11 +70,8 @@ namespace MAPF_System
                 x_sum += x;
                 y_sum += y;
                 kol++;
-                bool a = (x == 0) || (Arr[x - 1, y] is null);
-                bool b = (x == X - 1) || (Arr[x + 1, y] is null);
-                bool c = (y == 0) || (Arr[x, y - 1] is null);
-                bool d = (y == Y - 1) || (Arr[x, y + 1] is null);
-                if (Arr[x, y] is null && !(a && b && c && d))
+                if (Arr[x, y] is null && !(((x == 0) || (Arr[x - 1, y] is null)) && ((x == X - 1) || (Arr[x + 1, y] is null)) 
+                    && ((y == 0) || (Arr[x, y - 1] is null)) && ((y == Y - 1) || (Arr[x, y + 1] is null))))
                 {
                     Arr[x, y] = new Cell(false);
                     N--;
@@ -97,8 +83,7 @@ namespace MAPF_System
             {
                 x = rnd.Next(X);
                 y = rnd.Next(Y);
-                int x_Purpose = rnd.Next(X);
-                int y_Purpose = rnd.Next(Y);
+                int x_Purpose = rnd.Next(X), y_Purpose = rnd.Next(Y);
                 bool b = (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
                 foreach (var Unit in units)
                     b = b && !((Unit.x == x) && (Unit.y == y)) && !((Unit.x_Purpose == x_Purpose) && (Unit.y_Purpose == y_Purpose))
@@ -222,11 +207,8 @@ namespace MAPF_System
         }
         public int ReversBlock(Tuple<int, int> c)
         {
-            if ((c.Item1 < 0) || (c.Item2 < 0) || (c.Item1 >= X) || (c.Item2 >= Y) 
-                || units.Any(unit => (unit.x == c.Item1 && unit.y == c.Item2) || (unit.x_Purpose == c.Item1 && unit.y_Purpose == c.Item2)))
-                return 0;
-
-            return Arr[c.Item1, c.Item2].ReversBlock();
+            return ((c.Item1 < 0) || (c.Item2 < 0) || (c.Item1 >= X) || (c.Item2 >= Y) || units.Any(unit => (unit.x == c.Item1 && unit.y == c.Item2) || (unit.x_Purpose == c.Item1 && unit.y_Purpose == c.Item2))) 
+                ? 0 : Arr[c.Item1, c.Item2].ReversBlock();
         }
         public Tuple<Tuple<int, int>, Tuple<int, int>> MinusUnit()
         {
@@ -259,8 +241,7 @@ namespace MAPF_System
             for (int j = 0; j < Y; j++)
                 arr[X - 1, j] = new Cell(false);
             Arr = arr;
-            foreach (var unit in units)
-                unit.NewArr(X, Y);
+            units.ForEach(unit => unit.NewArr(X, Y));
         }
         public void PlusRow()
         {
@@ -272,8 +253,7 @@ namespace MAPF_System
             for (int i = 0; i < X; i++)
                 arr[i, Y - 1] = new Cell(false);
             Arr = arr;
-            foreach (var unit in units)
-                unit.NewArr(X, Y);
+            units.ForEach(unit => unit.NewArr(X, Y));
         }
         public void PlusUnit()
         {
@@ -285,10 +265,8 @@ namespace MAPF_System
             rnd = new Random();
             while (true)
             {
-                int x = rnd.Next(X);
-                int y = rnd.Next(Y);
-                int x_Purpose = rnd.Next(X);
-                int y_Purpose = rnd.Next(Y);
+                int x = rnd.Next(X), y = rnd.Next(Y);
+                int x_Purpose = rnd.Next(X), y_Purpose = rnd.Next(Y);
                 bool b = !Arr[x, y].isBlock && !Arr[x_Purpose, y_Purpose].isBlock && (Arr[x, y] != null) && (Arr[x_Purpose, y_Purpose] != null) && !((x == x_Purpose) && (y == y_Purpose));
                 foreach (var Unit in units)
                     b = b && !((Unit.x == x) && (Unit.y == y)) && !((Unit.x_Purpose == x_Purpose) && (Unit.y_Purpose == y_Purpose))
@@ -372,8 +350,7 @@ namespace MAPF_System
             int height = 18;
             if (Math.Max(X, Y) < 30)
                 height = 24;
-            int YY = 115;
-            int XX = 95;
+            int YY = 115, XX = 95;
             using (Graphics g = t)
             {
                 if (b)

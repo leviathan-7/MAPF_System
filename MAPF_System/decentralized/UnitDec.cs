@@ -112,11 +112,7 @@ namespace MAPF_System
                     if (was_near_end)
                         foreach (var au in AnotherUnits)
                             if ((au.x_Purpose == x0) && (au.y_Purpose == y0))
-                            {
-                                ff[i] += 0.5f;
-                                if (!au.isEnd)
-                                    ff[i] += 0.5f;
-                            }
+                                ff[i] += au.isEnd ? 0.5f : 1.0f;
                     foreach (var au in AnotherUnits)
                         if ((au.x == x0) && (au.y == y0))
                         {
@@ -133,14 +129,13 @@ namespace MAPF_System
             int min_i = 4;
             for (int i = 0; i < 4; i++)
             {
-                if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && !((xx == a[i]) && (yy == b[i])))
+                if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) 
+                    && (ff[i] != -1) && !((xx == a[i]) && (yy == b[i])) 
+                    && ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step)))
                 {
-                    if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step))
-                    {
-                        min = ff[i];
-                        minr = rr[i];
-                        min_i = i;
-                    }
+                    min = ff[i];
+                    minr = rr[i];
+                    min_i = i;
                 }
             }
 
@@ -155,18 +150,15 @@ namespace MAPF_System
                 minr = ff[4];
                 min_i = 4;
                 for (int i = 0; i < 4; i++)
-                    if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && !((xx == a[i]) && (yy == b[i])))
+                    if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) 
+                        && (ff[i] != -1) && (min_i_1 != i) && !((xx == a[i]) && (yy == b[i])) 
+                        && ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step)))
                     {
-                        if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step))
-                        {
-                            min = ff[i];
-                            minr = rr[i];
-                            min_i = i;
-                        }
+                        min = ff[i];
+                        minr = rr[i];
+                        min_i = i;
                     }
-                bb = min_i != 4;
-                if (!(UsUnits[min_i] is null))
-                    bb = (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                bb = (UsUnits[min_i] is null) ? (min_i != 4) : (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_2 = min_i;
             if (!bb)
@@ -175,18 +167,15 @@ namespace MAPF_System
                 minr = ff[4];
                 min_i = 4;
                 for (int i = 0; i < 4; i++)
-                    if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && !((xx == a[i]) && (yy == b[i])))
+                    if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) 
+                        && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && !((xx == a[i]) && (yy == b[i]))
+                        && ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step)))
                     {
-                        if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step))
-                        {
-                            min = ff[i];
-                            minr = rr[i];
-                            min_i = i;
-                        }
+                        min = ff[i];
+                        minr = rr[i];
+                        min_i = i;
                     }
-                bb = min_i != 4;
-                if (!(UsUnits[min_i] is null))
-                    bb = (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                bb = (UsUnits[min_i] is null) ? (min_i != 4) : (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_3 = min_i;
             if (!bb)
@@ -195,18 +184,15 @@ namespace MAPF_System
                 minr = ff[4];
                 min_i = 4;
                 for (int i = 0; i < 4; i++)
-                    if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && (min_i_3 != i) && !((xx == a[i]) && (yy == b[i])))
+                    if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) 
+                        && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && (min_i_3 != i) && !((xx == a[i]) && (yy == b[i]))
+                        && ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step)))
                     {
-                        if ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step))
-                        {
-                            min = ff[i];
-                            minr = rr[i];
-                            min_i = i;
-                        }
+                        min = ff[i];
+                        minr = rr[i];
+                        min_i = i;
                     }
-                bb = min_i != 4;
-                if (!(UsUnits[min_i] is null))
-                    bb = (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+                bb = (UsUnits[min_i] is null) ? (min_i != 4) : (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
 
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет

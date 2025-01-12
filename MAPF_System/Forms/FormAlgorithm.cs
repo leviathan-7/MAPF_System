@@ -174,8 +174,7 @@ namespace MAPF_System
                 int height = 18;
                 if (Math.Max(Board.X, Board.Y) < 30)
                     height = 24;
-                int YY = 115;
-                int XX = 95;
+                int YY = 115, XX = 95;
                 var Size = new Size(height, height);
                 var Font = new Font("Arial", 7, FontStyle.Bold);
                 var Font1 = new Font("Arial", 7, FontStyle.Bold | FontStyle.Underline);
