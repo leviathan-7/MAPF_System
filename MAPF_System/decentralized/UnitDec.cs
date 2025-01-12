@@ -59,12 +59,8 @@ namespace MAPF_System
                 return false;
 
             // Проверяем, надо ли ставить флаг того, что 2 юнита оказались в тупике и им надо на места друг-друга
-            int t = 0;
-
             int[] _x = { -1, 1, 0, 0 }, _y = { 0, 0, -1, 1 };
-            for (int w = 0; w < 4; w++)
-                if (!Board.IsEmpthyAndNoTunel(x + _x[w], y + _y[w]))
-                    t++;
+            int t = Enumerable.Range(0, 4).Sum(w => Board.IsEmpthyAndNoTunel(x + _x[w], y + _y[w]) ? 0 : 1);
 
             if ((RealManheton(x, y) == 1) && (t >= 2))
                 flag = signal;

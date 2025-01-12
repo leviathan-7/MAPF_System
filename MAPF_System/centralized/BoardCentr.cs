@@ -23,90 +23,65 @@ namespace MAPF_System
         {
             // Добавить узлы -- части туннелей
             if (!AreNotTunells)
-                while (true)
-                {
-                    int k = 0;
-                    for (int i = 0; i < X; i++)
-                        for (int j = 0; j < Y; j++)
-                            if (!(IsTunell(i, j) || Arr[i, j].isBlock))
+                for (int i = 0; i < X; i++)
+                    for (int j = 0; j < Y; j++)
+                        if (!(IsTunell(i, j) || Arr[i, j].isBlock))
+                        {
+                            int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
+                            IEnumerable<int> range = Enumerable.Range(0, 4);
+                            int kk = range.Sum(w => (!IsEmpthy(i + xx[w], j + yy[w]) || IsTunell(i + xx[w], j + yy[w])) ? 1 : 0);
+
+                            if (!AreNotTunells && kk == 3)
+                                tunells.Add(Arr[i, j].tunell = new TunellCentr(this, range.Where(w => IsTunell(i + xx[w], j + yy[w])).Select(w => Arr[i + xx[w], j + yy[w]].tunell).ToList(), i, j));
+                            else if (kk == 4 && Arr[i, j].wasvisited)
                             {
-                                int kk = 0;
-                                int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
-                                for (int w = 0; w < 4; w++)
-                                {
-                                    int newI = i + xx[w], newJ = j + yy[w];
-                                    if (!IsEmpthy(newI, newJ) || IsTunell(newI, newJ))
-                                        kk++;
-                                }
-
-                                if (!AreNotTunells && kk == 3)
-                                {
-                                    List<Tunell> LT = new List<Tunell>();
-                                    for (int w = 0; w < 4; w++)
-                                    {
-                                        int newI = i + xx[w], newJ = j + yy[w];
-                                        if (IsTunell(newI, newJ))
-                                            LT.Add(Arr[newI, newJ].tunell);
-                                    }
-
-                                    tunells.Add(Arr[i, j].tunell = new TunellCentr(this, LT, i, j));
-                                }
-
-                                if (kk == 4 && Arr[i,j].wasvisited)
-                                {
-                                    AreNotTunells = true;
-                                    for (int ii = 0; ii < X; ii++)
-                                        for (int jj = 0; jj < Y; jj++)
-                                            Arr[ii, jj].tunell = null;
-                                }
+                                AreNotTunells = true;
+                                for (int ii = 0; ii < X; ii++)
+                                    for (int jj = 0; jj < Y; jj++)
+                                        Arr[ii, jj].tunell = null;
                             }
+                        }
 
-                    if (k == 0)
-                        break;
-                }
-
-            foreach (var Unit in units)
+            units.ForEach(Unit => 
             {
                 Arr[Unit.x, Unit.y].MakeVisit(Unit.id);
                 Unit.PlusArr();
                 if (Unit.isRealEnd)
                     Unit.ClearArr();
-            }
-
-            var new_units = new List<Unit>();
+            });
 
             // Нахождение кластеров
             HashSet<Unit> clasterizations = new HashSet<Unit>();
             List<HashSet<Unit>> clasters = new List<HashSet<Unit>>();
-            foreach (var unit in units)
-                if (!clasterizations.Contains(unit))
-                {
-                    // Находим кластер
-                    HashSet<Unit> claster = new HashSet<Unit>() { unit };
-                    Stack<Unit> stack = new Stack<Unit>();
-                    stack.Push(unit);
-                    while (stack.Count() != 0)
-                    {
-                        Unit u = stack.Pop();
-                        units.ForEach(item =>
-                        {
-                            if ((!claster.Contains(item)) &&
-                                ((((u.x + 1 == item.x) || (u.x - 1 == item.x)) && ((u.y == item.y) || (u.y - 1 == item.y) || (u.y + 1 == item.y))) ||
-                                (((u.x + 2 == item.x) || (u.x - 2 == item.x)) && (u.y == item.y)) ||
-                                ((u.x == item.x) && ((u.y - 1 == item.y) || (u.y + 1 == item.y) || (u.y - 2 == item.y) || (u.y + 2 == item.y)))))
-                            {
-                                claster.Add(item);
-                                stack.Push(item);
-                            }
-                        });
-                    }
 
-                    // Добавляем найденный кластер
-                    clasters.Add(claster);
-                    clasterizations.UnionWith(claster);
+            foreach (var unit in units.Where(u => !clasterizations.Contains(u)))
+            {
+                // Находим кластер
+                HashSet<Unit> claster = new HashSet<Unit>() { unit };
+                Stack<Unit> stack = new Stack<Unit>();
+                stack.Push(unit);
+                while (stack.Count() != 0)
+                {
+                    Unit u = stack.Pop();
+                    units.ForEach(item =>
+                    {
+                        if ((!claster.Contains(item)) &&
+                            ((((u.x + 1 == item.x) || (u.x - 1 == item.x)) && ((u.y == item.y) || (u.y - 1 == item.y) || (u.y + 1 == item.y))) ||
+                            (((u.x + 2 == item.x) || (u.x - 2 == item.x)) && (u.y == item.y)) ||
+                            ((u.x == item.x) && ((u.y - 1 == item.y) || (u.y + 1 == item.y) || (u.y - 2 == item.y) || (u.y + 2 == item.y)))))
+                        {
+                            claster.Add(item);
+                            stack.Push(item);
+                        }
+                    });
                 }
 
-            foreach (var Claster in clasters)
+                // Добавляем найденный кластер
+                clasters.Add(claster);
+                clasterizations.UnionWith(claster);
+            }
+
+            units = clasters.SelectMany(Claster => 
             {
                 Tuple<IEnumerable<Unit>, IEnumerable<Unit>> TT = new Tuple<IEnumerable<Unit>, IEnumerable<Unit>>(new List<Unit>(), Claster);
                 int min_sum = Claster.Sum(unit => unit.realManheton) - Claster.Count(unit => !unit.isRealEnd);
@@ -128,7 +103,6 @@ namespace MAPF_System
                                 res = T.Item1;
                                 break;
                             }
-
                             // Проверка на неравнество кластеров
                             bool isntEqw = false;
                             var sort1 = Claster.OrderBy(unit => unit.id).ToList();
@@ -151,7 +125,6 @@ namespace MAPF_System
                                         break;
                                     }
                                 }
-
                             if ((s < sum) && isntEqw)
                             {
                                 sum = s;
@@ -162,12 +135,10 @@ namespace MAPF_System
                             foreach (var unit in (T.Item2.First() as UnitCentr).MakeStep(this, T.Item1, Claster, b))
                                 stack.Push(new Tuple<IEnumerable<Unit>, IEnumerable<Unit>>(T.Item1.Concat(new List<Unit> { unit }), T.Item2.Skip(1)));
                     }
-
                     b = false;
                 }
-                new_units.AddRange(res);
-            }
-            units = new_units;
+                return res;
+            }).ToList();
 
         }
 

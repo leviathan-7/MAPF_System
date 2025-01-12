@@ -21,84 +21,31 @@ namespace MAPF_System
         public void MakeStep(int kol_iter_a_star)
         {
             // Обнуление значений was_step
-            foreach (var Unit in units)
-                (Unit as UnitDec).NotWasStep();
+            units.ForEach(Unit => (Unit as UnitDec).NotWasStep());
             // Добавить плохие узлы
-            while (true)
-            {
-                int k = 0;
-                for (int i = 0; i < X; i++)
-                    for (int j = 0; j < Y; j++)
-                        if (!(Arr[i, j].isBad || Arr[i, j].isBlock))
-                        {
-                            // Проверка на отсутсвие целей
-                            bool b = true;
-                            foreach (var Unit in units)
-                                b = b && !((Unit.x_Purpose == i) && (Unit.y_Purpose == j)) && !((Unit.x == i) && (Unit.y == j));
-                            if (b)
-                            {
-                                int kk = 0;
-                                int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
-                                for (int w = 0; w < 4; w++)
-                                {
-                                    int newI = i + xx[w], newJ = j + yy[w];
-                                    if (!IsEmpthy(newI, newJ) || Arr[newI, newJ].isBad)
-                                        kk ++;
-                                }
-
-                                if (kk == 3)
-                                {
-                                    Arr[i, j].MakeBad();
-                                    k++;
-                                }
-                            }
-                        }
-
-                if (k == 0)
-                    break;
-            }
+            int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
+            IEnumerable<int> range = Enumerable.Range(0, 4);
+            for (int i = 0; i < X; i++)
+                for (int j = 0; j < Y; j++)
+                    if ((!(Arr[i, j].isBad || Arr[i, j].isBlock)) 
+                        && units.All(Unit => !((Unit.x_Purpose == i) && (Unit.y_Purpose == j)) && !((Unit.x == i) && (Unit.y == j)))
+                        && (range.Sum(w => (!IsEmpthy(i + xx[w], j + yy[w]) || Arr[i + xx[w], j + yy[w]].isBad) ? 1 : 0) == 3))
+                    {
+                        Arr[i, j].MakeBad();
+                    }
             // Добавить узлы -- части туннелей
-            while (true)
-            {
-                int k = 0;
-                for (int i = 0; i < X; i++)
-                    for (int j = 0; j < Y; j++)
-                        if (!(IsTunell(i, j) || Arr[i, j].isBlock))
-                        {
-                            int kk = 0;
-                            int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
-                            for (int w = 0; w < 4; w++)
-                            {
-                                int newI = i + xx[w], newJ = j + yy[w];
-                                if (!IsEmpthy(newI, newJ) || IsTunell(newI, newJ))
-                                    kk++;
-                            }
-
-                            if (kk == 3)
-                            {
-                                List<Tunell> LT = new List<Tunell>();
-                                for (int w = 0; w < 4; w++)
-                                {
-                                    int newI = i + xx[w], newJ = j + yy[w];
-                                    if (IsTunell(newI, newJ) && !Arr[newI, newJ].isBad)
-                                        LT.Add(Arr[newI, newJ].tunell);
-                                }
-
-                                tunells.Add(Arr[i, j].tunell = new TunellDec(this, LT, i, j));
-                            }
-                        }
-
-                if (k == 0)
-                    break;
-            }
+            for (int i = 0; i < X; i++)
+                for (int j = 0; j < Y; j++)
+                    if ((!(IsTunell(i, j) || Arr[i, j].isBlock)) && (range.Sum(w => (!IsEmpthy(i + xx[w], j + yy[w]) || IsTunell(i + xx[w], j + yy[w])) ? 1 : 0) == 3))
+                        tunells.Add(Arr[i, j].tunell = new TunellDec(this, range.Where(w => IsTunell(i + xx[w], j + yy[w]) && !Arr[i + xx[w], j + yy[w]].isBad).Select(w => Arr[i + xx[w], j + yy[w]].tunell).ToList(), i, j));
             // Поставить флаги юнитам, которые в простом туннеле перегораживают проезд
-            foreach (var t in tunells)
-                ((TunellDec)t).MakeFlags(this);
+            tunells.ForEach(t => ((TunellDec)t).MakeFlags(this));
             // Сделать шаг теми юнитами, которые еще не достигли своей цели, при этом давая приоритет тем юнитам, которые дальше от цели
             List<Unit> Was_bool_step_units = new List<Unit>(), Was_near_end_units = new List<Unit>(),
             NOT_Was_near_end_units = new List<Unit>(), Tunell_NOT_Was_near_end_units = new List<Unit>();
 
-            foreach (var Unit in units)
+            units.ForEach(Unit => 
+            {
                 if ((Unit as UnitDec).was_near_end)
                 {
                     if ((Unit as UnitDec).was_bool_step)
@@ -113,15 +60,15 @@ namespace MAPF_System
                     else
                         NOT_Was_near_end_units.Add(Unit);
                 }
+            });
 
             new List<List<Unit>>() { NOT_Was_near_end_units, Was_near_end_units, Tunell_NOT_Was_near_end_units, Was_bool_step_units }.ForEach(list =>
             {
-                foreach (var Unit in list.OrderBy(u => -(u as UnitDec).F))
-                    if (!Unit.isEnd)
-                        (Unit as UnitDec).MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
+                foreach (var Unit in list.OrderBy(u => -(u as UnitDec).F).Where(u => !u.isEnd))
+                    (Unit as UnitDec).MakeStep(this, from u in units where u != Unit select u, kol_iter_a_star);
             });
         }
-       
+
         public bool IsEmpthyAndNoTunel(int x, int y)
         {
             return !((x < 0) || (y < 0) || (x >= X) || (y >= Y) || Arr[x, y].isTunell || Arr[x, y].isBlock);

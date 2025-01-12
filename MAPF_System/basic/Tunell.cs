@@ -17,13 +17,8 @@ namespace MAPF_System
         {
             this.board = board;
             tunells = new List<Tunell>() { this };
-            tunell_units = new List<object>();
-
-            LT.ForEach(tunell =>
-            {
-                tunell_units.AddRange(tunell.tunell_units);
-                tunells.AddRange(tunell.tunells);
-            });
+            tunells.AddRange(LT.SelectMany(tunell => tunell.tunells));
+            tunell_units = LT.SelectMany(tunell => tunell.tunell_units).ToList();
 
             var foundUnit = board.units.FirstOrDefault(Unit => (Unit.x_Purpose == x) && (Unit.y_Purpose == y));
             if (foundUnit != null)

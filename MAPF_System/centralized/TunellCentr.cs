@@ -14,7 +14,7 @@ namespace MAPF_System
 
         public bool Contains(bool isReal, int id)
         {
-            if (!isReal && (from unit in board.units select unit.id).Except(tunell_units.Select(item => (int)item))
+            if (!isReal && (from unit in board.units select unit.id).Except(tunell_units.Cast<int>())
                 .Any(Unit_id => board.InTunell(board.units.Find(u => u.id == Unit_id), this)))
                     return false;
 

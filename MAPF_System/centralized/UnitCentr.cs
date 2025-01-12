@@ -69,16 +69,12 @@ namespace MAPF_System
                     min = s + (isStart ? 0 : 1);
                     break;
                 }
-                for (int w = 0; w < 4; w++)
+                foreach (int ww in Enumerable.Range(0, 4).Where(w => board.IsEmpthy(t.Item1 + xx[w], t.Item2 + yy[w])))
                 {
-                    int newI = t.Item1 + xx[w], newJ = t.Item2 + yy[w];
-                    if (board.IsEmpthy(newI, newJ))
-                    {
-                        if (isStart)
-                            stack.Push(new Tuple<int, int>(newI, newJ));
-                        else
-                            list.Add(RealManheton(newI, newJ) + 1);
-                    }
+                    if (isStart)
+                        stack.Push(new Tuple<int, int>(t.Item1 + xx[ww], t.Item2 + yy[ww]));
+                    else
+                        list.Add(RealManheton(t.Item1 + xx[ww], t.Item2 + yy[ww]) + 1);
                 }
                 isStart = false;
             }

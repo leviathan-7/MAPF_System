@@ -179,7 +179,7 @@ namespace MAPF_System
                 var Size = new Size(height, height);
                 var Font = new Font("Arial", 7, FontStyle.Bold);
                 var Font1 = new Font("Arial", 7, FontStyle.Bold | FontStyle.Underline);
-                if (!(CC is null) && (CC.Item1 < Board.X) && (CC.Item2 < Board.Y))
+                if (!(CC is null) && (CC.Item1 < Board.X) && (CC.Item2 < Board.Y) && (CC.Item1 >= 0) && (CC.Item2 >= 0))
                 {
                     g.DrawString("" + CC.Item2, Font1, Brushes.White, new Point(88, 124 + height * CC.Item2));
                     g.DrawString("" + CC.Item1, Font1, Brushes.White, new Point(104 + height * CC.Item1, 108));

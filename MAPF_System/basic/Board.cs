@@ -323,16 +323,18 @@ namespace MAPF_System
         {
             // Добавить блоки в пределах видимости юнитов
             int[] xx = { -1, 1, 0, 0 }, yy = { 0, 0, -1, 1 };
-            foreach (var Unit in units)
-                for (int w = 0; w < 4; w++)
+            foreach (var Unit in units) 
+            {
+                foreach (var w in Enumerable.Range(0, 4).Where(w =>
                 {
                     int newI = Unit.x + xx[w], newJ = Unit.y + yy[w];
-                    // Проверка на выход за пределы поля
-                    if ((newI < 0) || (newJ < 0) || (newI >= X) || (newJ >= Y))
-                        continue;
-                    if (Board.Arr[newI, newJ].isBlock)
-                        Arr[newI, newJ].isBlock = true;
+                    return !((newI < 0) || (newJ < 0) || (newI >= X) || (newJ >= Y)) && Board.Arr[newI, newJ].isBlock;
+                }))
+                {
+                    Arr[Unit.x + xx[w], Unit.y + yy[w]].isBlock = true;
                 }
+            }
+
             switch (this)
             {
                 case BoardCentr _:
@@ -356,8 +358,7 @@ namespace MAPF_System
                     for (int j = 0; j < Y; j++)
                         sw.WriteLine(Arr[i, j].str);
                 // Записать в файл юнитов
-                foreach (var item in units)
-                    sw.WriteLine(item.str);
+                units.ForEach(item => sw.WriteLine(item.str));
                 sw.Close();
                 name = name_ + ".board";
             }
