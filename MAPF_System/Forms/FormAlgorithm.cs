@@ -146,13 +146,9 @@ namespace MAPF_System
         {
             if (was_game)
                 return;
-            move = false;
             var C = CELL(e);
             int r = Board.ReversBlock(C);
-            if (r == 1)
-                Board.Draw(CreateGraphics(), false);
-            if (r == 2)
-                Board.Draw(CreateGraphics(), false, C);
+            ReDraw(false, r == 1 || r == 2, false, r == 2 ? C : null);
         }
 
         private void FormAlgorithm_MouseClick(object sender, MouseEventArgs e)
@@ -160,10 +156,8 @@ namespace MAPF_System
             if (was_game)
                 return;
             var C1 = CELL(e);
-            if (move && Board.Move(C, C1))
-                Board.Draw(CreateGraphics(), false, C);
+            ReDraw(!move, move && Board.Move(C, C1), false, C);
             C = C1;
-            move = !move;
         }
 
         private void FormAlgorithm_MouseMove(object sender, MouseEventArgs e)
@@ -171,87 +165,78 @@ namespace MAPF_System
             using (Graphics g = CreateGraphics())
             {
                 var C = CELL(e);
-                int height = 18;
-                if (Math.Max(Board.X, Board.Y) < 30)
-                    height = 24;
-                int YY = 115, XX = 95;
+                int height = Math.Max(Board.X, Board.Y) < 30 ? 24 : 18;
                 var Size = new Size(height, height);
-                var Font = new Font("Arial", 7, FontStyle.Bold);
-                var Font1 = new Font("Arial", 7, FontStyle.Bold | FontStyle.Underline);
+                var Font = new Font("Arial", 7, FontStyle.Bold | FontStyle.Underline);
                 if (!(CC is null) && (CC.Item1 < Board.X) && (CC.Item2 < Board.Y) && (CC.Item1 >= 0) && (CC.Item2 >= 0))
                 {
-                    g.DrawString("" + CC.Item2, Font1, Brushes.White, new Point(88, 124 + height * CC.Item2));
-                    g.DrawString("" + CC.Item1, Font1, Brushes.White, new Point(104 + height * CC.Item1, 108));
-                    g.DrawString("" + CC.Item2, Font, Brushes.Coral, new Point(88, 124 + height * CC.Item2));
-                    g.DrawString("" + CC.Item1, Font, Brushes.Coral, new Point(104 + height * CC.Item1, 108));
+                    DrawString(g, CC, Font, Brushes.White, height);
+                    DrawString(g, CC, new Font("Arial", 7, FontStyle.Bold), Brushes.Coral, height);
                     if (!was_game)
-                    {
-                        Color clr = Color.Black;
-                        if (Board.IsEmpthy(CC.Item1, CC.Item2))
-                            clr = Color.Blue;
-                        g.DrawRectangle(new Pen(clr, 1), new Rectangle(new Point(XX + 5 + height * CC.Item1, YY + 5 + height * CC.Item2), Size));
-                    }
+                        g.DrawRectangle(new Pen(Board.IsEmpthy(CC.Item1, CC.Item2) ? Color.Blue : Color.Black, 1), new Rectangle(new Point(100 + height * CC.Item1, 120 + height * CC.Item2), Size));
                 }
                 if ((C.Item1 < Board.X) && (C.Item2 < Board.Y) && (e.Location.Y > 115) && (e.Location.X > 95))
                 {
-                    g.DrawString("" + C.Item2, Font1, Brushes.Blue, new Point(88, 124 + height * C.Item2));
-                    g.DrawString("" + C.Item1, Font1, Brushes.Blue, new Point(104 + height * C.Item1, 108));
+                    DrawString(g, C, Font, Brushes.Blue, height);
                     if (!was_game)
                     {
-                        g.DrawRectangle(new Pen(Color.DarkRed, 1), new Rectangle(new Point(XX + 5 + height * C.Item1, YY + 5 + height * C.Item2), Size));
+                        g.DrawRectangle(new Pen(Color.DarkRed, 1), new Rectangle(new Point(100 + height * C.Item1, 120 + height * C.Item2), Size));
                         Cursor = Cursors.Hand;
                     }
                 }
-                else
-                {
-                    if (!was_game)
-                        Cursor = Cursors.Default;
-                }
+                else if (!was_game)
+                    Cursor = Cursors.Default;
+
                 CC = C;
             }
         }
 
+        private void DrawString(Graphics g, Tuple<int, int> T, Font font, Brush brush, int height) 
+        {
+            g.DrawString("" + T.Item2, font, brush, new Point(88, 124 + height * T.Item2));
+            g.DrawString("" + T.Item1, font, brush, new Point(104 + height * T.Item1, 108));
+        }
+
         private void ButtonPlusUnit_Click(object sender, EventArgs e)
         {
-            move = false;
             Board.PlusUnit();
-            Board.Draw(CreateGraphics(), false);
+            ReDraw(false, true, false);
         }
 
         private void ButtonMinusUnit_Click(object sender, EventArgs e)
         {
-            move = false;
             var U = Board.MinusUnit();
-            if (!(U is null))
-                Board.Draw(CreateGraphics(), false, U.Item1, U.Item2);
+            ReDraw(false, !(U is null), false, U?.Item1, U?.Item2);
         }
 
         private void ButtonPlusRow_Click(object sender, EventArgs e)
         {
-            move = false;
             Board.PlusRow();
-            Board.Draw(CreateGraphics());
+            ReDraw();
         }
 
         private void ButtonPlusColumn_Click(object sender, EventArgs e)
         {
-            move = false;
             Board.PlusColumn();
-            Board.Draw(CreateGraphics());
+            ReDraw();
         }
 
         private void ButtonDelBlock_Click(object sender, EventArgs e)
         {
-            move = false;
             Board.DelBlokcs();
-            Board.Draw(CreateGraphics());
+            ReDraw();
         }
 
         private void ButtonDelUnits_Click(object sender, EventArgs e)
         {
-            move = false;
-            if(Board.DelUnits())
-                Board.Draw(CreateGraphics());
+            ReDraw(false, Board.DelUnits());
+        }
+
+        private void ReDraw(bool move = false, bool flag = true, bool b = true, Tuple<int, int> t1 = null, Tuple<int, int> t2 = null)
+        {
+            this.move = move;
+            if (flag)
+                Board.Draw(CreateGraphics(), b, t1, t2);
         }
 
     }
