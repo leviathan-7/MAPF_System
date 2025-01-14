@@ -26,12 +26,12 @@ namespace MAPF_System
             : base(x, y, X, Y, id, flag, x_Purpose, y_Purpose) 
         {
             this.was_step = was_step;
-            MakeLast(last__x, last__y);
+            (this.last__x, this.last__y) = (last__x, last__y);
             Arr = new int[X, Y];
         }
         public UnitDec(string str, int i, int X, int Y) : base(str, X, Y, i)
         {
-            MakeLast(-1, -1);
+            (last__x, last__y) = (-1, -1);
         }
         public void NotWasStep() { was_step = false; }
         public void MakeStep(BoardDec Board, IEnumerable<Unit> AnotherUnits, int kol_iter_a_star)
@@ -46,7 +46,7 @@ namespace MAPF_System
 
             // Алгоритм для решения проблемы перпендикулярного хождения юнитов
             if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).isEnd)
-                MakeLast(-1, -1);
+                (last__x, last__y) = (-1, -1);
             last_Unit = null;
 
             MakeMinStep(Board, AnotherUnits, kol_iter_a_star, new List<int> { 0, 0, 0, 0 }, new List<int> { 0, 0, 0, 0 }, -1, -1, false, lasttrue, null);
@@ -133,64 +133,47 @@ namespace MAPF_System
                     && (ff[i] != -1) && !((xx == a[i]) && (yy == b[i])) 
                     && ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step)))
                 {
-                    min = ff[i];
-                    minr = rr[i];
-                    min_i = i;
+                    (min, minr, min_i) = (ff[i], rr[i], i);
                 }
             }
-
-            bool bb = min_i != 4;
             was_step = true;
-            if (!(UsUnits[min_i] is null))
-                bb = (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
+            bool bb = UsUnits[min_i] is null ? min_i != 4 : (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             int min_i_1 = min_i;
             if (!bb)
             {
-                min = ff[4];
-                minr = ff[4];
-                min_i = 4;
+                (min, minr, min_i) = (ff[4], ff[4], 4);
                 for (int i = 0; i < 4; i++)
                     if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) 
                         && (ff[i] != -1) && (min_i_1 != i) && !((xx == a[i]) && (yy == b[i])) 
                         && ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step)))
                     {
-                        min = ff[i];
-                        minr = rr[i];
-                        min_i = i;
+                        (min, minr, min_i) = (ff[i], rr[i], i);
                     }
                 bb = (UsUnits[min_i] is null) ? (min_i != 4) : (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_2 = min_i;
             if (!bb)
             {
-                min = ff[4];
-                minr = ff[4];
-                min_i = 4;
+                (min, minr, min_i) = (ff[4], ff[4], 4);
                 for (int i = 0; i < 4; i++)
                     if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) 
                         && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && !((xx == a[i]) && (yy == b[i]))
                         && ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step)))
                     {
-                        min = ff[i];
-                        minr = rr[i];
-                        min_i = i;
+                        (min, minr, min_i) = (ff[i], rr[i], i);
                     }
                 bb = (UsUnits[min_i] is null) ? (min_i != 4) : (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
             int min_i_3 = min_i;
             if (!bb)
             {
-                min = ff[4];
-                minr = ff[4];
-                min_i = 4;
+                (min, minr, min_i) = (ff[4], ff[4], 4);
                 for (int i = 0; i < 4; i++)
                     if (((min > ff[i]) || ((min == ff[i]) && (minr > rr[i])) || ((minr == rr[i]) && (min == ff[i]) && (UsUnits[i] is null))) 
                         && (ff[i] != -1) && (min_i_1 != i) && (min_i_2 != i) && (min_i_3 != i) && !((xx == a[i]) && (yy == b[i]))
                         && ((UsUnits[i] is null) || (!(UsUnits[i] is null) && !(UsUnits[i] as UnitDec).was_step)))
                     {
-                        min = ff[i];
-                        minr = rr[i];
-                        min_i = i;
+                        (min, minr, min_i) = (ff[i], rr[i], i);
                     }
                 bb = (UsUnits[min_i] is null) ? (min_i != 4) : (UsUnits[min_i] as UnitDec).MakeBoolStep(Board, from u in Board.units where u != UsUnits[min_i] select u, x, y, kol_iter_a_star, min == 0, this);
             }
@@ -198,7 +181,7 @@ namespace MAPF_System
             // Возвращаем флаг -10, если юнит никуда сдвинуться не сможет
             if (!bb)
             {
-                MakeLast(-1, -1);
+                (last__x, last__y) = (-1, -1);
                 return was_step = false;
             }
             else
@@ -207,9 +190,9 @@ namespace MAPF_System
                 F = min;
                 was_bool_step = is_bool_step;
                 if (lasttrue)
-                    MakeLast(-1, -1);
+                    (last__x, last__y) = (-1, -1);
                 else
-                    MakeLast(x, y);
+                    (last__x, last__y) = (x, y);
 
                 switch (min_i)
                 {
@@ -228,7 +211,7 @@ namespace MAPF_System
                     // Алгоритм для решения проблемы перпендикулярного хождения юнитов
                     if (!(last_Unit is null) && was_near_end && !flag && ((UnitDec)last_Unit).isEnd)
                     {
-                        MakeLast(-1, -1);
+                        (last__x, last__y) = (-1, -1);
                         last_Unit = null;
                     }
 
@@ -318,11 +301,6 @@ namespace MAPF_System
             if (was_near_end = (spec > 0))
                 spec--;
             return true;
-        }
-        private void MakeLast(int x, int y)
-        {
-            last__x = x;
-            last__y = y;
         }
     
     }

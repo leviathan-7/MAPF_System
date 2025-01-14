@@ -87,21 +87,14 @@ namespace MAPF_System
         public bool Move(Tuple<int, int> C, bool b)
         {
             if (b)
-            {
-                x = C.Item1;
-                y = C.Item2;
-            }
+                (x, y) = (C.Item1, C.Item2);
             else
-            {
-                x_Purpose = C.Item1;
-                y_Purpose = C.Item2;
-            }
+                (x_Purpose, y_Purpose) = (C.Item1, C.Item2);
             return true;
         }
         public void NewArr(int X, int Y)
         {
-            X_Board = X;
-            Y_Board = Y;
+            (X_Board, Y_Board) = (X, Y);
             Arr = new int[X, Y];
         }
         
