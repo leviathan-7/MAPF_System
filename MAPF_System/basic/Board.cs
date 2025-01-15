@@ -24,28 +24,9 @@ namespace MAPF_System
         public int Y { get; protected set; }
         public bool isEnd
         {
-            get
-            {
-                bool b = true;
-                // Проверяем, что все юниты дошли до своих целей
-                foreach (var Unit in units)
-                    b = b && Unit.isRealEnd;
-                return b;
-            }
+            // Проверяем, что все юниты дошли до своих целей
+            get { return units.All(unit => unit.isRealEnd); }
         }
-        protected int countBlocks
-        {
-            get
-            {
-                int Blocks = 0;
-                for (int i = 0; i < X; i++)
-                    for (int j = 0; j < Y; j++)
-                        if (Arr[i, j].isBlock)
-                            Blocks++;
-                return Blocks;
-            }
-        }
-
         public Board(int X, int Y, int Blocks, int N_Units) 
             : this(X, Y, new Cell[X, Y], new List<Unit>(), "", new List<Tunell>())
         {
@@ -257,7 +238,7 @@ namespace MAPF_System
         }
         public void PlusUnit()
         {
-            if ((countBlocks + 2 * units.Count + 2) >= (X * Y))
+            if ((Enumerable.Range(0, X).SelectMany(i => Enumerable.Range(0, Y).Select(j => Arr[i, j])).Count(cell => cell.isBlock) + 2 * units.Count + 2) >= (X * Y))
             {
                 SystemSounds.Beep.Play();
                 return;

@@ -19,9 +19,21 @@ namespace MAPF_System
             // Запущенный по двойному щелчку по файлу .Board запускается как централизованный
             InitializeComponent();
             if (args.Length != 0)
-                GetIconAndShow(new FormAlgorithm(new BoardCentr(args[0]), 0, false, "7", false, false));
+                GetIconAndShow(new FormAlgorithm(new BoardCentr(args[0]), 0, false, "7", false, false), Icon);
         }
-        
+
+        public static void MakeError(Label label, String str)
+        {
+            SystemSounds.Beep.Play();
+            label.Text = str;
+        }
+
+        public static void GetIconAndShow(Form F, Icon Icon)
+        {
+            F.Icon = Icon;
+            F.Show();
+        }
+
         private void button_Generation_Click_Dec(object sender, EventArgs e){ generation(false); }
 
         private void button_Generation_Click_Centr(object sender, EventArgs e){ generation(true); }
@@ -33,27 +45,21 @@ namespace MAPF_System
             int X = 0, Y = 0, Blocks = 0, Units = 0;
             // Проверка введенных данных на правильность
             if (!(int.TryParse(textBox_X.Text, out X) && int.TryParse(textBox_Y.Text, out Y) && int.TryParse(textBox_Blocks.Text, out Blocks) && int.TryParse(textBox_Units.Text, out Units)))
-                MakeError("Вы ввели не число!");
+                MakeError(label_Error, "Вы ввели не число!");
             else if ((X > 45) || (Y > 45))
-                MakeError("Размер поля превышает пределы!");
+                MakeError(label_Error, "Размер поля превышает пределы!");
             else if ((X < 2) || (Y < 2))
-                MakeError("Поле слишком маленькое!");
+                MakeError(label_Error, "Поле слишком маленькое!");
             else if (Blocks < 0)
-                MakeError("Не должно быть отрицательных чисел!");
+                MakeError(label_Error, "Не должно быть отрицательных чисел!");
             else if (Units < 1)
-                MakeError("Должен быть хоть один юнит!");
+                MakeError(label_Error, "Должен быть хоть один юнит!");
             else if ((Blocks + 2 * Units) >= (X * Y))
-                MakeError("Количество препятствий и юнитов слишком большое!");
+                MakeError(label_Error, "Количество препятствий и юнитов слишком большое!");
             else
-                GetIconAndShow(new FormAlgorithm(isCentr ? (Board)new BoardCentr(X, Y, Blocks, Units) : new BoardDec(X, Y, Blocks, Units), 0, false, "7"));
+                GetIconAndShow(new FormAlgorithm(isCentr ? (Board)new BoardCentr(X, Y, Blocks, Units) : new BoardDec(X, Y, Blocks, Units), 0, false, "7"), Icon);
         }
-
-        private void MakeError(String str)
-        {
-            SystemSounds.Beep.Play();
-            label_Error.Text = str;
-        }
-
+        
         private void button_Load_Click_Dec(object sender, EventArgs e) { load(false); }
 
         private void button_Load_Click_Centr(object sender, EventArgs e) { load(true); }
@@ -64,7 +70,7 @@ namespace MAPF_System
             label12.Text = "⏳";
             FormAlgorithm F = new FormAlgorithm(isCentr ? (Board)new BoardCentr() : new BoardDec(), 0, false, "7", false, false);
             if (!F.IsDisposed)
-                GetIconAndShow(F);
+                GetIconAndShow(F, Icon);
             label12.Text = "";
         }
 
@@ -76,9 +82,7 @@ namespace MAPF_System
 
         private void BigStart(bool isCentr, bool isUniteWithDec = false)
         {
-            String name = isCentr ? "resultsCentr" : "resultsDec";
-            if (isUniteWithDec)
-                name = "resultsUnite";
+            String name = isUniteWithDec ? "resultsUnite" : isCentr ? "resultsCentr" : "resultsDec";
             label_Error.Text = "";
             label11.Text = "⏳";
             using (FolderBrowserDialog fbd = new FolderBrowserDialog())
@@ -123,20 +127,14 @@ namespace MAPF_System
 
         private void FormGenerateOrOpen_HelpButtonClicked(object sender, CancelEventArgs e)
         {
-            GetIconAndShow(new FormAbout());
+            GetIconAndShow(new FormAbout(), Icon);
             e.Cancel = true;
         }
 
         private void FormGenerateOrOpen_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F1)
-                GetIconAndShow(new FormAbout());
-        }
-
-        private void GetIconAndShow(Form F)
-        {
-            F.Icon = Icon;
-            F.Show();
+                GetIconAndShow(new FormAbout(), Icon);
         }
 
     }

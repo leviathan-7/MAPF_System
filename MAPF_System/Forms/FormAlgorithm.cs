@@ -70,8 +70,7 @@ namespace MAPF_System
         {
             if (!int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star) || (kol_iter_a_star < 7) || (kol_iter_a_star > 20))
             {
-                SystemSounds.Beep.Play();
-                label_Error.Text = "Глубина не верна!";
+                FormGenerateOrOpen.MakeError(label_Error, "Глубина не верна!");
                 return;
             }
             // Максимальное колличество итераций
@@ -80,24 +79,20 @@ namespace MAPF_System
             int i = 0;
             while (!TimeBoard.isEnd && (i++) < (N - 1))
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
-            FormAlgorithm F = new FormAlgorithm(TimeBoard, i, i == N, "" + kol_iter_a_star, true);
-            F.Icon = Icon;
-            F.Show();
+            FormGenerateOrOpen.GetIconAndShow(new FormAlgorithm(TimeBoard, i, i == N, "" + kol_iter_a_star, true), Icon);
         }
 
         private void button_Step_Click(object sender, EventArgs e)
         {
             if (!int.TryParse(textBox_kol_iter_a_star.Text, out int kol_iter_a_star) || (kol_iter_a_star < 7) || (kol_iter_a_star > 20))
             {
-                SystemSounds.Beep.Play();
-                label_Error.Text = "Глубина не верна!";
+                FormGenerateOrOpen.MakeError(label_Error, "Глубина не верна!");
                 return;
             }
             Board TimeBoard = Board.CopyWithoutBlocks();
             int i = 1;
             FormAlgorithm F = new FormAlgorithm(TimeBoard, 0, false, "" + kol_iter_a_star, true);
-            F.Icon = Icon;
-            F.Show();
+            FormGenerateOrOpen.GetIconAndShow(F, Icon);
             while (!TimeBoard.isEnd) 
             {
                 TimeBoard.MakeStep(Board, kol_iter_a_star);
@@ -128,8 +123,7 @@ namespace MAPF_System
             move = false;
             if (textBox_Name.Text.Length == 0)
             {
-                SystemSounds.Beep.Play();
-                label_Error.Text = "Вы не ввели имя файла!";
+                FormGenerateOrOpen.MakeError(label_Error, "Вы не ввели имя файла!");
                 return;
             }
             label6.Text = Board.Save(textBox_Name.Text, was_game);
